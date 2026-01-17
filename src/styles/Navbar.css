@@ -1,0 +1,38 @@
+.navbar {
+    display: flex;
+    flex-direction: column;
+    font-size: x-large;
+    border: 2px solid black;
+    background-color: gray;
+    color: white;
+    max-width: max-content;
+    padding: 0.5rem;
+    min-height: 100vh;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: white;
+}
+a:hover{
+    color: black;
+}
+
+a:active {
+    color: #007;
+}
+
+.navbar-category {
+    display: flex;
+    gap: 1rem;
+}
+
+.navbar-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar-header h3 {
+    font-size: 1em;
+}
+
