@@ -10,21 +10,21 @@
     min-height: 100vh;
 }
 
-.navbar a {
-    text-decoration: none;
-    color: white;
-}
-a:hover{
-    color: black;
-}
-
-a:active {
-    color: #007;
-}
-
 .navbar-category {
     display: flex;
     gap: 1rem;
+    text-decoration: none;
+    color: white;
+    padding: 0.5rem 0;
+}
+
+.navbar-category:hover {
+    color: black;
+    cursor: pointer;
+}
+
+.navbar-category:active {
+    color: #007;
 }
 
 .navbar-header {

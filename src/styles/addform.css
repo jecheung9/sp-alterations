@@ -1,0 +1,112 @@
+.add-entry-modal {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-entry-form {
+    width: 30rem;
+    height: 30rem;
+    border-radius: 8px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+.form-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+input[type="number"] {
+  appearance: textfield;
+}
+
+textarea {
+    resize: none;
+}
+
+.form-contents {
+    display: grid;
+    grid-template-columns: 1fr 3.5fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+label {
+    justify-self: end;
+}
+
+label, select, input, textarea {
+    margin-top: 0.35rem;
+    font-size: 18px;
+}
+
+textarea {
+    height: 13rem;
+}
+
+button {
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    padding: 0.3em 0.6em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #C4CED4;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.button:hover {
+  color: #1a1a1a;
+  background-color: #A4B0B7;
+  border-color: #2c3e50;
+}
+
+.close-button {
+    position: absolute;
+    right: 0;
+}
+
+.close-button:hover {
+    color: #1a1a1a;
+    background-color: #ff4444;
+}
+
+.submit-button {
+    margin-top: 1.5rem;
+    padding: 0.6em 1.2em;
+}
+
+.submit-button:hover {
+    color: #1a1a1a;
+    background-color: #22c55e;
+}
+
+.submit-button:active {
+    color: #1a1a1a;
+    background-color: #16a34a;
+}
+
+h3 {
+    font-size: 28px;
+}
+
+.description-label {
+    align-self: self-start;
+}
+
+
+
