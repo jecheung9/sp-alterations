@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import '../styles/addform.css'
 
 interface AddFormProps {
@@ -9,10 +9,17 @@ const AddForm: React.FC<AddFormProps> = ({
   onClose,
 }) => {
 
+  const [date, setDate] = useState('');
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     alert("Form submitted");
     onClose();
+  }
+
+  const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDate(e.target.value);
+    console.log(e.target.value);
   }
 
   return (
@@ -39,6 +46,8 @@ const AddForm: React.FC<AddFormProps> = ({
             type='date'
             id='date'
             name='date'
+            value={date}
+            onChange={handleDateChange} // format 2026-01-29
           />
 
           <label htmlFor='price'>Price</label>
