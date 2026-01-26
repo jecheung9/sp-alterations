@@ -1,0 +1,62 @@
+.grid-dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+
+.dashboard-meetings, .dashboard-todo, .dashboard-calendar, .dashboard-money {
+    min-width: auto;
+    background-color: #ECECEC;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-calendar, .dashboard-money { 
+    min-height: 25rem;
+}
+
+.dashboard-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+h2 {
+    padding: 1rem;
+    padding-bottom: 0;
+}
+
+.meetings-grid, .todo-grid {
+    display: grid;
+    grid-template-columns: max-content max-content auto;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.prev-meetings-button {
+    display: block;
+    margin: 1rem;
+    margin-left: auto;
+}
+
+.todo-header {
+    display: flex;
+    align-items: baseline;
+}
+
+p {
+    color: gray;
+}
+
+.empty-message {
+    font-size: x-large;
+    color: gray;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 1rem 0;
+}
