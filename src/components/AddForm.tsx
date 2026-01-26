@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import '../styles/addform.css'
+import { clientsData } from '../mockdata/clients';
 
 interface AddFormProps {
   onClose: () => void;
@@ -33,12 +34,12 @@ const AddForm: React.FC<AddFormProps> = ({
         <div className='form-contents'>
           <label htmlFor="client">Client </label>
           <select id="client" name='client'>
-            <option> Please select an option</option>
-            <option> Benny - B&B Menswear</option>
-            <option> Catherine - 11th State</option>
-            <option> Hall Madden</option>
-            <option> A.P.C.</option>
-            <option> Personal</option>
+          <option>Select client</option>
+          {clientsData.map(client => (
+            <option key={client.id} value={client.id}>
+              {client.name}
+            </option>
+          ))}
           </select>
 
           <label htmlFor='date'>Date</label>

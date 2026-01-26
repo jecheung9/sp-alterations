@@ -1,0 +1,49 @@
+.manage-clients {
+    min-width: auto;
+    background-color: #ECECEC;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-width: 30vw;
+    gap: 1rem;
+    padding-bottom: 1rem;
+}
+
+h2 {
+    padding: 1rem;
+    padding-bottom: 0;
+}
+
+.add-client-row {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    gap: 1rem;
+    height: 2rem;
+}
+
+.add-client-row input {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin: 0;
+    margin-left: 1rem;
+    border-radius: 0.5rem;
+    
+}
+
+.add-client-row button {
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+}
+
+.client-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-left: 1rem;
+}
+
+p {
+    margin-left: 1rem;
+}

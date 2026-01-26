@@ -37,6 +37,10 @@ const Navbar: React.FC<NavbarProps> = ({
         <FontAwesomeIcon icon={faPlus} />
         Add Entry
       </div>
+      <Link to="/settings" className="navbar-category">
+        <FontAwesomeIcon className="icon" icon={faList} />
+        Settings
+      </Link>
     </div>
   )
 
