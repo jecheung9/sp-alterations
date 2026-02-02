@@ -17,8 +17,46 @@ const AddForm: React.FC<AddFormProps> = ({
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState('');
 
+  const [errors, setErrors] = useState<{[key: string]: string}>({})
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!client.trim()) {
+      newErrors.client = "A client is required."
+    }
+    if (!date) {
+      newErrors.date = "Date is required."
+    }
+    if (date) {
+      const [year, month, day] = date.split("-").map(Number);
+      const selectedDate = new Date(year, month - 1, day);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        newErrors.date = "Selected date cannot be in the past.";
+      }
+    }
+    if (!price) {
+      newErrors.price = "Price is required."
+    }
+
+    if (!description.trim()) {
+      newErrors.description = "Description is required."
+    }
+
+    return newErrors;
+
+  }
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
 
     onAddEntry({
       client,
@@ -45,9 +83,17 @@ const AddForm: React.FC<AddFormProps> = ({
         </div>
 
         <div className='form-contents'>
-          <label htmlFor="client">Client </label>
-          <select id="client" name='client' value={client} onChange={e => setClient(e.target.value)}>
-            <option>Select client</option>
+          <label htmlFor="client">Client<span>*</span></label>
+          <select
+            id="client"
+            name='client'
+            value={client}
+            onChange={(e) => {
+              setClient(e.target.value);
+              errors.client && setErrors(prev => ({ ...prev, client: "" }));
+            }}
+          >
+            <option value="">Select client</option>
             {clientsData.map(client => (
               <option key={client.id} value={client.name}>
                 {client.name}
@@ -55,33 +101,55 @@ const AddForm: React.FC<AddFormProps> = ({
             ))}
           </select>
 
-          <label htmlFor='date'>Date</label>
+          <label htmlFor='date'>Date<span>*</span></label>
           <input
             type='date'
             id='date'
             name='date'
             value={date}
-            onChange={e => setDate(e.target.value)} // format 2026-01-29
+            onChange={(e) => {
+              setDate(e.target.value);
+              errors.date && setErrors(prev => ({ ...prev, date: "" }));
+            }} // format 2026-01-29
           />
 
-          <label htmlFor='price'>Price</label>
+          <label htmlFor='price'>Price<span>*</span></label>
           <input
-            type='number'
+            type='text'
             id='price'
             placeholder='0'
             min='0'
             value={price}
-            onChange={e => setPrice(e.target.value)}
+            onChange={(e) => {
+              let value = e.target.value.replace(/\D/g, "")
+              setPrice(value)
+              errors.price && setErrors(prev => ({ ...prev, price: "" }));
+            }}
           />
 
-          <label className='description-label' htmlFor='description'>Description</label>
+          <label className='description-label' htmlFor='description'>Description<span>*</span></label>
           <textarea
             id='description'
             name='description'
             value={description}
-            onChange={e => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              errors.description && setErrors(prev => ({ ...prev, description: "" }));
+            }}
           />
         </div>
+
+        {Object.values(errors).some(err => err) && (
+          <div className="error-box">
+            <ul className="error-list">
+              {Object.values(errors)
+                .filter(err => err)
+                .map((err, idx) => (
+                <li key={idx}>{err}</li>
+              ))}
+            </ul>
+          </div>
+          )}
         <button className='submit-button' type='submit'> Submit Entry</button>
       </form>
     </div>
