@@ -77,7 +77,9 @@ const Dashboard: React.FC<DashboardProps> = ({ todoList }) => {
                   </div>
                 )}
               </div>
-            <button className="prev-meetings-button"> View Previous Meetings</button>
+            <button
+              className="prev-meetings-button"
+              onClick={() => navigate("/meetings")}> View Previous Meetings</button>
           </div>
           <div className="dashboard-calendar">
             <h2>Calendar</h2>

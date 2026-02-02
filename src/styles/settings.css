@@ -47,3 +47,11 @@ h2 {
 p {
     margin-left: 1rem;
 }
+
+button:hover {
+    background-color: #B4C0C7;
+}
+
+button:active {
+    background-color: #9FAEB7;
+}

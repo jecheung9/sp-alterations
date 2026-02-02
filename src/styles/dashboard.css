@@ -41,6 +41,10 @@ h2 {
     margin-left: auto;
 }
 
+.prev-meetings-button:hover {
+    background-color: #B4C0C7;
+}
+
 .todo-header {
     display: flex;
     align-items: baseline;

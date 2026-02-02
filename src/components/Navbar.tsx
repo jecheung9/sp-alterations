@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import '../styles/Navbar.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse, faCalendar } from "@fortawesome/free-regular-svg-icons";
+import { faHouse, faCalendar, faHandshake } from "@fortawesome/free-regular-svg-icons";
 import { faGear, faList, faMoneyBill1Wave, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface NavbarProps {
@@ -31,7 +31,11 @@ const Navbar: React.FC<NavbarProps> = ({
         <Link to="/todo" className="navbar-category">
           <FontAwesomeIcon className="icon" icon={faList} />
           To-do
-        </Link>
+      </Link>
+      <Link to="/meetings" className="navbar-category">
+        <FontAwesomeIcon className="icon" icon={faHandshake} />
+        Meetings
+      </Link>
       <div className="navbar-category" onClick={onOpen} >
         <FontAwesomeIcon icon={faPlus} />
         Add Entry

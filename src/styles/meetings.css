@@ -1,0 +1,58 @@
+table {
+    border: 2px solid gray;
+    width: 100%;
+    font-size: x-large;
+    margin-bottom: 2rem;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th {
+    border-bottom: 1px solid black;
+    text-align: left;
+    border-right: 2px solid gray;
+    padding: 0.2rem;
+}
+
+td {
+    border-right: 2px solid gray;
+    padding: 0.2rem;
+}
+
+.page-container {
+    flex: 1;
+}
+
+.table-client {
+    width: 25%;
+}
+
+.table-date {
+    width: 25%;
+}
+
+.table-description {
+    width: 50%;
+}
+
+.row-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.expand-button {
+    padding: 0.5rem;
+    font-size: x-large; 
+
+}
+
+.completed-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+
+
+

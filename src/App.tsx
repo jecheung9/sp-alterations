@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import Layout from "./components/Layout";
 import type { TodoEntry } from "./types/todo";
 import { todoData } from "./mockdata/todo";
+import Meetings from "./pages/Meetings";
 import './styles/App.css';
 
 
@@ -30,6 +31,7 @@ function App() {
       <Route path="calendar" element={<Layout addTodoEntry={addTodoEntry}><Calendar /></Layout>} />
       <Route path="todo" element={<Layout addTodoEntry={addTodoEntry}><ToDo todoList={todoList} /></Layout>} />
       <Route path="settings" element={<Layout addTodoEntry={addTodoEntry}><Settings /></Layout>} />
+      <Route path="meetings" element={<Layout addTodoEntry={addTodoEntry}><Meetings /></Layout>} />
     </Routes>
   )
 }
