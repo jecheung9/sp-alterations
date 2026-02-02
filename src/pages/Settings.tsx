@@ -1,4 +1,3 @@
-import Layout from "../components/Layout"
 import { useState } from "react";
 import '../styles/settings.css';
 import type { Client } from "../mockdata/clients";
@@ -23,7 +22,6 @@ const Settings = () => {
   }
 
   return (
-  <Layout>
     <div>
       <h1>Settings/Manage</h1>
         <div className="manage-clients">
@@ -52,8 +50,6 @@ const Settings = () => {
           ))}
         </div> 
     </div>
-
-  </Layout>
   )
 }
 

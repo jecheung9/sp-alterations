@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router";
 import '../styles/Navbar.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
