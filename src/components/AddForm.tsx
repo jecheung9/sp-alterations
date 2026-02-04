@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, useEffect } from 'react';
 import '../styles/addform.css'
 import { clientsData } from '../mockdata/clients';
 
@@ -17,7 +17,20 @@ const AddForm: React.FC<AddFormProps> = ({
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState('');
 
-  const [errors, setErrors] = useState<{[key: string]: string}>({})
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  
+  type FormMode = 'alteration' | 'meeting';
+  const [mode, setMode] = useState<FormMode>('alteration');
+
+
+  useEffect(() => {
+    setErrors({});
+    if (mode === 'meeting') {
+      setDate('');
+    }
+  }, [mode]);
+
+
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
@@ -25,19 +38,34 @@ const AddForm: React.FC<AddFormProps> = ({
       newErrors.client = "A client is required."
     }
     if (!date) {
-      newErrors.date = "Date is required."
+      newErrors.date =
+        mode === 'alteration'
+        ? "Date is required."
+        : "Date and time is required."
     }
     if (date) {
-      const [year, month, day] = date.split("-").map(Number);
-      const selectedDate = new Date(year, month - 1, day);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      let selectedDate: Date;
+      if (mode === 'alteration') {
+        const [year, month, day] = date.split("-").map(Number);
+        selectedDate = new Date(year, month - 1, day);
+        selectedDate.setHours(0, 0, 0, 0);
 
-      if (selectedDate < today) {
-        newErrors.date = "Selected date cannot be in the past.";
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        if (selectedDate < now) {
+          newErrors.date = "Selected date cannot be in the past.";
+        }
+      } else {
+        selectedDate = new Date(date);
+        const now = new Date();
+
+        if (selectedDate < now) {
+          newErrors.date = "Selected date and time cannot be in the past.";
+        }
       }
     }
-    if (!price) {
+    if (mode === 'alteration' && !price) {
       newErrors.price = "Price is required."
     }
 
@@ -78,9 +106,28 @@ const AddForm: React.FC<AddFormProps> = ({
     <div className="add-entry-modal">
       <form className='add-entry-form' onSubmit={handleSubmit}>
         <div className='form-header'>
-          <h3>Add an alterations entry</h3>
+          <div className='header-top'>
+          <h3>{mode === 'alteration'
+            ? "Add an alterations entry"
+            : "Add a meeting"}</h3>
           <button type="button" className='close-button' onClick={onClose}> Close </button>
-        </div>
+          </div>
+
+          <div className='mode-toggle'>
+            Choose mode:
+          <button
+            type="button"
+            className={`mode-button ${mode === 'alteration' ? 'active' : ''}`}
+            onClick={() => setMode('alteration')}> Alterations
+          </button> 
+          
+          <button
+            type="button"
+            className={`mode-button ${mode === 'meeting' ? 'active' : ''}`}
+            onClick={() => setMode('meeting')}> Meeting
+           </button> 
+          </div>
+        </div> 
 
         <div className='form-contents'>
           <label htmlFor="client">Client<span>*</span></label>
@@ -101,9 +148,11 @@ const AddForm: React.FC<AddFormProps> = ({
             ))}
           </select>
 
-          <label htmlFor='date'>Date<span>*</span></label>
+          <label htmlFor='date'>
+            {mode === 'alteration' ? 'Date' : 'Date & Time'}
+            <span>*</span></label>
           <input
-            type='date'
+            type={mode === 'alteration' ? 'date' : 'datetime-local'}
             id='date'
             name='date'
             value={date}
@@ -113,19 +162,23 @@ const AddForm: React.FC<AddFormProps> = ({
             }} // format 2026-01-29
           />
 
-          <label htmlFor='price'>Price<span>*</span></label>
-          <input
-            type='text'
-            id='price'
-            placeholder='0'
-            min='0'
-            value={price}
-            onChange={(e) => {
-              let value = e.target.value.replace(/\D/g, "")
-              setPrice(value)
-              errors.price && setErrors(prev => ({ ...prev, price: "" }));
-            }}
-          />
+          {mode === 'alteration' && (
+          <>
+            <label htmlFor='price'>Price<span>*</span></label>
+            <input
+              type='text'
+              id='price'
+              placeholder='0'
+              min='0'
+              value={price}
+              onChange={(e) => {
+                let value = e.target.value.replace(/\D/g, "")
+                setPrice(value)
+                errors.price && setErrors(prev => ({ ...prev, price: "" }));
+              }}
+            />
+          </>    
+          )} 
 
           <label className='description-label' htmlFor='description'>Description<span>*</span></label>
           <textarea

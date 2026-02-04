@@ -15,16 +15,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
+    padding: 3rem;
+}
+
+.header-top {
+    display: flex;
+    align-items: center;
+    min-width: 100%;
+    position: relative;
 }
 
 .form-header {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 100%;
-    position: relative;
-    margin-bottom: 1.5rem;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
 }
 
 input[type="number"] {
@@ -37,13 +42,15 @@ textarea {
 
 .form-contents {
     display: grid;
-    grid-template-columns: 1fr 3.5fr;
+    grid-template-columns: max-content 1fr;
     gap: 1rem;
     align-items: center;
+    width: 100%;
 }
 
 label {
     justify-self: end;
+    white-space: nowrap;
 }
 
 label, select, input, textarea {
@@ -101,6 +108,7 @@ button {
 
 h3 {
     font-size: 28px;
+    margin: 0 auto;
 }
 
 .description-label {
@@ -123,6 +131,19 @@ h3 {
 
 span {
     color: #ef4444;
+}
+
+.mode-toggle {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.mode-button.active {
+    background-color: #2c3e50;
+    color: white;
 }
 
 
