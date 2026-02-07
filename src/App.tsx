@@ -32,7 +32,7 @@ function App() {
     const newEntry: Entry = {
       ...entry,
       id,
-      completed: false
+      status: "Not Started",
     };
 
     setEntries(prev => [...prev, newEntry]);

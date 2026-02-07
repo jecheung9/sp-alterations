@@ -10,12 +10,12 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const incompleteMeetings = entries
-    .filter(i => i.type === 'meeting' && i.completed === false)
+    .filter(i => i.type === 'meeting' && (i.status === 'Not Started' || i.status === 'Started'))
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const incompleteLength = incompleteMeetings.length;
 
   const completeMeetings = entries
-    .filter(i => i.type === 'meeting' && i.completed === true)
+    .filter(i => i.type === 'meeting' && (i.status === 'Complete'))
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const completeLength = completeMeetings.length;
 
@@ -35,7 +35,7 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   return (
     <div className="page-container">
       <h1>Upcoming Meetings ({incompleteLength})</h1>
-      <table>
+      <table className="meetings-table">
         <tr>
           <th className="table-date">Meeting Time</th>
           <th className="table-client">Client</th>
@@ -58,7 +58,7 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
         </button>
       </h1>
       {isOpen &&
-        <table>
+        <table className="meetings-table">
           <tr>
             <th className="table-date">Due Date</th>
             <th className="table-client">Client</th>

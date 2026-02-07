@@ -6,7 +6,7 @@ export const meetingsData: Entry[] = [
     type: 'meeting',
     due: "2026-01-28T14:30",
     client: "Hall Madden",
-    completed: false,
+    status: "Not Started",
     description: "(1) Alex D"
   },
   {
@@ -14,7 +14,7 @@ export const meetingsData: Entry[] = [
     type: 'meeting',
     due: "2026-01-30T10:30",
     client: "Benny - B&B Menswear",
-    completed: false,
+    status: "Not Started",
     description: ""
   },
   {
@@ -22,7 +22,7 @@ export const meetingsData: Entry[] = [
     type: 'meeting',
     due: "2026-01-28T12:00",
     client: "Catherine - 11th State",
-    completed: false,
+    status: "Complete",
     description: "some very long description to test asdfasdfasfadsfasdfdsa"
   },
   {
@@ -30,7 +30,7 @@ export const meetingsData: Entry[] = [
     type: 'meeting',
     due: "2026-01-29T13:30",
     client: "A.P.C",
-    completed: true,
+    status: "Complete",
     description: "",
   }
 ];

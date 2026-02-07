@@ -23,15 +23,15 @@ td {
     flex: 1;
 }
 
-.table-client {
+.meetings-table .table-client {
     width: 25%;
 }
 
-.table-date {
+.meetings-table .table-date {
     width: 25%;
 }
 
-.table-description {
+.meetings-table .table-description {
     width: 50%;
 }
 

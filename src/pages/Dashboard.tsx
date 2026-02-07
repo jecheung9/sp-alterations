@@ -34,13 +34,13 @@ const Dashboard: React.FC<DashboardProps> = ({ entries }) => {
   } 
 
   const incompleteMeetings = entries
-    .filter(i => i.type === 'meeting' && i.completed === false)
+    .filter(i => i.type === 'meeting' && (i.status === 'Not Started' || i.status === 'Started'))
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   
   const meetingsLength = incompleteMeetings.length;
   
   const incompleteEntries = entries
-    .filter(i => i.type === 'alteration' && i.completed === false)
+    .filter(i => i.type === 'alteration' && (i.status === 'Not Started' || i.status === 'Started'))
     .filter(i => {
       const due = new Date(i.due).getTime();
       const future = new Date();

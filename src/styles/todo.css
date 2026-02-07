@@ -23,20 +23,24 @@ td {
     flex: 1;
 }
 
-.table-id, .table-price {
-    width: 7.5%;
+.todo-table .table-id, .todo-table .table-price {
+    width: 5%;
 }
 
-.table-client {
-    width: 25%;
-}
-
-.table-date {
+.todo-table .table-date {
     width: 15%;
 }
 
-.table-description {
-    width: 45%;
+.todo-table .table-status {
+    width: 12.5%;
+}
+
+.todo-table .table-client {
+    width: 25%;
+}
+
+.todo-table .table-description {
+    width: auto;
 }
 
 .row-description {
@@ -57,6 +61,18 @@ td {
     align-items: center;
 }
 
+.not-started {
+    background-color: #e74c3c;
+    color: white;
+}
 
+.started {
+    background-color: #f1c40f;
+}
+
+.complete {
+    background-color: #2ecc71;
+    color: white;
+}
 
 
