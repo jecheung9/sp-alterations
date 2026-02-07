@@ -1,7 +1,10 @@
-export const todoData = [
+import type { Entry } from "../types/entry";
+
+export const todoData: Entry[] = [
   {
     id: 1,
-    duedate: "2026-01-28",
+    type: 'alteration',
+    due: "2026-01-28",
     client: "Hall Madden",
     price: 16,
     completed: false,
@@ -9,7 +12,8 @@ export const todoData = [
   },
   {
     id: 2,
-    duedate: "2026-01-30",
+    type: 'alteration',
+    due: "2026-01-30",
     client: "Benny - B&B Menswear",
     price: 60,
     completed: false,
@@ -17,7 +21,8 @@ export const todoData = [
   },
   {
     id: 3,
-    duedate: "2026-01-28",
+    type: 'alteration',
+    due: "2026-01-28",
     client: "Catherine - 11th State",
     price: 75,
     completed: false,
@@ -25,7 +30,8 @@ export const todoData = [
   },
   {
     id: 4,
-    duedate: "2026-01-28",
+    type: 'alteration',
+    due: "2026-01-28",
     client: "A.P.C",
     price: 17,
     completed: true,
@@ -33,10 +39,11 @@ export const todoData = [
   },
   {
     id: 5,
-    duedate: "2026-03-28",
+    type: 'alteration',
+    due: "2026-03-28",
     client: "Personal",
     price: 60,
     completed: false,
-    description: "",
+    description: ""
   }
 ];

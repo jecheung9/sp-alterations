@@ -6,32 +6,52 @@ import Calendar from "./pages/Calendar";
 import ToDo from "./pages/ToDo";
 import Settings from "./pages/Settings";
 import Layout from "./components/Layout";
-import type { TodoEntry } from "./types/todo";
+import type { Entry } from "./types/entry";
 import { todoData } from "./mockdata/todo";
 import Meetings from "./pages/Meetings";
 import './styles/App.css';
+import { meetingsData } from "./mockdata/meetings";
 
 
 function App() {
-  const [todoList, setTodoList] = useState<TodoEntry[]>(todoData);
+  const [entries, setEntries] = useState<Entry[]>([...todoData, ...meetingsData]);
+  const [nextAlterationId, setNextAlterationId] = useState(todoData.length + 1);
+  const [nextMeetingId, setNextMeetingId] = useState(meetingsData.length + 1);
 
-  const addTodoEntry = (entry: { duedate: string; client: string; price: number; description: string }) => {
-    const newEntry: TodoEntry = {
-      id: todoList.length + 1,
-      completed: false,
-      ...entry
+  const addEntry = (entry: {
+    type: 'alteration' | 'meeting';
+    due: string;
+    client: string;
+    price?: number;
+    description: string;
+  }) => {
+    const id = entry.type === 'alteration'
+      ? nextAlterationId
+      : nextMeetingId;
+
+    const newEntry: Entry = {
+      ...entry,
+      id,
+      completed: false
     };
 
-    setTodoList(prev => [...prev, newEntry]);
+    setEntries(prev => [...prev, newEntry]);
+
+    if (entry.type === 'alteration') {
+      setNextAlterationId(id + 1);
+    } else {
+      setNextMeetingId(id + 1);
+    }
   };
+
   return (
     <Routes>
-      <Route path="/" element={<Layout addTodoEntry={addTodoEntry}><Dashboard todoList={todoList}/></Layout>} />
-      <Route path="money" element={<Layout addTodoEntry={addTodoEntry}><Money /></Layout>} />
-      <Route path="calendar" element={<Layout addTodoEntry={addTodoEntry}><Calendar /></Layout>} />
-      <Route path="todo" element={<Layout addTodoEntry={addTodoEntry}><ToDo todoList={todoList} /></Layout>} />
-      <Route path="settings" element={<Layout addTodoEntry={addTodoEntry}><Settings /></Layout>} />
-      <Route path="meetings" element={<Layout addTodoEntry={addTodoEntry}><Meetings /></Layout>} />
+      <Route path="/" element={<Layout addEntry={addEntry}><Dashboard entries={entries} /></Layout>} />
+      <Route path="money" element={<Layout addEntry={addEntry}><Money /></Layout>} />
+      <Route path="calendar" element={<Layout addEntry={addEntry}><Calendar /></Layout>} />
+      <Route path="todo" element={<Layout addEntry={addEntry}><ToDo entries={entries} /></Layout>} />
+      <Route path="settings" element={<Layout addEntry={addEntry}><Settings /></Layout>} />
+      <Route path="meetings" element={<Layout addEntry={addEntry}><Meetings entries={entries} /></Layout>} />
     </Routes>
   )
 }

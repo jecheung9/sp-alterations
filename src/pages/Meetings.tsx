@@ -1,19 +1,22 @@
 import "../styles/meetings.css"
 import { useState } from "react";
-import { meetingsData } from "../mockdata/meetings";
+import type { Entry } from "../types/entry"
 
+interface MeetingsProps {
+  entries: Entry[];
+}
 
-const ToDo: React.FC = ({}) => {
+const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const incompleteMeetings = meetingsData
-    .filter(i => i.completed === false)
-    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+  const incompleteMeetings = entries
+    .filter(i => i.type === 'meeting' && i.completed === false)
+    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const incompleteLength = incompleteMeetings.length;
 
-  const completeMeetings = meetingsData
-    .filter(i => i.completed === true)
-    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+  const completeMeetings = entries
+    .filter(i => i.type === 'meeting' && i.completed === true)
+    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const completeLength = completeMeetings.length;
 
   const formatDateTime = (dateTime: string) => {
@@ -41,7 +44,7 @@ const ToDo: React.FC = ({}) => {
         {incompleteMeetings.map((val, key) => {
           return (
             <tr key={key}>
-              <td>{formatDateTime(val.dateTime)}</td>
+              <td>{formatDateTime(val.due)}</td>
               <td>{val.client}</td>
               <td className="row-description">{val.description}</td>
             </tr>
@@ -64,7 +67,7 @@ const ToDo: React.FC = ({}) => {
           {completeMeetings.map((val, key) => {
             return (
               <tr key={key}>
-                <td>{formatDateTime(val.dateTime)}</td>
+                <td>{formatDateTime(val.due)}</td>
                 <td>{val.client}</td>
                 <td className="row-description">{val.description}</td>
               </tr>
@@ -76,4 +79,4 @@ const ToDo: React.FC = ({}) => {
   )
 }
 
-export default ToDo;
+export default Meetings;

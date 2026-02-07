@@ -4,7 +4,13 @@ import { clientsData } from '../mockdata/clients';
 
 interface AddFormProps {
   onClose: () => void;
-  onAddEntry: (entry: { duedate: string; client: string; price: number; description: string }) => void;
+  onAddEntry: (entry: {
+    type: 'alteration' | 'meeting';
+    due: string;
+    client: string;
+    price?: number;
+    description: string;
+  }) => void;
 }
 
 const AddForm: React.FC<AddFormProps> = ({
@@ -87,9 +93,10 @@ const AddForm: React.FC<AddFormProps> = ({
     }
 
     onAddEntry({
+      type: mode,
       client,
-      duedate: date,
-      price: Number(price),
+      due: date,
+      price: mode === 'alteration' ? Number(price) : undefined,
       description
     })
 

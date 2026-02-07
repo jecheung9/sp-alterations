@@ -1,22 +1,22 @@
 import "../styles/todo.css"
 import { useState } from "react";
-import type { TodoEntry } from "../types/todo";
+import type { Entry } from "../types/entry";
 
 interface TodoProps {
-  todoList: TodoEntry[];
+  entries: Entry[];
 }
 
-const ToDo: React.FC<TodoProps> = ({ todoList }) => {
+const ToDo: React.FC<TodoProps> = ({ entries }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const incompleteEntries = todoList
-    .filter(i => i.completed === false)
-    .sort((a, b) => new Date(a.duedate).getTime() - new Date(b.duedate).getTime());
+  const incompleteEntries = entries
+    .filter(i => i.type === 'alteration' && i.completed === false)
+    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const incompleteLength = incompleteEntries.length;
 
-  const completeEntries = todoList
-    .filter(i => i.completed === true)
-    .sort((a, b) => new Date(a.duedate).getTime() - new Date(b.duedate).getTime());
+  const completeEntries = entries
+    .filter(i => i.type === 'alteration' && i.completed === true)
+    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const completeLength = completeEntries.length;
 
   const formatDate = (date: string) => {
@@ -45,7 +45,7 @@ const ToDo: React.FC<TodoProps> = ({ todoList }) => {
           return (
             <tr key={key}>
               <td>{val.id}</td>
-              <td>{formatDate(val.duedate)}</td>
+              <td>{formatDate(val.due)}</td>
               <td>{val.client}</td>
               <td>{val.price}</td>
               <td className="row-description">{val.description}</td>
@@ -72,7 +72,7 @@ const ToDo: React.FC<TodoProps> = ({ todoList }) => {
             return (
               <tr key={key}>
                 <td>{val.id}</td>
-                <td>{formatDate(val.duedate)}</td>
+                <td>{formatDate(val.due)}</td>
                 <td>{val.client}</td>
                 <td>{val.price}</td>
                 <td className="row-description">{val.description}</td>

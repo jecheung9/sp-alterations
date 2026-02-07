@@ -1,13 +1,12 @@
 import "../styles/dashboard.css"
-import { meetingsData } from "../mockdata/meetings"
 import { useNavigate } from "react-router"
-import type { TodoEntry } from "../types/todo"
+import type { Entry } from "../types/entry"
 
 interface DashboardProps {
-  todoList: TodoEntry[];
+  entries: Entry[];
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ todoList }) => {
+const Dashboard: React.FC<DashboardProps> = ({ entries }) => {
   const navigate = useNavigate();
 
   const formatDateTime = (dateTime: string) => {
@@ -34,21 +33,21 @@ const Dashboard: React.FC<DashboardProps> = ({ todoList }) => {
     })
   } 
 
-  const incompleteMeetings = meetingsData
-    .filter(i => i.completed === false)
-    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime());
+  const incompleteMeetings = entries
+    .filter(i => i.type === 'meeting' && i.completed === false)
+    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   
   const meetingsLength = incompleteMeetings.length;
   
-  const incompleteEntries = todoList
-    .filter(i => i.completed === false)
+  const incompleteEntries = entries
+    .filter(i => i.type === 'alteration' && i.completed === false)
     .filter(i => {
-      const due = new Date(i.duedate).getTime();
+      const due = new Date(i.due).getTime();
       const future = new Date();
       future.setDate(future.getDate() + 7);
       return due <= future.getTime();
     })
-    .sort((a, b) => new Date(a.duedate).getTime() - new Date(b.duedate).getTime());;
+    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());;
   
   const entriesLength = incompleteEntries.length;
 
@@ -69,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({ todoList }) => {
                   <div className="meetings-grid">
                     {incompleteMeetings.map(val => (
                       <>
-                        <div>{formatDateTime(val.dateTime)}</div>
+                        <div>{formatDateTime(val.due)}</div>
                         <div>{val.client}</div>
                         <div>{val.description}</div>
                       </>
@@ -104,7 +103,7 @@ const Dashboard: React.FC<DashboardProps> = ({ todoList }) => {
                   <div className="todo-grid">
                     {incompleteEntries.map(val => (
                       <>
-                        <div>{formatDate(val.duedate)}</div>
+                        <div>{formatDate(val.due)}</div>
                         <div>{val.client}</div>
                         <div>{val.description}</div>
                       </>

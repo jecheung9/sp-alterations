@@ -6,12 +6,18 @@ import AddForm from "./AddForm";
 
 interface LayoutProps {
   children: React.ReactNode;
-  addTodoEntry: (entry: { duedate: string; client: string; price: number; description: string }) => void;
+  addEntry: (entry: {
+    type: 'alteration' | 'meeting';
+    due: string;
+    client: string;
+    price?: number;
+    description: string;
+  }) => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
-  addTodoEntry,
+  addEntry,
 }) => {
 
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
@@ -25,7 +31,7 @@ const Layout: React.FC<LayoutProps> = ({
           {isAddFormOpen && (
             <AddForm
               onClose={() => setIsAddFormOpen(false)}
-              onAddEntry={addTodoEntry} />
+              onAddEntry={addEntry} />
           )}
         </div>
       </main>
