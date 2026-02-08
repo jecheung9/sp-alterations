@@ -99,16 +99,20 @@ const Dashboard: React.FC<DashboardProps> = ({ entries }) => {
                   <div className="empty-message">
                     No upcoming to-dos for the next 7 days!
                   </div>
-                ) : (
-                  <div className="todo-grid">
-                    {incompleteEntries.map(val => (
-                      <>
-                        <div>{formatDate(val.due)}</div>
-                        <div>{val.client}</div>
-                        <div>{val.description}</div>
-                      </>
-                    ))}
-                  </div>
+                  ) : (
+                    <div className="todo-grid">
+                      {incompleteEntries.map(val => (
+                        <div
+                          key={val.id}
+                          className="todo-row"
+                          onClick={() => navigate(`/todo/${val.id}`)}
+                        >
+                          <div>{formatDate(val.due)}</div>
+                          <div>{val.client}</div>
+                          <div>{val.description}</div>
+                        </div>
+                      ))}
+                    </div>
                 )}
               </div>
             <button

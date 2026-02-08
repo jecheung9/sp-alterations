@@ -11,6 +11,8 @@ import { todoData } from "./mockdata/todo";
 import Meetings from "./pages/Meetings";
 import './styles/App.css';
 import { meetingsData } from "./mockdata/meetings";
+import NotFound from "./pages/NotFound";
+import ToDoDetails from "./pages/ToDoDetails";
 
 
 function App() {
@@ -44,14 +46,24 @@ function App() {
     }
   };
 
+  const updateStatus = (id: number, status: Entry["status"]) => {
+    setEntries(prev =>
+      prev.map(entry =>
+        entry.id === id ? {...entry, status} : entry
+      )
+    )
+  }
+
   return (
     <Routes>
       <Route path="/" element={<Layout addEntry={addEntry}><Dashboard entries={entries} /></Layout>} />
       <Route path="money" element={<Layout addEntry={addEntry}><Money /></Layout>} />
       <Route path="calendar" element={<Layout addEntry={addEntry}><Calendar /></Layout>} />
-      <Route path="todo" element={<Layout addEntry={addEntry}><ToDo entries={entries} /></Layout>} />
+      <Route path="todo" element={<Layout addEntry={addEntry}><ToDo key={entries.length}  entries={entries} /></Layout>} />
       <Route path="settings" element={<Layout addEntry={addEntry}><Settings /></Layout>} />
       <Route path="meetings" element={<Layout addEntry={addEntry}><Meetings entries={entries} /></Layout>} />
+      <Route path="/todo/:id" element={<Layout addEntry={addEntry}><ToDoDetails entries={entries} updateStatus={updateStatus} /></Layout>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

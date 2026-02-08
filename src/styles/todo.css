@@ -75,4 +75,12 @@ td {
     color: white;
 }
 
+tbody tr {
+    cursor: pointer;
+}
+
+tbody tr:hover {
+    background-color: #e0e0e0;
+}
+
 

@@ -28,7 +28,7 @@ h2 {
     padding-bottom: 0;
 }
 
-.meetings-grid, .todo-grid {
+.meetings-grid {
     display: grid;
     grid-template-columns: max-content max-content auto;
     gap: 1rem;
@@ -37,8 +37,7 @@ h2 {
 
 .prev-meetings-button {
     display: block;
-    margin: 1rem;
-    margin-left: auto;
+    margin: 0 1rem 1rem auto;
 }
 
 .prev-meetings-button:hover {
@@ -64,3 +63,37 @@ p {
     flex: 1;
     padding: 1rem 0;
 }
+
+.todo-grid {
+  display: grid;
+  grid-template-columns: max-content max-content auto;
+  padding: 0.5rem 0;
+}
+
+.todo-row {
+    display: contents;
+}
+
+
+.todo-row > div {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.todo-row > div:first-child {
+  padding-left: 1rem; /* left inset for the first column */
+}
+
+
+.todo-row > div + div {
+  padding-left: 1rem;
+}
+
+/* FULL ROW hover */
+.todo-row:hover > div {
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+
+

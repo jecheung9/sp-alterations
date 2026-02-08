@@ -1,6 +1,7 @@
 import "../styles/todo.css"
 import { useState } from "react";
 import type { Entry } from "../types/entry";
+import { useNavigate } from "react-router";
 
 interface TodoProps {
   entries: Entry[];
@@ -8,6 +9,8 @@ interface TodoProps {
 
 const ToDo: React.FC<TodoProps> = ({ entries }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const incompleteEntries = entries
     .filter(i => i.type === 'alteration' && (i.status === 'Not Started' || i.status === 'Started'))
@@ -38,97 +41,136 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
   return (
     <div className="page-container">
       <h1>To-Do ({incompleteLength})</h1>
-      <table className="todo-table">
-        <tr>
-          <th className="table-id">id</th>
-          <th className="table-date">Due Date</th>
-          <th className="table-status">Status</th>
-          <th className="table-client">Client</th>
-          <th className="table-price">Price</th>
-          <th className="table-description">Description</th>
-        </tr>
-        {incompleteEntries.map((val, key) => {
-          return (
-            <tr key={key}>
-              <td>{val.id}</td>
-              <td>{formatDate(val.due)}</td>
-              <td className={
-                val.status === "Not Started" ? "not-started" :
-                val.status === "Started" ? "started" :
-                val.status === "Complete" ? "complete" :
-                val.status === "Dropped Off" ? "dropped-off" :
-                ""}>{val.status}</td>
-              <td>{val.client}</td>
-              <td>{val.price}</td>
-              <td className="row-description">{val.description}</td>
-            </tr>
-          )
-        })}
-      </table>
-
-      <h1>Completed - Not Delivered ({completeLength})</h1>
-      <table className="todo-table">
-        <tr>
-          <th className="table-id">id</th>
-          <th className="table-date">Due Date</th>
-          <th className="table-status">Status</th>
-          <th className="table-client">Client</th>
-          <th className="table-price">Price</th>
-          <th className="table-description">Description</th>
-        </tr>
-        {completeEntries.map((val, key) => {
-          return (
-            <tr key={key}>
-              <td>{val.id}</td>
-              <td>{formatDate(val.due)}</td>
-              <td className={
-                val.status === "Not Started" ? "not-started" :
-                val.status === "Started" ? "started" :
-                val.status === "Complete" ? "complete" :
-                val.status === "Dropped Off" ? "dropped-off" :
-                ""}>
-              {val.status}</td>
-              <td>{val.client}</td>
-              <td>{val.price}</td>
-              <td className="row-description">{val.description}</td>
-            </tr>
-          )
-        })}
-      </table>
-      <h1 className="completed-header">
-        Completed - Dropped Off ({deliveredLength}) 
-        <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
-          {isOpen ? "Collapse" : "Expand"}
-        </button>
-      </h1>
-      {isOpen &&
+        {incompleteLength === 0 ? (
+        <div className="empty-message">
+          No upcoming to-dos!
+        </div>
+        ) : (
         <table className="todo-table">
-          <tr>
-            <th className="table-id">id</th>
-            <th className="table-date">Due Date</th>
-            <th className="table-status">Status</th>
-            <th className="table-client">Client</th>
-            <th className="table-price">Price</th>
-            <th className="table-description">Description</th>
-          </tr>
-          {deliveredEntries.map((val, key) => {
-            return (
-              <tr key={key}>
+          <thead>
+            <tr>
+              <th className="table-id">id</th>
+              <th className="table-date">Due Date</th>
+              <th className="table-status">Status</th>
+              <th className="table-client">Client</th>
+              <th className="table-price">Price</th>
+              <th className="table-description">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {incompleteEntries.map(val => (
+              <tr
+                key={val.id}
+                onClick={() => navigate(`/todo/${val.id}`)}
+              >
                 <td>{val.id}</td>
                 <td>{formatDate(val.due)}</td>
                 <td className={
-                val.status === "Not Started" ? "not-started" :
-                val.status === "Started" ? "started" :
-                val.status === "Complete" ? "complete" :
-                ""}>{val.status}</td>
+                  val.status === "Not Started" ? "not-started" :
+                  val.status === "Started" ? "started" :
+                  val.status === "Complete" ? "complete" :
+                  val.status === "Dropped Off" ? "dropped-off" :
+                  ""}>{val.status}</td>
                 <td>{val.client}</td>
                 <td>{val.price}</td>
                 <td className="row-description">{val.description}</td>
               </tr>
-            )
-          })}
+            ))}
+          </tbody>
         </table>
-      }
+        )}
+
+      
+        <h1>Completed - Not Delivered ({completeLength})</h1>
+        {completeLength === 0 ? (
+          <div className="empty-message">
+            No completed items yet!
+          </div>
+        ) : (
+          <table className="todo-table">
+            <thead>
+              <tr>
+                <th className="table-id">id</th>
+                <th className="table-date">Due Date</th>
+                <th className="table-status">Status</th>
+                <th className="table-client">Client</th>
+                <th className="table-price">Price</th>
+                <th className="table-description">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {completeEntries.map(val => (
+                <tr
+                  key={val.id}
+                  onClick={() => navigate(`/todo/${val.id}`)}
+                >
+                  <td>{val.id}</td>
+                  <td>{formatDate(val.due)}</td>
+                  <td className={
+                    val.status === "Not Started" ? "not-started" :
+                    val.status === "Started" ? "started" :
+                    val.status === "Complete" ? "complete" :
+                    val.status === "Dropped Off" ? "dropped-off" :
+                    ""}>{val.status}</td>
+                  <td>{val.client}</td>
+                  <td>{val.price}</td>
+                  <td className="row-description">{val.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+
+
+        <h1 className="completed-header">
+          Completed - Dropped Off ({deliveredLength}) 
+          {deliveredLength > 0 && (
+            <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
+              {isOpen ? "Collapse" : "Expand"}
+            </button>
+          )}
+        </h1>
+
+          {deliveredLength === 0 ? (
+            <div className="empty-message">
+              No completed and dropped off items yet!
+            </div>
+          ) : (
+            isOpen && (
+              <table className="todo-table">
+                <thead>
+                  <tr>
+                    <th className="table-id">id</th>
+                    <th className="table-date">Due Date</th>
+                    <th className="table-status">Status</th>
+                    <th className="table-client">Client</th>
+                    <th className="table-price">Price</th>
+                    <th className="table-description">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {deliveredEntries.map(val => (
+                    <tr
+                      key={val.id}
+                      onClick={() => navigate(`/todo/${val.id}`)}
+                    >
+                      <td>{val.id}</td>
+                      <td>{formatDate(val.due)}</td>
+                      <td className={
+                        val.status === "Not Started" ? "not-started" :
+                        val.status === "Started" ? "started" :
+                        val.status === "Complete" ? "complete" :
+                        ""}>{val.status}</td>
+                      <td>{val.client}</td>
+                      <td>{val.price}</td>
+                      <td className="row-description">{val.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )
+          )}
+
     </div>
   )
 }
