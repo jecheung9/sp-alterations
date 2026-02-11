@@ -15,6 +15,17 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const formatDate = (date: string) => {
+    const [year, month, day] = date.split('-').map(Number);
+    const dateObject = new Date(year, month - 1, day);
+    return dateObject.toLocaleDateString("en-us", {
+      weekday: "short",
+      year: '2-digit',
+      month: 'numeric',
+      day: 'numeric'
+    })
+  } 
+
   const todo = entries.find(e => e.id.toString() === id);
 
   if (!todo) {
@@ -26,8 +37,8 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
       <h1>Todo #{todo.id}</h1>
       <p>Status: {todo.status}</p>
       <p>Client: {todo.client}</p>
-      <p>Due: {todo.due}</p>
-      <p>Description:{todo.description}</p>
+      <p>Due: {formatDate(todo.due)}</p>
+      <p>Description: {todo.description}</p>
 
       <StatusButtons
         entryId={todo.id}
@@ -36,7 +47,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
       />
 
       <button onClick={() => navigate(`/todo`)}>
-        Return back to dashboard
+        Return back to To-do list
       </button>
 
     </div>

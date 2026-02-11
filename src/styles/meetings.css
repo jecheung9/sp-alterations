@@ -23,6 +23,10 @@ td {
     flex: 1;
 }
 
+.meetings-table .table-id {
+    width: 5%;
+}
+
 .meetings-table .table-client {
     width: 25%;
 }
@@ -32,7 +36,7 @@ td {
 }
 
 .meetings-table .table-description {
-    width: 50%;
+    width: 45%;
 }
 
 .row-description {
@@ -51,6 +55,14 @@ td {
     display: flex;
     gap: 1rem;
     align-items: center;
+}
+
+tbody tr {
+    cursor: pointer;
+}
+
+tbody tr:hover {
+    background-color: #e0e0e0;
 }
 
 

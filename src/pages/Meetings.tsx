@@ -1,6 +1,7 @@
 import "../styles/meetings.css"
 import { useState } from "react";
 import type { Entry } from "../types/entry"
+import { useNavigate } from "react-router";
 
 interface MeetingsProps {
   entries: Entry[];
@@ -8,6 +9,8 @@ interface MeetingsProps {
 
 const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const incompleteMeetings = entries
     .filter(i => i.type === 'meeting' && (i.status === 'Not Started' || i.status === 'Started'))
@@ -36,21 +39,31 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
     <div className="page-container">
       <h1>Upcoming Meetings ({incompleteLength})</h1>
       <table className="meetings-table">
-        <tr>
-          <th className="table-date">Meeting Time</th>
-          <th className="table-client">Client</th>
-          <th className="table-description">Description</th>
-        </tr>
-        {incompleteMeetings.map((val, key) => {
-          return (
-            <tr key={key}>
-              <td>{formatDateTime(val.due)}</td>
-              <td>{val.client}</td>
-              <td className="row-description">{val.description}</td>
-            </tr>
-          )
-        })}
+        <thead>
+          <tr>
+            <th className="table-id">id</th>
+            <th className="table-date">Meeting Time</th>
+            <th className="table-client">Client</th>
+            <th className="table-description">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {incompleteMeetings.map(val => {
+            return (
+              <tr
+                key={val.id}
+                onClick={() => navigate(`/meetings/${val.id}`)}
+              >
+                <td>{val.id}</td>
+                <td>{formatDateTime(val.due)}</td>
+                <td>{val.client}</td>
+                <td className="row-description">{val.description}</td>
+              </tr>
+            )
+          })}
+        </tbody>
       </table>
+
       <h1 className="completed-header">
         Completed ({completeLength}) 
         <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
@@ -59,20 +72,29 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
       </h1>
       {isOpen &&
         <table className="meetings-table">
-          <tr>
-            <th className="table-date">Due Date</th>
-            <th className="table-client">Client</th>
-            <th className="table-description">Description</th>
-          </tr>
-          {completeMeetings.map((val, key) => {
-            return (
-              <tr key={key}>
-                <td>{formatDateTime(val.due)}</td>
-                <td>{val.client}</td>
-                <td className="row-description">{val.description}</td>
-              </tr>
-            )
-          })}
+          <thead>
+            <tr>
+              <th className="table-id">id</th>
+              <th className="table-date">Due Date</th>
+              <th className="table-client">Client</th>
+              <th className="table-description">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {completeMeetings.map(val => {
+              return (
+                <tr
+                  key={val.id}
+                  onClick={() => navigate(`/meetings/${val.id}`)}
+                >
+                  <td>{val.id}</td>
+                  <td>{formatDateTime(val.due)}</td>
+                  <td>{val.client}</td>
+                  <td className="row-description">{val.description}</td>
+                </tr>
+              )
+            })}
+          </tbody>
         </table>
       }
     </div>

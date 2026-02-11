@@ -13,6 +13,7 @@ import './styles/App.css';
 import { meetingsData } from "./mockdata/meetings";
 import NotFound from "./pages/NotFound";
 import ToDoDetails from "./pages/ToDoDetails";
+import MeetingDetail from "./pages/MeetingDetails";
 
 
 function App() {
@@ -54,6 +55,9 @@ function App() {
     )
   }
 
+  const todoEntries = entries.filter(i => i.type === 'alteration');
+  const meetingEntries = entries.filter(i => i.type === 'meeting');
+
   return (
     <Routes>
       <Route path="/" element={<Layout addEntry={addEntry}><Dashboard entries={entries} /></Layout>} />
@@ -62,7 +66,8 @@ function App() {
       <Route path="todo" element={<Layout addEntry={addEntry}><ToDo key={entries.length}  entries={entries} /></Layout>} />
       <Route path="settings" element={<Layout addEntry={addEntry}><Settings /></Layout>} />
       <Route path="meetings" element={<Layout addEntry={addEntry}><Meetings entries={entries} /></Layout>} />
-      <Route path="/todo/:id" element={<Layout addEntry={addEntry}><ToDoDetails entries={entries} updateStatus={updateStatus} /></Layout>} />
+      <Route path="/todo/:id" element={<Layout addEntry={addEntry}><ToDoDetails entries={todoEntries} updateStatus={updateStatus} /></Layout>} />
+      <Route path="/meetings/:id" element={<Layout addEntry={addEntry}><MeetingDetail entries={meetingEntries} updateStatus={updateStatus} /></Layout>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )
