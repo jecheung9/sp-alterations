@@ -1,6 +1,6 @@
 import { useState, type FormEvent, useEffect } from 'react';
 import '../styles/addform.css'
-import { clientsData } from '../mockdata/clients';
+import type { Client } from '../types/client';
 
 interface AddFormProps {
   onClose: () => void;
@@ -20,6 +20,7 @@ const AddForm: React.FC<AddFormProps> = ({
 
   const [date, setDate] = useState('');
   const [client, setClient] = useState('');
+  const [clientsData, setClientsData] = useState<Client[]>([]);
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState('');
 
@@ -35,6 +36,21 @@ const AddForm: React.FC<AddFormProps> = ({
       setDate('');
     }
   }, [mode]);
+
+  useEffect(() => {
+    async function loadClients() {
+      try {
+        const res = await fetch("http://localhost:3000/api/clients");
+        const data = await res.json();
+        setClientsData(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadClients();
+  }, []);
+
 
 
 
@@ -149,7 +165,7 @@ const AddForm: React.FC<AddFormProps> = ({
           >
             <option value="">Select client</option>
             {clientsData.map(client => (
-              <option key={client.id} value={client.name}>
+              <option key={client._id} value={client.name}>
                 {client.name}
               </option>
             ))}
