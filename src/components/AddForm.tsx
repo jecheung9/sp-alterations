@@ -11,11 +11,15 @@ interface AddFormProps {
     price?: number;
     description: string;
   }) => void;
+  editHeader?: string;
+  initialMode?: 'alteration' | 'meeting';
 }
 
 const AddForm: React.FC<AddFormProps> = ({
   onClose,
   onAddEntry,
+  editHeader,
+  initialMode,
 }) => {
 
   const [date, setDate] = useState('');
@@ -27,7 +31,7 @@ const AddForm: React.FC<AddFormProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   
   type FormMode = 'alteration' | 'meeting';
-  const [mode, setMode] = useState<FormMode>('alteration');
+  const [mode, setMode] = useState<FormMode>(initialMode ||'alteration');
 
 
   useEffect(() => {
@@ -130,26 +134,28 @@ const AddForm: React.FC<AddFormProps> = ({
       <form className='add-entry-form' onSubmit={handleSubmit}>
         <div className='form-header'>
           <div className='header-top'>
-          <h3>{mode === 'alteration'
+          <h3>{editHeader ? editHeader : mode === 'alteration'
             ? "Add an alterations entry"
             : "Add a meeting"}</h3>
           <button type="button" className='close-button' onClick={onClose}> Close </button>
           </div>
 
-          <div className='mode-toggle'>
-            Choose mode:
-          <button
-            type="button"
-            className={`mode-button ${mode === 'alteration' ? 'active' : ''}`}
-            onClick={() => setMode('alteration')}> Alterations
-          </button> 
-          
-          <button
-            type="button"
-            className={`mode-button ${mode === 'meeting' ? 'active' : ''}`}
-            onClick={() => setMode('meeting')}> Meeting
-           </button> 
-          </div>
+          {!initialMode && (
+            <div className='mode-toggle'>
+              Choose mode:
+            <button
+              type="button"
+              className={`mode-button ${mode === 'alteration' ? 'active' : ''}`}
+              onClick={() => setMode('alteration')}> Alterations
+            </button> 
+            
+            <button
+              type="button"
+              className={`mode-button ${mode === 'meeting' ? 'active' : ''}`}
+              onClick={() => setMode('meeting')}> Meeting
+            </button> 
+            </div>
+          )}
         </div> 
 
         <div className='form-contents'>
