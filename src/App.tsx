@@ -47,10 +47,19 @@ function App() {
     }
   };
 
-  const updateStatus = (id: number, status: Entry["status"]) => {
+  const updateEntry = (updatedEntry: Entry) => {
+    setEntries(prev => 
+      prev.map(entry => 
+        entry.id === updatedEntry.id && entry.type === updatedEntry.type
+          ? updatedEntry : entry)
+    )
+  }
+
+  const updateStatus = (id: number, type: Entry["type"], status: Entry["status"]) => {
     setEntries(prev =>
       prev.map(entry =>
-        entry.id === id ? {...entry, status} : entry
+        entry.id === id && entry.type === type
+          ? { ...entry, status } : entry
       )
     )
   }
@@ -67,7 +76,7 @@ function App() {
       <Route path="settings" element={<Layout addEntry={addEntry}><Settings /></Layout>} />
       <Route path="meetings" element={<Layout addEntry={addEntry}><Meetings entries={entries} /></Layout>} />
       <Route path="/todo/:id" element={<Layout addEntry={addEntry}><ToDoDetails entries={todoEntries} updateStatus={updateStatus} /></Layout>} />
-      <Route path="/meetings/:id" element={<Layout addEntry={addEntry}><MeetingDetail entries={meetingEntries} updateStatus={updateStatus} /></Layout>} />
+      <Route path="/meetings/:id" element={<Layout addEntry={addEntry}><MeetingDetail entries={meetingEntries} updateStatus={updateStatus} updateEntry={updateEntry} /></Layout>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

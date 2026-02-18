@@ -13,6 +13,20 @@ interface AddFormProps {
   }) => void;
   editHeader?: string;
   initialMode?: 'alteration' | 'meeting';
+  initialData?: {
+    client: string;
+    due: string;
+    price?: number;
+    description: string;
+  }
+  onUpdateEntry?: (entry: {
+    type: 'alteration' | 'meeting';
+    due: string;
+    client: string;
+    price?: number;
+    description: string;
+  }) => void;
+  isEdit?: boolean
 }
 
 const AddForm: React.FC<AddFormProps> = ({
@@ -20,6 +34,9 @@ const AddForm: React.FC<AddFormProps> = ({
   onAddEntry,
   editHeader,
   initialMode,
+  initialData,
+  onUpdateEntry,
+  isEdit
 }) => {
 
   const [date, setDate] = useState('');
@@ -54,6 +71,19 @@ const AddForm: React.FC<AddFormProps> = ({
 
     loadClients();
   }, []);
+
+  useEffect(() => {
+    if (initialData) {
+      setClient(initialData.client);
+      setDate(
+        mode === 'meeting'
+          ? initialData.due.slice(0, 16)
+          : initialData.due.slice(0, 10)
+      );
+      setPrice(initialData.price ? String(initialData.price) : "");
+      setDescription(initialData.description);
+    }
+  }, [initialData, mode])
 
 
 
@@ -112,13 +142,19 @@ const AddForm: React.FC<AddFormProps> = ({
       return;
     }
 
-    onAddEntry({
+    const entryData = {
       type: mode,
       client,
       due: date,
       price: mode === 'alteration' ? Number(price) : undefined,
       description
-    })
+    }
+    
+    if (isEdit && onUpdateEntry) {
+      onUpdateEntry(entryData);
+    } else {
+      onAddEntry(entryData);
+    }
 
     onClose();
 

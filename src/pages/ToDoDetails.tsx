@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 interface TodoDetailProps {
   entries: Entry[];
-  updateStatus: (id: number, status: Entry['status']) => void;
+  updateStatus: (id: number, type: Entry["type"], status: Entry["status"]) => void;
 }
 
 const TodoDetail: React.FC<TodoDetailProps> = ({
@@ -42,7 +42,9 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
 
       <StatusButtons
         entryId={todo.id}
-        onChange={updateStatus}
+        onChange={(id, status) => 
+          updateStatus(id, todo.type, status)
+        }
         currentStatus={todo.status}
       />
 

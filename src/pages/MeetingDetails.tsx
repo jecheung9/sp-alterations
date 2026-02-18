@@ -7,12 +7,14 @@ import AddForm from "../components/AddForm";
 
 interface MeetingDetailProps {
   entries: Entry[];
-  updateStatus: (id: number, status: Entry['status']) => void;
+  updateStatus: (id: number, type: Entry["type"], status: Entry["status"])  => void;
+  updateEntry: (updatedEntry: Entry) => void;
 }
 
 const MeetingDetail: React.FC<MeetingDetailProps> = ({
   entries,
-  updateStatus
+  updateStatus,
+  updateEntry
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,7 +53,9 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
 
       <StatusButtons
         entryId={meeting.id}
-        onChange={updateStatus}
+        onChange={(id, status) =>
+          updateStatus(id, meeting.type, status)
+        }
         currentStatus={meeting.status}
       />
 
@@ -63,13 +67,24 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
 
       {isEditOpen && (
         <AddForm
+          isEdit
           onClose={() => setIsEditOpen(false)}
-          onAddEntry={(entry) => {
-            console.log("UI-only edit entry", entry);
+          onAddEntry={() => { }}
+          onUpdateEntry={(newData) => {
+            updateEntry({
+              id: meeting.id,
+              status: meeting.status,
+              ...newData
+            });
             setIsEditOpen(false);
           }}
           editHeader={`Edit meeting #${meeting.id}`}
           initialMode="meeting"
+          initialData={{
+            client: meeting.client,
+            due: meeting.due,
+            description: meeting.description
+          }}
         />
       )}
     </div>
