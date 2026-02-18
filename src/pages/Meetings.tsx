@@ -38,6 +38,11 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   return (
     <div className="page-container">
       <h1>Upcoming Meetings ({incompleteLength})</h1>
+      {incompleteLength === 0 ? (
+        <div className="empty-message">
+          No upcoming meetings!
+        </div>
+      ) : ( 
       <table className="meetings-table">
         <thead>
           <tr>
@@ -56,21 +61,30 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
               >
                 <td>{val.id}</td>
                 <td>{formatDateTime(val.due)}</td>
-                <td>{val.client}</td>
+                <td>{val.client?.name}</td>
                 <td className="row-description">{val.description}</td>
               </tr>
             )
           })}
         </tbody>
-      </table>
+      </table>  
+      )}
 
       <h1 className="completed-header">
         Completed ({completeLength}) 
-        <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
+        {completeLength > 0 && (
+          <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
           {isOpen ? "Collapse" : "Expand"}
-        </button>
+          </button>
+        )}
       </h1>
-      {isOpen &&
+
+      {completeLength === 0 ? (
+        <div className="empty-message">
+          No completed meetings yet!
+        </div>
+      ) : (
+        isOpen && (
         <table className="meetings-table">
           <thead>
             <tr>
@@ -89,14 +103,15 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
                 >
                   <td>{val.id}</td>
                   <td>{formatDateTime(val.due)}</td>
-                  <td>{val.client}</td>
+                  <td>{val.client?.name}</td>
                   <td className="row-description">{val.description}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
-      }
+        )
+      )}
     </div>
   )
 }

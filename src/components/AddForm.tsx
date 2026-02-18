@@ -7,14 +7,14 @@ interface AddFormProps {
   onAddEntry: (entry: {
     type: 'alteration' | 'meeting';
     due: string;
-    client: string;
+    client: Client;
     price?: number;
     description: string;
   }) => void;
   editHeader?: string;
   initialMode?: 'alteration' | 'meeting';
   initialData?: {
-    client: string;
+    client: Client;
     due: string;
     price?: number;
     description: string;
@@ -22,7 +22,7 @@ interface AddFormProps {
   onUpdateEntry?: (entry: {
     type: 'alteration' | 'meeting';
     due: string;
-    client: string;
+    client: Client;
     price?: number;
     description: string;
   }) => void;
@@ -40,7 +40,7 @@ const AddForm: React.FC<AddFormProps> = ({
 }) => {
 
   const [date, setDate] = useState('');
-  const [client, setClient] = useState('');
+  const [client, setClient] = useState<Client | null>(null);
   const [clientsData, setClientsData] = useState<Client[]>([]);
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState('');
@@ -74,7 +74,8 @@ const AddForm: React.FC<AddFormProps> = ({
 
   useEffect(() => {
     if (initialData) {
-      setClient(initialData.client);
+      const selectedClient = clientsData.find(c => c._id === initialData.client._id) || null;
+      setClient(selectedClient);
       setDate(
         mode === 'meeting'
           ? initialData.due.slice(0, 16)
@@ -83,14 +84,14 @@ const AddForm: React.FC<AddFormProps> = ({
       setPrice(initialData.price ? String(initialData.price) : "");
       setDescription(initialData.description);
     }
-  }, [initialData, mode])
+  }, [initialData, mode, clientsData])
 
 
 
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!client.trim()) {
+    if (!client) {
       newErrors.client = "A client is required."
     }
     if (!date) {
@@ -144,7 +145,7 @@ const AddForm: React.FC<AddFormProps> = ({
 
     const entryData = {
       type: mode,
-      client,
+      client: client!,
       due: date,
       price: mode === 'alteration' ? Number(price) : undefined,
       description
@@ -158,7 +159,7 @@ const AddForm: React.FC<AddFormProps> = ({
 
     onClose();
 
-    setClient('');
+    setClient(null);
     setDate('');
     setPrice('');
     setDescription('');
@@ -199,15 +200,16 @@ const AddForm: React.FC<AddFormProps> = ({
           <select
             id="client"
             name='client'
-            value={client}
+            value={client?._id || ""}
             onChange={(e) => {
-              setClient(e.target.value);
+              const selectedClient = clientsData.find(c => c._id === e.target.value) || null;
+              setClient(selectedClient);
               errors.client && setErrors(prev => ({ ...prev, client: "" }));
             }}
           >
             <option value="">Select client</option>
             {clientsData.map(client => (
-              <option key={client._id} value={client.name}>
+              <option key={client._id} value={client._id}>
                 {client.name}
               </option>
             ))}

@@ -3,21 +3,28 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import '../styles/layout.css'
 import AddForm from "./AddForm";
+import type { Client } from "../types/client";
 
 interface LayoutProps {
   children: React.ReactNode;
   addEntry: (entry: {
     type: 'alteration' | 'meeting';
     due: string;
-    client: string;
+    client: Client;
     price?: number;
     description: string;
   }) => void;
+  addMeeting: (entry: {
+    due: string;
+    client: Client;
+    description: string;
+  }) => Promise<any>;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
   addEntry,
+  addMeeting
 }) => {
 
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
@@ -31,7 +38,19 @@ const Layout: React.FC<LayoutProps> = ({
           {isAddFormOpen && (
             <AddForm
               onClose={() => setIsAddFormOpen(false)}
-              onAddEntry={addEntry} />
+              onAddEntry={async (entry) => {
+                if (entry.type === "meeting" && entry.client) {
+                  await addMeeting({
+                    due: entry.due,
+                    client: entry.client,
+                    description: entry.description,
+                  });
+                } else {
+                  addEntry(entry)
+                }
+              }
+
+              } />
           )}
         </div>
       </main>

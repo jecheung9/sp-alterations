@@ -49,7 +49,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
     <div className="page-container">
       <h1>Meeting #{meeting.id}</h1>
       <p>Status: {meeting.status}</p>
-      <p>Client: {meeting.client}</p>
+      <p>Client: {meeting.client?.name}</p>
       <p>Date + time: {formatDateTime(meeting.due)}</p>
       <p>Description: {meeting.description}</p>
 

@@ -71,7 +71,7 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
                   val.status === "Complete" ? "complete" :
                   val.status === "Dropped Off" ? "dropped-off" :
                   ""}>{val.status}</td>
-                <td>{val.client}</td>
+                <td>{val.client?.name}</td>
                 <td>{val.price}</td>
                 <td className="row-description">{val.description}</td>
               </tr>
@@ -112,7 +112,7 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
                     val.status === "Complete" ? "complete" :
                     val.status === "Dropped Off" ? "dropped-off" :
                     ""}>{val.status}</td>
-                  <td>{val.client}</td>
+                  <td>{val.client?.name}</td>
                   <td>{val.price}</td>
                   <td className="row-description">{val.description}</td>
                 </tr>
@@ -161,7 +161,7 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
                         val.status === "Started" ? "started" :
                         val.status === "Complete" ? "complete" :
                         ""}>{val.status}</td>
-                      <td>{val.client}</td>
+                      <td>{val.client?.name}</td>
                       <td>{val.price}</td>
                       <td className="row-description">{val.description}</td>
                     </tr>

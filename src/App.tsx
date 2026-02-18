@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Money from "./pages/Money";
 import Calendar from "./pages/Calendar";
@@ -7,24 +7,63 @@ import ToDo from "./pages/ToDo";
 import Settings from "./pages/Settings";
 import Layout from "./components/Layout";
 import type { Entry } from "./types/entry";
-import { todoData } from "./mockdata/todo";
+import type { Client } from "./types/client";
 import Meetings from "./pages/Meetings";
 import './styles/App.css';
-import { meetingsData } from "./mockdata/meetings";
 import NotFound from "./pages/NotFound";
 import ToDoDetails from "./pages/ToDoDetails";
 import MeetingDetail from "./pages/MeetingDetails";
 
 
 function App() {
-  const [entries, setEntries] = useState<Entry[]>([...todoData, ...meetingsData]);
-  const [nextAlterationId, setNextAlterationId] = useState(todoData.length + 1);
-  const [nextMeetingId, setNextMeetingId] = useState(meetingsData.length + 1);
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [nextAlterationId, setNextAlterationId] = useState(1);
+  const [nextMeetingId, setNextMeetingId] = useState(1);
+
+  useEffect(() => {
+    async function loadEntries() {
+      try {
+        const [alterationsRes, meetingsRes] = await Promise.all([
+          fetch("http://localhost:3000/api/todo"),
+          fetch("http://localhost:3000/api/meetings"),
+        ]);
+
+        if (!alterationsRes.ok || !meetingsRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const [alterations, meetings] = await Promise.all([
+          alterationsRes.json(),
+          meetingsRes.json()
+        ]);
+
+        const allEntries: Entry[] = [
+          ...alterations.map((a: any) => ({ ...a, type: "alteration" })),
+          ...meetings.map((m: any) => ({ ...m, type: "meeting" })),
+        ];
+
+        setEntries(allEntries);
+
+        setNextAlterationId(
+          alterations.length > 0 ? Math.max(...alterations.map((a: any) => a.id)) + 1 : 1
+        );
+
+        setNextMeetingId(
+          meetings.length > 0 ? Math.max(...meetings.map((m: any) => m.id)) + 1 : 1
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadEntries();
+  }, []);
+
 
   const addEntry = (entry: {
     type: 'alteration' | 'meeting';
     due: string;
-    client: string;
+    client: Client;
     price?: number;
     description: string;
   }) => {
@@ -46,6 +85,32 @@ function App() {
       setNextMeetingId(id + 1);
     }
   };
+
+  const addMeeting = async (meetingData: {
+    due: string;
+    client: Client;
+    description: string;
+  }) => {
+    try {
+      const id = nextMeetingId;
+      const body = { ...meetingData, id };
+      const res = await fetch("http://localhost:3000/api/meetings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to create meeting");
+      }
+
+      const newMeeting = await res.json();
+      setEntries(prev => [...prev, { ...newMeeting, type: "meeting" }]);
+      setNextMeetingId(prev => prev + 1);
+    } catch (err){
+      console.error(err);
+    }
+  }
 
   const updateEntry = (updatedEntry: Entry) => {
     setEntries(prev => 
@@ -75,14 +140,14 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Layout addEntry={addEntry}><Dashboard entries={entries} /></Layout>} />
-      <Route path="money" element={<Layout addEntry={addEntry}><Money /></Layout>} />
-      <Route path="calendar" element={<Layout addEntry={addEntry}><Calendar /></Layout>} />
-      <Route path="todo" element={<Layout addEntry={addEntry}><ToDo key={entries.length}  entries={entries} /></Layout>} />
-      <Route path="settings" element={<Layout addEntry={addEntry}><Settings /></Layout>} />
-      <Route path="meetings" element={<Layout addEntry={addEntry}><Meetings entries={entries} /></Layout>} />
-      <Route path="/todo/:id" element={<Layout addEntry={addEntry}><ToDoDetails entries={todoEntries} updateStatus={updateStatus} /></Layout>} />
-      <Route path="/meetings/:id" element={<Layout addEntry={addEntry}>
+      <Route path="/" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Dashboard entries={entries} /></Layout>} />
+      <Route path="money" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Money /></Layout>} />
+      <Route path="calendar" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Calendar /></Layout>} />
+      <Route path="todo" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><ToDo key={entries.length}  entries={entries} /></Layout>} />
+      <Route path="settings" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Settings /></Layout>} />
+      <Route path="meetings" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Meetings entries={entries} /></Layout>} />
+      <Route path="/todo/:id" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><ToDoDetails entries={todoEntries} updateStatus={updateStatus} /></Layout>} />
+      <Route path="/meetings/:id" element={<Layout addEntry={addEntry} addMeeting={addMeeting}>
         <MeetingDetail
           entries={meetingEntries}
           updateStatus={updateStatus}

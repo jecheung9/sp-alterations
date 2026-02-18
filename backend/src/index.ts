@@ -86,6 +86,35 @@ app.delete("/api/clients/:id", async (req: Request, res: Response) => {
 })
 
 //meetings
+app.post("/api/meetings", async (req: Request, res: Response) => {
+    try {
+        const { id, due, client, description } = req.body;
+        const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
+        if (!meetingsCollection) {
+            res.status(500).json({ error: "MEETINGS_COLLECTION_NAME not configured" });
+            return;
+        }
+        const newMeeting = {
+            id,
+            type: "meeting",
+            due,
+            client: {
+                _id: client._id,
+                name: client.name
+            },
+            status: "Not Started",
+            description: description
+        }
+
+        const result = await db.collection(meetingsCollection).insertOne(newMeeting);
+        const inserted = await db.collection(meetingsCollection).findOne({ _id: result.insertedId });
+        res.status(201).json(inserted);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to create meeting" });
+    }
+});
+
 app.get("/api/meetings", async (req: Request, res: Response) => {
     try {
         const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
@@ -99,7 +128,7 @@ app.get("/api/meetings", async (req: Request, res: Response) => {
         console.error(err);
         res.status(500).json({ error: "failed to fetch meetings" });
     }
-});
+})
 
 //todos
 app.get("/api/todo", async (req: Request, res: Response) => {

@@ -69,7 +69,7 @@ const Dashboard: React.FC<DashboardProps> = ({ entries }) => {
                     {incompleteMeetings.map(val => (
                       <>
                         <div>{formatDateTime(val.due)}</div>
-                        <div>{val.client}</div>
+                        <div>{val.client?.name}</div>
                         <div>{val.description}</div>
                       </>
                     ))}
@@ -108,7 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({ entries }) => {
                           onClick={() => navigate(`/todo/${val.id}`)}
                         >
                           <div>{formatDate(val.due)}</div>
-                          <div>{val.client}</div>
+                          <div>{val.client?.name}</div>
                           <div>{val.description}</div>
                         </div>
                       ))}
