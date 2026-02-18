@@ -9,12 +9,14 @@ interface MeetingDetailProps {
   entries: Entry[];
   updateStatus: (id: number, type: Entry["type"], status: Entry["status"])  => void;
   updateEntry: (updatedEntry: Entry) => void;
+  deleteEntry: (id: number, type: Entry["type"]) => void;
 }
 
 const MeetingDetail: React.FC<MeetingDetailProps> = ({
   entries,
   updateStatus,
-  updateEntry
+  updateEntry,
+  deleteEntry
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -60,6 +62,10 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
       />
 
       <button onClick={() => setIsEditOpen(true)}>Edit</button>
+      <button onClick={() => {
+        deleteEntry(meeting.id, meeting.type);
+        navigate(`/meetings`);
+      }}>Delete</button>
 
       <button onClick={() => navigate(`/meetings`)}>
         Return back to meetings list

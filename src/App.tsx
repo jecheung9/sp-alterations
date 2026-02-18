@@ -64,6 +64,12 @@ function App() {
     )
   }
 
+  const deleteEntry = (id: number, type: Entry["type"]) => {
+    setEntries(prev =>
+      prev.filter(entry => !(entry.id === id && entry.type === type))
+    )
+  }
+
   const todoEntries = entries.filter(i => i.type === 'alteration');
   const meetingEntries = entries.filter(i => i.type === 'meeting');
 
@@ -76,7 +82,13 @@ function App() {
       <Route path="settings" element={<Layout addEntry={addEntry}><Settings /></Layout>} />
       <Route path="meetings" element={<Layout addEntry={addEntry}><Meetings entries={entries} /></Layout>} />
       <Route path="/todo/:id" element={<Layout addEntry={addEntry}><ToDoDetails entries={todoEntries} updateStatus={updateStatus} /></Layout>} />
-      <Route path="/meetings/:id" element={<Layout addEntry={addEntry}><MeetingDetail entries={meetingEntries} updateStatus={updateStatus} updateEntry={updateEntry} /></Layout>} />
+      <Route path="/meetings/:id" element={<Layout addEntry={addEntry}>
+        <MeetingDetail
+          entries={meetingEntries}
+          updateStatus={updateStatus}
+          updateEntry={updateEntry}
+          deleteEntry={deleteEntry}
+        /></Layout>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )
