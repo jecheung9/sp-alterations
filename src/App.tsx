@@ -112,13 +112,47 @@ function App() {
     }
   }
 
-  const updateEntry = (updatedEntry: Entry) => {
-    setEntries(prev => 
-      prev.map(entry => 
-        entry.id === updatedEntry.id && entry.type === updatedEntry.type
-          ? updatedEntry : entry)
-    )
-  }
+  const updateEntry = async (updatedMeeting: Entry, statusOnly = false) => {
+    try {
+      if (updatedMeeting.type !== "meeting") {
+        return;
+      }
+      const { id, type, ...rest } = updatedMeeting;
+      let body;
+      if (statusOnly) {
+        body = { status: rest.status };
+      } else {
+        body = {
+          due: rest.due,
+          description: rest.description,
+          client: {
+            _id: rest.client._id,
+            name: rest.client.name
+          },
+          status: rest.status
+        };
+      }
+      const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to update meeting");
+      } 
+      const updated = await res.json();
+      setEntries(prev =>
+        prev.map(e =>
+          e.id === updated.id && e.type === "meeting"
+            ? { ...updated, type: "meeting" }
+            : e
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const updateStatus = (id: number, type: Entry["type"], status: Entry["status"]) => {
     setEntries(prev =>

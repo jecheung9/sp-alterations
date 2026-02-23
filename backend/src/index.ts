@@ -130,6 +130,32 @@ app.get("/api/meetings", async (req: Request, res: Response) => {
     }
 })
 
+app.put("/api/meetings/:id", async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
+        if (!meetingsCollection)
+        return res.status(500).json({ error: "MEETINGS_COLLECTION_NAME not configured" });
+
+        const newBody = Object.fromEntries(
+            Object.entries(req.body).filter(([_, v]) => v !== undefined)
+        );
+
+        const result = await db.collection(meetingsCollection).findOneAndUpdate(
+            { id: id },
+            { $set: newBody },
+            { returnDocument: "after" } as const 
+        );
+        if (!result) {
+            return res.status(404).json({ error: "Meeting not found" });
+        }
+        res.status(200).json(result);
+    } catch (err) {
+        console.error("Error updating meeting:", err);
+        res.status(500).json({ error: "failed to update meeting" });
+    }
+});
+
 app.delete("/api/meetings/:id", async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
