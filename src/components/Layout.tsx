@@ -7,8 +7,7 @@ import type { Client } from "../types/client";
 
 interface LayoutProps {
   children: React.ReactNode;
-  addEntry: (entry: {
-    type: 'alteration' | 'meeting';
+  addTodo: (entry: {
     due: string;
     client: Client;
     price?: number;
@@ -23,7 +22,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({
   children,
-  addEntry,
+  addTodo,
   addMeeting
 }) => {
 
@@ -46,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({
                     description: entry.description,
                   });
                 } else {
-                  addEntry(entry)
+                  addTodo(entry)
                 }
               }
 

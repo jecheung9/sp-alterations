@@ -182,6 +182,36 @@ app.delete("/api/meetings/:id", async (req: Request, res: Response) => {
 })
 
 //todos
+app.post("/api/todo", async (req: Request, res: Response) => {
+    try {
+        const { id, due, price, client, description } = req.body;
+        const todoCollection = process.env.TODO_COLLECTION_NAME;
+        if (!todoCollection) {
+            res.status(500).json({ error: "TODO_COLLECTION_NAME not configured" });
+            return;
+        }
+        const newTodo = {
+            id,
+            type: "alteration",
+            due,
+            price,
+            client: {
+                _id: client._id,
+                name: client.name
+            },
+            status: "Not Started",
+            description: description
+        }
+
+        const result = await db.collection(todoCollection).insertOne(newTodo);
+        const inserted = await db.collection(todoCollection).findOne({ _id: result.insertedId });
+        res.status(201).json(inserted);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to create todo" });
+    }
+});
+
 app.get("/api/todo", async (req: Request, res: Response) => {
     try {
         const todoCollection = process.env.TODO_COLLECTION_NAME;
