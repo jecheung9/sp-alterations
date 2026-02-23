@@ -154,6 +154,14 @@ function App() {
     }
   };
 
+  const updateTodo = (updatedTodo: Entry) => {
+    setEntries(prev => 
+      prev.map(entry => 
+        entry.id === updatedTodo.id && entry.type === updatedTodo.type
+          ? updatedTodo : entry)
+    )
+  }
+
   const updateStatus = (id: number, type: Entry["type"], status: Entry["status"]) => {
     setEntries(prev =>
       prev.map(entry =>
@@ -181,6 +189,12 @@ function App() {
     }
   }
 
+  const deleteTodo = (id: number, type: Entry["type"]) => {
+    setEntries(prev =>
+      prev.filter(entry => !(entry.id === id && entry.type === "alteration"))
+    )
+  }
+
   const todoEntries = entries.filter(i => i.type === 'alteration');
   const meetingEntries = entries.filter(i => i.type === 'meeting');
 
@@ -192,7 +206,13 @@ function App() {
       <Route path="todo" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><ToDo key={entries.length}  entries={entries} /></Layout>} />
       <Route path="settings" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Settings /></Layout>} />
       <Route path="meetings" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><Meetings entries={entries} /></Layout>} />
-      <Route path="/todo/:id" element={<Layout addEntry={addEntry} addMeeting={addMeeting}><ToDoDetails entries={todoEntries} updateStatus={updateStatus} /></Layout>} />
+      <Route path="/todo/:id" element={<Layout addEntry={addEntry} addMeeting={addMeeting}>
+        <ToDoDetails
+          entries={todoEntries}
+          updateStatus={updateStatus}
+          updateTodo={updateTodo}
+          deleteTodo={deleteTodo}
+        /></Layout>} />
       <Route path="/meetings/:id" element={<Layout addEntry={addEntry} addMeeting={addMeeting}>
         <MeetingDetail
           entries={meetingEntries}

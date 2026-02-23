@@ -2,18 +2,26 @@ import { useParams } from "react-router";
 import type { Entry } from "../types/entry";
 import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import AddForm from "../components/AddForm";
 
 interface TodoDetailProps {
   entries: Entry[];
   updateStatus: (id: number, type: Entry["type"], status: Entry["status"]) => void;
+  deleteTodo: (id: number, type: Entry["type"]) => void;
+  updateTodo: (updatedTodo: Entry) => void;
 }
 
 const TodoDetail: React.FC<TodoDetailProps> = ({
   entries,
-  updateStatus
+  updateStatus,
+  deleteTodo,
+  updateTodo,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const formatDate = (date: string) => {
     const [year, month, day] = date.split('-').map(Number);
@@ -38,6 +46,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
       <p>Status: {todo.status}</p>
       <p>Client: {todo.client?.name}</p>
       <p>Due: {formatDate(todo.due)}</p>
+      <p>Price: {todo.price}</p>
       <p>Description: {todo.description}</p>
 
       <StatusButtons
@@ -48,9 +57,39 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
         currentStatus={todo.status}
       />
 
+      <button onClick={() => setIsEditOpen(true)}>Edit</button>
+      <button onClick={() => {
+        deleteTodo(todo.id, todo.type);
+        navigate(`/todo`);
+      }}>Delete</button>
+
       <button onClick={() => navigate(`/todo`)}>
         Return back to To-do list
       </button>
+
+      {isEditOpen && (
+        <AddForm
+          isEdit
+          onClose={() => setIsEditOpen(false)}
+          onAddEntry={() => { }}
+          onUpdateEntry={(newData) => {
+            updateTodo({
+              id: todo.id,
+              status: todo.status,
+              ...newData
+            });
+            setIsEditOpen(false);
+          }}
+          editHeader={`Edit todo alteration #${todo.id}`}
+          initialMode="alteration"
+          initialData={{
+            client: todo.client,
+            due: todo.due,
+            description: todo.description,
+            price: todo.price,
+          }}
+        />
+      )}
 
     </div>
 
