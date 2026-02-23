@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { connectMongo } from "./connectMongo";
 import cors from "cors";
 import { ObjectId } from "mongodb";
+import { todo } from "node:test";
 
 dotenv.config();
 
@@ -195,6 +196,28 @@ app.get("/api/todo", async (req: Request, res: Response) => {
         res.status(500).json({ error: "failed to fetch todos" });
     }
 });
+
+app.delete("/api/todo/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const todoCollection = process.env.TODO_COLLECTION_NAME;
+        if (!todoCollection) {
+            res.status(500).json({ error: "TODO_COLLECTION_NAME not configured" });
+            return;
+        }
+        const result = await db.collection(todoCollection).deleteOne({
+            id: Number(id)
+        });
+        if (result.deletedCount === 0) {
+            res.status(404).json({ error: "Meeting not found" });
+            return;
+        }
+        res.status(204).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to delete todo item" });
+    }
+})
 
 // startup
 app.listen(PORT, () => {

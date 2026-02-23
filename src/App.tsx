@@ -172,27 +172,35 @@ function App() {
   }
 
   const deleteEntry = async (id: number, type: Entry["type"]) => {
-    if (type === "meeting") {
-      try {
-        const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
-          method: "DELETE"
-        });
-        if (!res.ok) {
-          throw new Error("Failed to delete meeting");
-        }
-        setEntries(prev => 
-          prev.filter(entry => !(entry.id === id && entry.type == type))
-        )
-      } catch (err) {
-        console.error(err);
+    try {
+      const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
+        method: "DELETE"
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete meeting");
       }
+      setEntries(prev => 
+        prev.filter(entry => !(entry.id === id && entry.type == type))
+      )
+    } catch (err) {
+      console.error(err);
     }
   }
 
-  const deleteTodo = (id: number, type: Entry["type"]) => {
-    setEntries(prev =>
-      prev.filter(entry => !(entry.id === id && entry.type === "alteration"))
-    )
+  const deleteTodo = async (id: number, type: Entry["type"]) => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/todo/${id}`, {
+        method: "DELETE"
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete todo entry");
+      }
+      setEntries(prev => 
+        prev.filter(entry => !(entry.id === id && entry.type == type))
+      )
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   const todoEntries = entries.filter(i => i.type === 'alteration');
