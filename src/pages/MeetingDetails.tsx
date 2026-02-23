@@ -56,6 +56,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
           updateMeeting({ ...meeting, status }, true) 
         }
         currentStatus={meeting.status}
+        mode="meeting"
       />
 
       <button onClick={() => setIsEditOpen(true)}>Edit</button>

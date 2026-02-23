@@ -4,6 +4,7 @@ import '../styles/statusbutton.css';
 interface StatusButtonsProps {
   onChange: (status: Entry["status"]) => void;
   currentStatus: Entry["status"];
+  mode: "alteration" | "meeting";
 }
 
 const statuses: Entry["status"][] = [
@@ -15,11 +16,13 @@ const statuses: Entry["status"][] = [
 
 const StatusButtons: React.FC<StatusButtonsProps> = ({
   onChange,
-  currentStatus
+  currentStatus,
+  mode,
 }) => {
+  const newStatuses = (mode === "meeting") ? ["Not Started", "Complete"] as const : statuses;
   return (
     <div>
-      {statuses.map(status => (
+      {newStatuses.map(status => (
         <button
           key={status}
           onClick={() => onChange(status)}

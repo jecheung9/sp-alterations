@@ -52,6 +52,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
           updateTodo({ ...todo, status }, true) 
         }
         currentStatus={todo.status}
+        mode="alteration"
       />
 
       <button onClick={() => setIsEditOpen(true)}>Edit</button>

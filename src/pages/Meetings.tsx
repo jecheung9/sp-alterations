@@ -13,7 +13,7 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   const navigate = useNavigate();
 
   const incompleteMeetings = entries
-    .filter(i => i.type === 'meeting' && (i.status === 'Not Started' || i.status === 'Started'))
+    .filter(i => i.type === 'meeting' && (i.status === 'Not Started'))
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const incompleteLength = incompleteMeetings.length;
 
