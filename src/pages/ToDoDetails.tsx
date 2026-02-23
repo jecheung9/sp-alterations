@@ -4,6 +4,7 @@ import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AddForm from "../components/AddForm";
+import Confirmation from "../components/Confirmation";
 
 interface TodoDetailProps {
   entries: Entry[];
@@ -20,6 +21,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
   const navigate = useNavigate();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const formatDate = (date: string) => {
     const [year, month, day] = date.split('-').map(Number);
@@ -79,6 +81,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
               description: newData.description || todo.description,
               status: todo.status,
             }, false);
+            setToastMessage("Alteration todo updated successfully!");
             setIsEditOpen(false);
           }}
           editHeader={`Edit todo alteration #${todo.id}`}
@@ -89,6 +92,13 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
             description: todo.description,
             price: todo.price,
           }}
+        />
+      )}
+
+      {toastMessage && (
+        <Confirmation
+          message={toastMessage}
+          onClose={() => setToastMessage(null)}
         />
       )}
 

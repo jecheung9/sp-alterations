@@ -4,6 +4,7 @@ import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import AddForm from "../components/AddForm";
+import Confirmation from "../components/Confirmation";
 
 interface MeetingDetailProps {
   entries: Entry[];
@@ -20,6 +21,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
   const navigate = useNavigate();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const meeting = entries.find(e => e.id.toString() === id);
     
@@ -82,6 +84,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
               description: newData.description || meeting.description,
               status: meeting.status,
             }, false);
+            setToastMessage("Meeting updated successfully!");
             setIsEditOpen(false);
           }}
           editHeader={`Edit meeting #${meeting.id}`}
@@ -91,6 +94,13 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
             due: meeting.due,
             description: meeting.description
           }}
+        />
+      )}
+
+      {toastMessage && (
+        <Confirmation
+          message={toastMessage}
+          onClose={() => setToastMessage(null)}
         />
       )}
     </div>

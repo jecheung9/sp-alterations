@@ -1,0 +1,10 @@
+.confirmation-toast {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    background: #2ecc71;
+    color: white;
+    border-radius: 8px;
+    padding: 0.5rem;
+    z-index: 9999;
+}

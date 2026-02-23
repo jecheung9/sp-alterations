@@ -5,6 +5,7 @@ import '../styles/layout.css'
 import AddForm from "./AddForm";
 import type { Client } from "../types/client";
 import { useLocation } from "react-router";
+import Confirmation from "./Confirmation";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ const Layout: React.FC<LayoutProps> = ({
 }) => {
 
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const location = useLocation();
 
   let pageMode: "alteration" | "meeting";
@@ -54,13 +56,21 @@ const Layout: React.FC<LayoutProps> = ({
                     client: entry.client,
                     description: entry.description,
                   });
+                  setToastMessage("Meeting added successfully!")
                 } else {
                   addTodo(entry)
+                  setToastMessage("Alteration todo added successfully!")
                 }
               }
-
               } />
           )}
+
+          {toastMessage && (
+            <Confirmation
+              message={toastMessage}
+              onClose={() => setToastMessage(null)}
+            />
+            )}
         </div>
       </main>
     </div>
