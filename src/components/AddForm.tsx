@@ -177,7 +177,7 @@ const AddForm: React.FC<AddFormProps> = ({
           <button type="button" className='close-button' onClick={onClose}> Close </button>
           </div>
 
-          {!initialMode && (
+          {!isEdit && (
             <div className='mode-toggle'>
               Choose mode:
             <button

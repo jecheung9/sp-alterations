@@ -4,6 +4,7 @@ import Navbar from "./Navbar";
 import '../styles/layout.css'
 import AddForm from "./AddForm";
 import type { Client } from "../types/client";
+import { useLocation } from "react-router";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -27,6 +28,14 @@ const Layout: React.FC<LayoutProps> = ({
 }) => {
 
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const location = useLocation();
+
+  let pageMode: "alteration" | "meeting";
+  if (location.pathname.startsWith("/meetings")) {
+    pageMode = "meeting"
+  } else {
+    pageMode = "alteration";
+  }
 
   return (
     <div>
@@ -36,6 +45,7 @@ const Layout: React.FC<LayoutProps> = ({
           {children}
           {isAddFormOpen && (
             <AddForm
+              initialMode={pageMode}
               onClose={() => setIsAddFormOpen(false)}
               onAddEntry={async (entry) => {
                 if (entry.type === "meeting" && entry.client) {
