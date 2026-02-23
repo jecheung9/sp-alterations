@@ -2,8 +2,7 @@ import type { Entry } from "../types/entry";
 import '../styles/statusbutton.css';
 
 interface StatusButtonsProps {
-  entryId: number;
-  onChange: (id: number, status: Entry["status"]) => void;
+  onChange: (status: Entry["status"]) => void;
   currentStatus: Entry["status"];
 }
 
@@ -15,7 +14,6 @@ const statuses: Entry["status"][] = [
 ];
 
 const StatusButtons: React.FC<StatusButtonsProps> = ({
-  entryId,
   onChange,
   currentStatus
 }) => {
@@ -24,7 +22,7 @@ const StatusButtons: React.FC<StatusButtonsProps> = ({
       {statuses.map(status => (
         <button
           key={status}
-          onClick={() => onChange(entryId, status)}
+          onClick={() => onChange(status)}
           className={status === currentStatus ? "active-status" : ""}
         >
           {status}

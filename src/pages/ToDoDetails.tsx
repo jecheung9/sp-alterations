@@ -7,14 +7,12 @@ import AddForm from "../components/AddForm";
 
 interface TodoDetailProps {
   entries: Entry[];
-  updateStatus: (id: number, type: Entry["type"], status: Entry["status"]) => void;
   deleteTodo: (id: number, type: Entry["type"]) => void;
-  updateTodo: (updatedTodo: Entry) => void;
+  updateTodo: (updatedTodo: Entry, statusOnly: boolean) => void;
 }
 
 const TodoDetail: React.FC<TodoDetailProps> = ({
   entries,
-  updateStatus,
   deleteTodo,
   updateTodo,
 }) => {
@@ -50,9 +48,8 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
       <p>Description: {todo.description}</p>
 
       <StatusButtons
-        entryId={todo.id}
-        onChange={(id, status) => 
-          updateStatus(id, todo.type, status)
+        onChange={(status) =>
+          updateTodo({ ...todo, status }, true) 
         }
         currentStatus={todo.status}
       />
@@ -74,10 +71,13 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
           onAddEntry={() => { }}
           onUpdateEntry={(newData) => {
             updateTodo({
-              id: todo.id,
+              ...todo,
+              client: newData.client || todo.client,
+              due: newData.due || todo.due,
+              price: newData.price || todo.price,
+              description: newData.description || todo.description,
               status: todo.status,
-              ...newData
-            });
+            }, false);
             setIsEditOpen(false);
           }}
           editHeader={`Edit todo alteration #${todo.id}`}

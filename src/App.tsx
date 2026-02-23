@@ -59,7 +59,6 @@ function App() {
     loadEntries();
   }, []);
 
-
   const addMeeting = async (meetingData: {
     due: string;
     client: Client;
@@ -113,11 +112,8 @@ function App() {
     }
   }
 
-  const updateEntry = async (updatedMeeting: Entry, statusOnly = false) => {
+  const updateMeeting = async (updatedMeeting: Entry, statusOnly = false) => {
     try {
-      if (updatedMeeting.type !== "meeting") {
-        return;
-      }
       const { id, type, ...rest } = updatedMeeting;
       let body;
       if (statusOnly) {
@@ -155,24 +151,47 @@ function App() {
     }
   };
 
-  const updateTodo = (updatedTodo: Entry) => {
-    setEntries(prev => 
-      prev.map(entry => 
-        entry.id === updatedTodo.id && entry.type === updatedTodo.type
-          ? updatedTodo : entry)
-    )
-  }
+  const updateTodo = async (updatedTodo: Entry, statusOnly = false) => {
+    try {
+      const { id, type, ...rest } = updatedTodo;
+      let body;
+      if (statusOnly) {
+        body = { status: rest.status };
+      } else {
+        body = {
+          due: rest.due,
+          description: rest.description,
+          price: rest.price,
+          client: {
+            _id: rest.client._id,
+            name: rest.client.name
+          },
+          status: rest.status
+        };
+      }
+      const res = await fetch(`http://localhost:3000/api/todo/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
-  const updateStatus = (id: number, type: Entry["type"], status: Entry["status"]) => {
-    setEntries(prev =>
-      prev.map(entry =>
-        entry.id === id && entry.type === type
-          ? { ...entry, status } : entry
-      )
-    )
-  }
+      if (!res.ok) {
+        throw new Error("Failed to update todo");
+      } 
+      const updated = await res.json();
+      setEntries(prev =>
+        prev.map(e =>
+          e.id === updated.id && e.type === "alteration"
+            ? { ...updated, type: "alteration" }
+            : e
+        )
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  const deleteEntry = async (id: number, type: Entry["type"]) => {
+  const deleteMeeting = async (id: number, type: Entry["type"]) => {
     try {
       const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
         method: "DELETE"
@@ -218,16 +237,14 @@ function App() {
       <Route path="/todo/:id" element={<Layout addTodo={addTodo} addMeeting={addMeeting}>
         <ToDoDetails
           entries={todoEntries}
-          updateStatus={updateStatus}
           updateTodo={updateTodo}
           deleteTodo={deleteTodo}
         /></Layout>} />
       <Route path="/meetings/:id" element={<Layout addTodo={addTodo} addMeeting={addMeeting}>
         <MeetingDetail
           entries={meetingEntries}
-          updateStatus={updateStatus}
-          updateEntry={updateEntry}
-          deleteEntry={deleteEntry}
+          updateMeeting={updateMeeting}
+          deleteMeeting={deleteMeeting}
         /></Layout>} />
       <Route path="*" element={<NotFound />} />
     </Routes>

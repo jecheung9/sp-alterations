@@ -20,17 +20,6 @@ const mongoClient = connectMongo();
 const db = mongoClient.db();
 app.use(express.json());
 app.use(express.static(STATIC_DIR));
-// Create
-// POST: Used to add a new resource (e.g., creating a new user or product).
-
-// Read
-// GET: Used to retrieve or view a resource or a collection of resources.
-
-// Update
-// PUT / PATCH: Used to modify existing data. PUT typically replaces the entire resource, while PATCH performs partial updates.
-
-// Delete
-// DELETE: Used to remove a resource
 
 //simple test
 app.get('/', (req, res) => {
@@ -248,6 +237,32 @@ app.delete("/api/todo/:id", async (req: Request, res: Response) => {
         res.status(500).json({ error: "failed to delete todo item" });
     }
 })
+
+app.put("/api/todo/:id", async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const todoCollection = process.env.TODO_COLLECTION_NAME;
+        if (!todoCollection) {
+            res.status(500).json({ error: "TODO_COLLECTION_NAME not configured" });
+            return;
+        }
+        const newBody = Object.fromEntries(
+            Object.entries(req.body).filter(([_, v]) => v !== undefined)
+        );
+        const result = await db.collection(todoCollection).findOneAndUpdate(
+            { id: id },
+            { $set: newBody },
+            { returnDocument: "after" } as const 
+        );
+        if (!result) {
+            return res.status(404).json({ error: "Todo not found" });
+        }
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to update Todo" });
+    }
+});
 
 // startup
 app.listen(PORT, () => {

@@ -7,16 +7,14 @@ import AddForm from "../components/AddForm";
 
 interface MeetingDetailProps {
   entries: Entry[];
-  updateStatus: (id: number, type: Entry["type"], status: Entry["status"])  => void;
-  updateEntry: (updatedEntry: Entry, statusOnly: boolean) => void;
-  deleteEntry: (id: number, type: Entry["type"]) => void;
+  updateMeeting: (updatedMeeting: Entry, statusOnly: boolean) => void;
+  deleteMeeting: (id: number, type: Entry["type"]) => void;
 }
 
 const MeetingDetail: React.FC<MeetingDetailProps> = ({
   entries,
-  updateStatus,
-  updateEntry,
-  deleteEntry
+  updateMeeting,
+  deleteMeeting
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -54,16 +52,15 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
       <p>Description: {meeting.description}</p>
 
       <StatusButtons
-        entryId={meeting.id}
-        onChange={(id, status) =>
-          updateEntry({ ...meeting, status }, true) 
+        onChange={(status) =>
+          updateMeeting({ ...meeting, status }, true) 
         }
         currentStatus={meeting.status}
       />
 
       <button onClick={() => setIsEditOpen(true)}>Edit</button>
       <button onClick={() => {
-        deleteEntry(meeting.id, meeting.type);
+        deleteMeeting(meeting.id, meeting.type);
         navigate(`/meetings`);
       }}>Delete</button>
 
@@ -77,7 +74,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
           onClose={() => setIsEditOpen(false)}
           onAddEntry={() => { }}
           onUpdateEntry={(newData) => {
-            updateEntry({
+            updateMeeting({
               ...meeting,
               client: newData.client || meeting.client,
               due: newData.due || meeting.due,
