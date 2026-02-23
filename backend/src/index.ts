@@ -130,6 +130,30 @@ app.get("/api/meetings", async (req: Request, res: Response) => {
     }
 })
 
+app.delete("/api/meetings/:id", async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
+        if (!meetingsCollection) {
+            res.status(500).json({ error: "MEETINGS_COLLECTION_NAME not configured" });
+            return;
+        }
+
+        const result = await db.collection(meetingsCollection).deleteOne({
+            id: Number(id)
+        });
+
+        if (result.deletedCount === 0) {
+            res.status(404).json({ error: "Meeting not found" });
+            return;
+        }
+        res.status(204).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to delete meeting" });
+    }
+})
+
 //todos
 app.get("/api/todo", async (req: Request, res: Response) => {
     try {

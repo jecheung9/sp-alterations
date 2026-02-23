@@ -129,10 +129,22 @@ function App() {
     )
   }
 
-  const deleteEntry = (id: number, type: Entry["type"]) => {
-    setEntries(prev =>
-      prev.filter(entry => !(entry.id === id && entry.type === type))
-    )
+  const deleteEntry = async (id: number, type: Entry["type"]) => {
+    if (type === "meeting") {
+      try {
+        const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
+          method: "DELETE"
+        });
+        if (!res.ok) {
+          throw new Error("Failed to delete meeting");
+        }
+        setEntries(prev => 
+          prev.filter(entry => !(entry.id === id && entry.type == type))
+        )
+      } catch (err) {
+        console.error(err);
+      }
+    }
   }
 
   const todoEntries = entries.filter(i => i.type === 'alteration');
