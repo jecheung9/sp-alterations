@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import '../styles/layout.css'
 import AddForm from "./AddForm";
 import type { Client } from "../types/client";
-import { useLocation } from "react-router";
+import { useLocation } from "react-router-dom";
 import Confirmation from "./Confirmation";
 
 interface LayoutProps {

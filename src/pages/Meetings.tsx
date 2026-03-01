@@ -1,7 +1,7 @@
 import "../styles/meetings.css"
 import { useState } from "react";
 import type { Entry } from "../types/entry"
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 interface MeetingsProps {
   entries: Entry[];

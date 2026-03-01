@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Money from "./pages/Money";
@@ -13,6 +13,9 @@ import './styles/App.css';
 import NotFound from "./pages/NotFound";
 import ToDoDetails from "./pages/ToDoDetails";
 import MeetingDetail from "./pages/MeetingDetails";
+import { Landing } from "./pages/Landing";
+import { ProtectedRoute } from "./utils/ProtectedRoute";
+import { AuthProvider} from "./context/AuthProvider";
 
 
 function App() {
@@ -227,27 +230,106 @@ function App() {
   const meetingEntries = entries.filter(i => i.type === 'meeting');
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout addTodo={addTodo} addMeeting={addMeeting}><Dashboard entries={entries} /></Layout>} />
-      <Route path="money" element={<Layout addTodo={addTodo} addMeeting={addMeeting}><Money /></Layout>} />
-      <Route path="calendar" element={<Layout addTodo={addTodo} addMeeting={addMeeting}><Calendar /></Layout>} />
-      <Route path="todo" element={<Layout addTodo={addTodo} addMeeting={addMeeting}><ToDo key={entries.length}  entries={entries} /></Layout>} />
-      <Route path="settings" element={<Layout addTodo={addTodo} addMeeting={addMeeting}><Settings /></Layout>} />
-      <Route path="meetings" element={<Layout addTodo={addTodo} addMeeting={addMeeting}><Meetings entries={entries} /></Layout>} />
-      <Route path="/todo/:id" element={<Layout addTodo={addTodo} addMeeting={addMeeting}>
-        <ToDoDetails
-          entries={todoEntries}
-          updateTodo={updateTodo}
-          deleteTodo={deleteTodo}
-        /></Layout>} />
-      <Route path="/meetings/:id" element={<Layout addTodo={addTodo} addMeeting={addMeeting}>
-        <MeetingDetail
-          entries={meetingEntries}
-          updateMeeting={updateMeeting}
-          deleteMeeting={deleteMeeting}
-        /></Layout>} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <AuthProvider>
+        <Routes>
+          {/* Public page */}
+          <Route path="/" element={<Landing />} />
+
+          {/* Protected pages */}
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <Dashboard entries={entries} />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="money"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <Money />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="calendar"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <Calendar />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="todo"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <ToDo key={entries.length} entries={entries} />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <Settings />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="meetings"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <Meetings entries={entries} />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/todo/:id"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <ToDoDetails
+                    entries={todoEntries}
+                    updateTodo={updateTodo}
+                    deleteTodo={deleteTodo}
+                  />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/meetings/:id"
+            element={
+              <ProtectedRoute>
+                <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                  <MeetingDetail
+                    entries={meetingEntries}
+                    updateMeeting={updateMeeting}
+                    deleteMeeting={deleteMeeting}
+                  />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthProvider>
+    </>  
   )
 }
 

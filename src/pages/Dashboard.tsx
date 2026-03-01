@@ -1,12 +1,15 @@
 import "../styles/dashboard.css"
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom"
 import type { Entry } from "../types/entry"
 
 interface DashboardProps {
   entries: Entry[];
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ entries }) => {
+const Dashboard: React.FC<DashboardProps> = ({
+  entries
+}) => {
+
   const navigate = useNavigate();
 
   const formatDateTime = (dateTime: string) => {

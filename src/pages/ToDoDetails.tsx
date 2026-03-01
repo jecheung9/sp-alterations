@@ -1,7 +1,7 @@
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import type { Entry } from "../types/entry";
 import StatusButtons from "../components/StatusButtons";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddForm from "../components/AddForm";
 import Confirmation from "../components/Confirmation";
