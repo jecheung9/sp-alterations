@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
 import '../styles/settings.css';
 import type { Client } from "../types/client.ts";
+import { useAuth } from "../context/AuthProvider.tsx";
 
 
 const Settings = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [input, setInput] = useState("");
+  const { token } = useAuth();
 
   useEffect(() => {
     async function loadClients() {
       try {
-        const res = await fetch("http://localhost:3000/api/clients");
+        const res = await fetch("http://localhost:3000/api/clients", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         const data = await res.json();
 
         setClients(data);
@@ -20,8 +27,10 @@ const Settings = () => {
       }
     }
 
-    loadClients();
-  }, []);
+    if (token) {
+      loadClients();
+    }
+  }, [token]);
 
 
 
@@ -32,7 +41,10 @@ const Settings = () => {
     try {
       const res = await fetch("http://localhost:3000/api/clients", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
         body: JSON.stringify({ name: input })
       });
 
@@ -48,6 +60,7 @@ const Settings = () => {
     try {
       await fetch(`http://localhost:3000/api/clients/${_id}`, {
         method: "DELETE",
+        headers: {"Authorization": `Bearer ${token}`}
       });
       setClients(prev => prev.filter(c => c._id !== _id));
     } catch (err) {

@@ -1,9 +1,8 @@
 import { createContext, useContext, useState } from "react";
-import { fakeAuth } from "../utils/FakeAuth";
 
 const AuthContext = createContext({
   token: null as string | null,
-  onLogin: async () => { },
+  onLogin: (_token: string) => { },
   onLogout: () => { }
 });
 
@@ -13,9 +12,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [token, setToken] = useState<string | null>(null);
 
-  const handleLogin = async () => {
-    const token = await fakeAuth();
-    setToken(token);
+  const handleLogin = (jwtToken: string) => {
+    setToken(jwtToken);
   };
 
   const handleLogout = () => {

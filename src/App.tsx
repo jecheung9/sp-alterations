@@ -15,20 +15,31 @@ import ToDoDetails from "./pages/ToDoDetails";
 import MeetingDetail from "./pages/MeetingDetails";
 import { Landing } from "./pages/Landing";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
-import { AuthProvider} from "./context/AuthProvider";
+import { useAuth } from "./context/AuthProvider";
 
 
 function App() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [nextAlterationId, setNextAlterationId] = useState(1);
   const [nextMeetingId, setNextMeetingId] = useState(1);
+  const { token } = useAuth();
 
   useEffect(() => {
     async function loadEntries() {
       try {
         const [alterationsRes, meetingsRes] = await Promise.all([
-          fetch("http://localhost:3000/api/todo"),
-          fetch("http://localhost:3000/api/meetings"),
+          fetch("http://localhost:3000/api/todo", {
+            headers: { 
+              "Content-Type": "application/json", 
+              "Authorization": `Bearer ${token}` 
+            }
+          }),
+          fetch("http://localhost:3000/api/meetings", {
+            headers: { 
+              "Content-Type": "application/json", 
+              "Authorization": `Bearer ${token}` 
+            }
+          }),
         ]);
 
         if (!alterationsRes.ok || !meetingsRes.ok) {
@@ -60,7 +71,7 @@ function App() {
     }
 
     loadEntries();
-  }, []);
+  }, [token]);
 
   const addMeeting = async (meetingData: {
     due: string;
@@ -72,7 +83,10 @@ function App() {
       const body = { ...meetingData, id };
       const res = await fetch("http://localhost:3000/api/meetings", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(body),
       });
 
@@ -99,7 +113,10 @@ function App() {
       const body = { ...TodoData, id };
       const res = await fetch("http://localhost:3000/api/todo", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(body),
       });
 
@@ -134,7 +151,10 @@ function App() {
       }
       const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(body),
       });
 
@@ -174,7 +194,10 @@ function App() {
       }
       const res = await fetch(`http://localhost:3000/api/todo/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(body),
       });
 
@@ -197,7 +220,8 @@ function App() {
   const deleteMeeting = async (id: number, type: Entry["type"]) => {
     try {
       const res = await fetch(`http://localhost:3000/api/meetings/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {"Authorization": `Bearer ${token}`}
       });
       if (!res.ok) {
         throw new Error("Failed to delete meeting");
@@ -213,7 +237,8 @@ function App() {
   const deleteTodo = async (id: number, type: Entry["type"]) => {
     try {
       const res = await fetch(`http://localhost:3000/api/todo/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {"Authorization": `Bearer ${token}`}
       });
       if (!res.ok) {
         throw new Error("Failed to delete todo entry");
@@ -231,104 +256,102 @@ function App() {
 
   return (
     <>
-      <AuthProvider>
-        <Routes>
-          {/* Public page */}
-          <Route path="/" element={<Landing />} />
+      <Routes>
+        {/* Public page */}
+        <Route path="/" element={<Landing />} />
 
-          {/* Protected pages */}
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <Dashboard entries={entries} />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="money"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <Money />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="calendar"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <Calendar />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="todo"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <ToDo key={entries.length} entries={entries} />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <Settings />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="meetings"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <Meetings entries={entries} />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/todo/:id"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <ToDoDetails
-                    entries={todoEntries}
-                    updateTodo={updateTodo}
-                    deleteTodo={deleteTodo}
-                  />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/meetings/:id"
-            element={
-              <ProtectedRoute>
-                <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                  <MeetingDetail
-                    entries={meetingEntries}
-                    updateMeeting={updateMeeting}
-                    deleteMeeting={deleteMeeting}
-                  />
-                </Layout>
-              </ProtectedRoute>
-            }
-          />
+        {/* Protected pages */}
+        <Route
+          path="dashboard"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <Dashboard entries={entries} />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="money"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <Money />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="calendar"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <Calendar />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="todo"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <ToDo key={entries.length} entries={entries} />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="settings"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <Settings />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="meetings"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <Meetings entries={entries} />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/todo/:id"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <ToDoDetails
+                  entries={todoEntries}
+                  updateTodo={updateTodo}
+                  deleteTodo={deleteTodo}
+                />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meetings/:id"
+          element={
+            <ProtectedRoute>
+              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+                <MeetingDetail
+                  entries={meetingEntries}
+                  updateMeeting={updateMeeting}
+                  deleteMeeting={deleteMeeting}
+                />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </AuthProvider>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>  
   )
 }

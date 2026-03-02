@@ -1,6 +1,7 @@
 import { useState, type FormEvent, useEffect } from 'react';
 import '../styles/addform.css'
 import type { Client } from '../types/client';
+import { useAuth } from '../context/AuthProvider';
 
 interface AddFormProps {
   onClose: () => void;
@@ -48,7 +49,9 @@ const AddForm: React.FC<AddFormProps> = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   
   type FormMode = 'alteration' | 'meeting';
-  const [mode, setMode] = useState<FormMode>(initialMode ||'alteration');
+  const [mode, setMode] = useState<FormMode>(initialMode || 'alteration');
+  
+  const { token } = useAuth();
 
 
   useEffect(() => {
@@ -61,7 +64,12 @@ const AddForm: React.FC<AddFormProps> = ({
   useEffect(() => {
     async function loadClients() {
       try {
-        const res = await fetch("http://localhost:3000/api/clients");
+        const res = await fetch("http://localhost:3000/api/clients", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          }
+        });
         const data = await res.json();
         setClientsData(data);
       } catch (err) {
@@ -69,8 +77,10 @@ const AddForm: React.FC<AddFormProps> = ({
       }
     }
 
-    loadClients();
-  }, []);
+    if (token) {
+      loadClients();
+    }
+  }, [token]);
 
   useEffect(() => {
     if (initialData) {

@@ -1,9 +1,11 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { connectMongo } from "./connectMongo";
 import cors from "cors";
 import { ObjectId } from "mongodb";
-import { todo } from "node:test";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 
 dotenv.config();
 
@@ -21,13 +23,29 @@ const db = mongoClient.db();
 app.use(express.json());
 app.use(express.static(STATIC_DIR));
 
+
+function authenticateToken(req: Request, res: Response, next: NextFunction) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Token missing' });
+    }
+    jwt.verify(token, process.env.JWT_SECRET as string, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid or expired token' });
+        }
+        (req as any).user = decoded;
+        next();
+    })
+}
+
 //simple test
 app.get('/', (req, res) => {
     res.send("Hello World!");
 })
 
 //clients
-app.get("/api/clients", async (req: Request, res: Response) => {
+app.get("/api/clients", authenticateToken, async (req: Request, res: Response) => {
     try {
         const clientsCollection = process.env.CLIENTS_COLLECTION_NAME;
         if (!clientsCollection) {
@@ -42,7 +60,7 @@ app.get("/api/clients", async (req: Request, res: Response) => {
     }
 });
 
-app.post("/api/clients", async (req: Request, res: Response) => {
+app.post("/api/clients", authenticateToken, async (req: Request, res: Response) => {
     try {
         const { name } = req.body;
         const clientsCollection = process.env.CLIENTS_COLLECTION_NAME;
@@ -59,7 +77,7 @@ app.post("/api/clients", async (req: Request, res: Response) => {
     }
 })
 
-app.delete("/api/clients/:id", async (req: Request, res: Response) => {
+app.delete("/api/clients/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
         const id = req.params.id as string;
         const clientsCollection = process.env.CLIENTS_COLLECTION_NAME;
@@ -76,7 +94,7 @@ app.delete("/api/clients/:id", async (req: Request, res: Response) => {
 })
 
 //meetings
-app.post("/api/meetings", async (req: Request, res: Response) => {
+app.post("/api/meetings", authenticateToken, async (req: Request, res: Response) => {
     try {
         const { id, due, client, description } = req.body;
         const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
@@ -105,7 +123,7 @@ app.post("/api/meetings", async (req: Request, res: Response) => {
     }
 });
 
-app.get("/api/meetings", async (req: Request, res: Response) => {
+app.get("/api/meetings", authenticateToken, async (req: Request, res: Response) => {
     try {
         const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
         if (!meetingsCollection) {
@@ -120,7 +138,7 @@ app.get("/api/meetings", async (req: Request, res: Response) => {
     }
 })
 
-app.put("/api/meetings/:id", async (req: Request, res: Response) => {
+app.put("/api/meetings/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
         const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
@@ -146,7 +164,7 @@ app.put("/api/meetings/:id", async (req: Request, res: Response) => {
     }
 });
 
-app.delete("/api/meetings/:id", async (req: Request, res: Response) => {
+app.delete("/api/meetings/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
@@ -171,7 +189,7 @@ app.delete("/api/meetings/:id", async (req: Request, res: Response) => {
 })
 
 //todos
-app.post("/api/todo", async (req: Request, res: Response) => {
+app.post("/api/todo", authenticateToken, async (req: Request, res: Response) => {
     try {
         const { id, due, price, client, description } = req.body;
         const todoCollection = process.env.TODO_COLLECTION_NAME;
@@ -201,7 +219,7 @@ app.post("/api/todo", async (req: Request, res: Response) => {
     }
 });
 
-app.get("/api/todo", async (req: Request, res: Response) => {
+app.get("/api/todo", authenticateToken, async (req: Request, res: Response) => {
     try {
         const todoCollection = process.env.TODO_COLLECTION_NAME;
         if (!todoCollection) {
@@ -216,7 +234,7 @@ app.get("/api/todo", async (req: Request, res: Response) => {
     }
 });
 
-app.delete("/api/todo/:id", async (req: Request, res: Response) => {
+app.delete("/api/todo/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const todoCollection = process.env.TODO_COLLECTION_NAME;
@@ -238,7 +256,7 @@ app.delete("/api/todo/:id", async (req: Request, res: Response) => {
     }
 })
 
-app.put("/api/todo/:id", async (req: Request, res: Response) => {
+app.put("/api/todo/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
         const todoCollection = process.env.TODO_COLLECTION_NAME;
@@ -263,6 +281,59 @@ app.put("/api/todo/:id", async (req: Request, res: Response) => {
         res.status(500).json({ error: "failed to update Todo" });
     }
 });
+
+//users
+app.post("/api/register", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const usersCollection = process.env.USERS_COLLECTION_NAME;
+        if (!usersCollection) {
+            res.status(500).json({ error: "USERS_COLLECTION_NAME not configured" });
+            return;
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        await db.collection(usersCollection).insertOne({
+            username,
+            password: hashedPassword
+        });
+        res.status(201).json();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to register user" });
+    }
+})
+
+app.post("/api/login", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const usersCollection = process.env.USERS_COLLECTION_NAME;
+        if (!usersCollection) {
+            res.status(500).json({ error: "USERS_COLLECTION_NAME not configured" });
+            return;
+        }
+        const user = await db.collection(usersCollection).findOne({ username });
+        if (!user) {
+            res.status(400).json({ error: "invalid login" });
+            return;
+        }
+        const pass = await bcrypt.compare(password, user.password);
+        if (!pass) {
+            res.status(400).json({ error: "invalid login" });
+            return;
+        }
+
+        //generate the token
+        const token = jwt.sign(
+            { userId: user._id, username: user.username },
+            process.env.JWT_SECRET as string,
+            { expiresIn: "15m" }
+        );
+        res.json({ token });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "failed to login" });
+    }
+})
 
 // startup
 app.listen(PORT, () => {
