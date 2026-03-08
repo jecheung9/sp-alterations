@@ -2,22 +2,23 @@ import { useEffect, useState } from "react";
 import '../styles/settings.css';
 import type { Client } from "../types/client.ts";
 import { useAuth } from "../context/AuthProvider.tsx";
+import { FetchHelper } from "../utils/Fetch.tsx";
+import { useNavigate } from "react-router";
 
 
 const Settings = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [input, setInput] = useState("");
-  const { token } = useAuth();
+  const { token, onLogout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadClients() {
       try {
-        const res = await fetch("http://localhost:3000/api/clients", {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          }
-        });
+        const res = await FetchHelper("http://localhost:3000/api/clients", {}, token, onLogout, navigate);
+        if (!res) {
+          return;
+        }
         const data = await res.json();
 
         setClients(data);
@@ -39,15 +40,18 @@ const Settings = () => {
       return;
     }
     try {
-      const res = await fetch("http://localhost:3000/api/clients", {
-        method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        body: JSON.stringify({ name: input })
-      });
-
+      const res = await FetchHelper("http://localhost:3000/api/clients",
+        {
+          method: "POST",
+          body: JSON.stringify({ name: input })
+        },
+        token,
+        onLogout,
+        navigate
+      );
+      if (!res) {
+        return;
+      }
       const newClient = await res.json();
       setClients(prev => [...prev, newClient]);
       setInput("");
@@ -58,10 +62,7 @@ const Settings = () => {
 
   const removeClient = async (_id: string) => {
     try {
-      await fetch(`http://localhost:3000/api/clients/${_id}`, {
-        method: "DELETE",
-        headers: {"Authorization": `Bearer ${token}`}
-      });
+      await FetchHelper(`http://localhost:3000/api/clients/${_id}`, {method: "DELETE"}, token, onLogout, navigate);
       setClients(prev => prev.filter(c => c._id !== _id));
     } catch (err) {
       console.error("Error deleting client:", err);

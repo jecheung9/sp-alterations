@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export const Landing: React.FC = () => {
   const { onLogin } = useAuth();
@@ -25,6 +26,8 @@ export const Landing: React.FC = () => {
         setError("Invalid username or password, try again.")
         return;
       }
+      // const tenSeconds = new Date(new Date().getTime() + 10 * 1000);
+      Cookies.set("token", data.token, { expires: 0.5 });
       onLogin(data.token);
       navigate("/dashboard");
     } catch (err) {
@@ -40,6 +43,7 @@ export const Landing: React.FC = () => {
         <input
           id="username"
           type="text"
+          autoComplete='off'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />

@@ -2,6 +2,8 @@ import { useState, type FormEvent, useEffect } from 'react';
 import '../styles/addform.css'
 import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
+import { FetchHelper } from '../utils/Fetch';
+import { useNavigate } from 'react-router';
 
 interface AddFormProps {
   onClose: () => void;
@@ -51,7 +53,8 @@ const AddForm: React.FC<AddFormProps> = ({
   type FormMode = 'alteration' | 'meeting';
   const [mode, setMode] = useState<FormMode>(initialMode || 'alteration');
   
-  const { token } = useAuth();
+  const { token, onLogout } = useAuth();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -64,12 +67,15 @@ const AddForm: React.FC<AddFormProps> = ({
   useEffect(() => {
     async function loadClients() {
       try {
-        const res = await fetch("http://localhost:3000/api/clients", {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          }
-        });
+        const res = await FetchHelper(
+          "http://localhost:3000/api/clients",
+          {},
+          token,
+          onLogout, 
+          navigate
+        );
+
+        if (!res) return; // token expired or invalid, exit early
         const data = await res.json();
         setClientsData(data);
       } catch (err) {
@@ -247,6 +253,7 @@ const AddForm: React.FC<AddFormProps> = ({
               id='price'
               placeholder='0'
               min='0'
+              autoComplete='off'
               value={price}
               onChange={(e) => {
                 let value = e.target.value.replace(/\D/g, "")

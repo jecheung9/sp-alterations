@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Money from "./pages/Money";
@@ -16,34 +16,26 @@ import MeetingDetail from "./pages/MeetingDetails";
 import { Landing } from "./pages/Landing";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import { useAuth } from "./context/AuthProvider";
+import { FetchHelper } from "./utils/Fetch";
 
 
 function App() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [nextAlterationId, setNextAlterationId] = useState(1);
   const [nextMeetingId, setNextMeetingId] = useState(1);
-  const { token } = useAuth();
+  const { token, onLogout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadEntries() {
       try {
-        const [alterationsRes, meetingsRes] = await Promise.all([
-          fetch("http://localhost:3000/api/todo", {
-            headers: { 
-              "Content-Type": "application/json", 
-              "Authorization": `Bearer ${token}` 
-            }
-          }),
-          fetch("http://localhost:3000/api/meetings", {
-            headers: { 
-              "Content-Type": "application/json", 
-              "Authorization": `Bearer ${token}` 
-            }
-          }),
-        ]);
+      const [alterationsRes, meetingsRes] = await Promise.all([
+        FetchHelper("http://localhost:3000/api/todo", {}, token, onLogout, navigate),
+        FetchHelper("http://localhost:3000/api/meetings", {}, token, onLogout, navigate)
+      ]);
 
-        if (!alterationsRes.ok || !meetingsRes.ok) {
-          throw new Error("Failed to fetch data");
+        if (!alterationsRes || !meetingsRes) {
+          return;
         }
 
         const [alterations, meetings] = await Promise.all([

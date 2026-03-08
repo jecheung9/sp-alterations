@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext({
   token: null as string | null,
@@ -10,13 +11,16 @@ const AuthContext = createContext({
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(() => {
+    return Cookies.get("token") || null;
+  });
 
   const handleLogin = (jwtToken: string) => {
     setToken(jwtToken);
   };
 
   const handleLogout = () => {
+    Cookies.remove("token");
     setToken(null);
   };
 
