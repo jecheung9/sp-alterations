@@ -13,7 +13,7 @@
     flex-direction: column;
 }
 
-.dashboard-calendar, .dashboard-money { 
+.dashboard-calendar { 
     min-height: 25rem;
 }
 
@@ -94,6 +94,32 @@ p {
     background-color: #e0e0e0;
     cursor: pointer;
 }
+
+.money-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 1rem;
+}
+
+.money-grid-2, .money-grid-3 {
+    padding: 1rem;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.money-grid-3 {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+}
+
+.money-grid-side {
+    display: flex;
+    gap: 2rem;
+}
+
 
 
 

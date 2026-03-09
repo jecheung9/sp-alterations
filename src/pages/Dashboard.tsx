@@ -55,6 +55,79 @@ const Dashboard: React.FC<DashboardProps> = ({
   const entriesLength = incompleteEntries.length;
 
   
+  let grandTotal = 0;
+  entries.forEach(entry => {
+    grandTotal += entry.price || 0;
+  })
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+
+  let yearTotal = 0;
+  entries.forEach(entry => {
+    const entryYear = new Date(entry.due).getFullYear();
+    if (entryYear === currentYear) {
+      yearTotal += entry.price || 0;
+    }
+  });
+
+  const getMonth = () =>
+  new Date(now).toLocaleString("en-US", {
+    month: "long",
+    year: "numeric"
+  });
+  const currentMonth = getMonth();
+
+  let currentMonthTotal = 0;
+  entries.forEach(entry => {
+  const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+    month: "long",
+    year: "numeric"
+    });
+    if (entryMonth === currentMonth) {
+      currentMonthTotal += entry.price || 0;
+    }
+  });
+
+  const clientMonthTotals: Record<string, number> = {};
+  const clients = [...new Set(entries.map(e => e.client?.name))];
+  clients.forEach(client => clientMonthTotals[client] = 0);
+  entries.forEach(entry => {
+    const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+      month: "long",
+      year: "numeric"
+    });
+    const clientName = entry.client?.name;
+    if (entryMonth === currentMonth && clientName) {
+      clientMonthTotals[clientName] += entry.price || 0;
+    }
+  });
+
+  const prevMonthFirst = new Date(currentYear, now.getMonth() - 1, 1);
+  const prevMonth = prevMonthFirst.toLocaleString("en-US", {
+      month: "long",
+      year: "numeric"
+  });
+  
+  let prevMonthTotal = 0;
+  const prevMonthClientTotals: Record<string, number> = {};
+  clients.forEach(client => prevMonthClientTotals[client] = 0);
+
+  entries.forEach(entry => {
+    const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+      month: "long",
+      year: "numeric"
+    });
+    const clientName = entry.client?.name;
+    if (entryMonth === prevMonth) {
+      prevMonthClientTotals[clientName] += entry.price || 0;
+      prevMonthTotal += entry.price || 0;
+    }
+
+  });
+
+
+  
   return (
     <div className="page-container">
       <h1>Dashboard</h1>
@@ -125,9 +198,47 @@ const Dashboard: React.FC<DashboardProps> = ({
 
           <div className="dashboard-money">
             <h2>Money</h2>
-            <div className="empty-message">
-              A display of profits/client/month should go here
+            <div className="money-grid">
+              <div>All-time Total</div>
+              <div>{grandTotal}</div>
+              <div>{currentYear} total</div>
+              <div>{yearTotal}</div>
             </div>
+            <div className="money-grid-side">
+              <div className="money-grid-column">
+                <div className="money-grid-2">
+                  <div>Current Month ({currentMonth}) total: {currentMonthTotal}</div>
+                  <div>Current Month Breakdown</div>
+                </div>
+                  <div className="money-grid-3">
+                    {clients.map(c => (
+                      <>
+                        <div>{c}</div>
+                        <div>{clientMonthTotals[c]}</div>
+                      </>
+                    ))}
+                  </div>
+              </div>
+
+              <div className="money-grid-column">
+                <div className="money-grid-2">
+                  <div>Previous Month ({prevMonth}) total: {prevMonthTotal}</div>
+                  <div>Previous Month Breakdown</div>
+                </div>
+                <div className="money-grid-3">
+                  {clients.map(c => (
+                    <>
+                      <div></div>
+                      <div>{prevMonthClientTotals[c]}</div>
+                    </>
+                  ))}
+                </div>
+              </div>
+            
+            </div>
+              <button
+              className="prev-meetings-button"
+              onClick={() => navigate("/money")}> View Money Details</button>
           </div>
         </div>
       </div>

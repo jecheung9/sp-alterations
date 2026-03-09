@@ -86,7 +86,7 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
   return (
     <div className="page-container">
       <h1>Money</h1>
-      <h2>Summary</h2>
+      <h2>Summary (profits/incomplete combined)</h2>
       <table className="todo-table">
         <thead>
           <tr>
