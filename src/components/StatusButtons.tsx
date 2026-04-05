@@ -1,5 +1,4 @@
 import type { Entry } from "../types/entry";
-import '../styles/statusbutton.css';
 
 interface StatusButtonsProps {
   onChange: (status: Entry["status"]) => void;
@@ -26,7 +25,7 @@ const StatusButtons: React.FC<StatusButtonsProps> = ({
         <button
           key={status}
           onClick={() => onChange(status)}
-          className={status === currentStatus ? "active-status" : ""}
+          className={status === currentStatus ? "!bg-[#2c3e50] !text-white" : ""}
         >
           {status}
         </button>

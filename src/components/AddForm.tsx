@@ -1,5 +1,4 @@
 import { useState, type FormEvent, useEffect } from 'react';
-import '../styles/addform.css'
 import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
 import { FetchHelper } from '../utils/Fetch';

@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import '../styles/Navbar.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse, faCalendar, faHandshake } from "@fortawesome/free-regular-svg-icons";
 import { faGear, faList, faMoneyBill1Wave, faPlus } from "@fortawesome/free-solid-svg-icons";
