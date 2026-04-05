@@ -20,35 +20,35 @@ const Navbar: React.FC<NavbarProps> = ({
     navigate("/");
   }
   return (
-    <div className="navbar">
-      <div className="navbar-header">
-        <h3>Alterations Dashboard</h3>
+    <div className="flex flex-col text-2xl border-2 border-black bg-[#808080] text-white max-w-max p-2 min-h-screen">
+      <div className="flex justify-between">
+        <h3 className="text-2xl">Alterations Dashboard</h3>
       </div>
-        <Link to="/dashboard" className="navbar-category">
+        <Link to="/dashboard" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
           <FontAwesomeIcon className="icon"icon={faHouse} />
           Dashboard
         </Link>
-        <Link to="/money" className="navbar-category">
+        <Link to="/money" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
           <FontAwesomeIcon className="icon" icon={faMoneyBill1Wave} />
           Money
         </Link>
-        <Link to="/calendar" className="navbar-category">
+        <Link to="/calendar" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
           <FontAwesomeIcon className="icon" icon={faCalendar} />
           Calendar
         </Link> 
-        <Link to="/todo" className="navbar-category">
+        <Link to="/todo" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
           <FontAwesomeIcon className="icon" icon={faList} />
           To-do
       </Link>
-      <Link to="/meetings" className="navbar-category">
+      <Link to="/meetings" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
         <FontAwesomeIcon className="icon" icon={faHandshake} />
         Meetings
       </Link>
-      <div className="navbar-category" onClick={onOpen} >
+      <div className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]" onClick={onOpen} >
         <FontAwesomeIcon icon={faPlus} />
         Add Entry
       </div>
-      <Link to="/settings" className="navbar-category">
+      <Link to="/settings" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
         <FontAwesomeIcon className="icon" icon={faGear} />
         Settings
       </Link>

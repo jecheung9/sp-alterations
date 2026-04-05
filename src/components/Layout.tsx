@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import Navbar from "./Navbar";
-import '../styles/layout.css'
 import AddForm from "./AddForm";
 import type { Client } from "../types/client";
 import { useLocation } from "react-router-dom";
@@ -42,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div>
       <main>
-        <div className="layout">
+        <div className="flex flex-row gap-4">
           <Navbar onOpen={() => setIsAddFormOpen(true)}/>
           {children}
           {isAddFormOpen && (
