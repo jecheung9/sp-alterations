@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .contents {
+    display: contents;
+  }
+}
+
 * {
     font-family: 'Roboto', sans-serif;
 }

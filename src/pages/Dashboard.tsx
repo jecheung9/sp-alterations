@@ -1,4 +1,3 @@
-import "../styles/dashboard.css"
 import { useNavigate } from "react-router-dom"
 import type { Entry } from "../types/entry"
 
@@ -129,19 +128,19 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   
   return (
-    <div className="page-container">
-      <h1>Dashboard</h1>
-      <div className="grid-dashboard">
-        <div className="dashboard-column">
-          <div className="dashboard-meetings">
-            <h2>Upcoming Meetings</h2>
+    <div className="flex-1">
+      <h1 className="text-4xl p-2 font-bold">Dashboard</h1>
+      <div className="grid grid-cols-2 gap-4 items-start">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
+            <h2 className="text-2xl p-2 font-bold">Upcoming Meetings</h2>
               <div>
                 {meetingsLength === 0 ? (
-                  <div className="empty-message">
+                  <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
                     No upcoming meetings!
                   </div>
                 ) : (
-                  <div className="meetings-grid">
+                  <div className="grid grid-cols-[max-content_max-content_auto] gap-4 p-4">
                     {incompleteMeetings.map(val => (
                       <>
                         <div>{formatDateTime(val.due)}</div>
@@ -153,64 +152,64 @@ const Dashboard: React.FC<DashboardProps> = ({
                 )}
               </div>
             <button
-              className="prev-meetings-button"
+              className="block mr-4 mb-4 ml-auto hover:bg-[#B4C0C7]"
               onClick={() => navigate("/meetings")}> View Previous Meetings</button>
           </div>
-          <div className="dashboard-calendar">
-            <h2>Calendar</h2>
-              <div className="empty-message">
+          <div className="flex flex-col box-border min-h-[25rem]" style={{ backgroundColor: "#ECECEC" }}>
+            <h2 className="text-2xl p-2 font-bold">Calendar</h2>
+              <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
                 The calendar should eventually go here
               </div>
           </div>
         </div>
 
-        <div className="dashboard-column">
-          <div className="dashboard-todo">
-            <div className="todo-header">
-              <h2>To-do</h2>
-              <p><i>up to 7 days</i></p>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
+            <div className="flex items-baseline">
+              <h2 className="text-2xl p-2 font-bold">To-do</h2>
+              <p className="text-gray-500"><i>up to 7 days</i></p>
             </div>
               <div>
                 {entriesLength === 0 ? (
-                  <div className="empty-message">
+                  <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
                     No upcoming to-dos for the next 7 days!
                   </div>
                   ) : (
-                    <div className="todo-grid">
+                    <div className="grid grid-cols-[max-content_max-content_auto] py-2">
                       {incompleteEntries.map(val => (
                         <div
                           key={val.id}
-                          className="todo-row"
+                          className="todo-row contents group cursor-pointer"
                           onClick={() => navigate(`/todo/${val.id}`)}
                         >
-                          <div>{formatDate(val.due)}</div>
-                          <div>{val.client?.name}</div>
-                          <div>{val.description}</div>
+                          <div className="py-2 pl-4 group-hover:bg-gray-300">{formatDate(val.due)}</div>
+                          <div className="py-2 pl-4 group-hover:bg-gray-300">{val.client?.name}</div>
+                          <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
                         </div>
                       ))}
                     </div>
                 )}
               </div>
             <button
-              className="prev-meetings-button"
+              className="block mr-4 mb-4 ml-auto hover:bg-[#B4C0C7]"
               onClick={() => navigate("/todo")}> View Full To-do List</button>
           </div>
 
-          <div className="dashboard-money">
-            <h2>Money</h2>
-            <div className="money-grid">
+          <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
+            <h2 className="text-2xl p-2 font-bold">Money</h2>
+            <div className="grid grid-cols-4 p-4">
               <div>All-time Total</div>
               <div>{grandTotal}</div>
               <div>{currentYear} total</div>
               <div>{yearTotal}</div>
             </div>
-            <div className="money-grid-side">
+            <div className="flex gap-8">
               <div className="money-grid-column">
-                <div className="money-grid-2">
+                <div className="flex flex-col gap-8 pt-0 p-4">
                   <div>Current Month ({currentMonth}) total: {currentMonthTotal}</div>
                   <div>Current Month Breakdown</div>
                 </div>
-                  <div className="money-grid-3">
+                  <div className="grid grid-cols-[auto_1fr] gap-4 pt-0 p-4">
                     {clients.map(c => (
                       <>
                         <div>{c}</div>
@@ -221,11 +220,11 @@ const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               <div className="money-grid-column">
-                <div className="money-grid-2">
+                <div className="flex flex-col gap-8 pt-0 p-4">
                   <div>Previous Month ({prevMonth}) total: {prevMonthTotal}</div>
                   <div>Previous Month Breakdown</div>
                 </div>
-                <div className="money-grid-3">
+                <div className="grid grid-cols-[auto_1fr] gap-4 pt-0">
                   {clients.map(c => (
                     <>
                       <div></div>
@@ -237,7 +236,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             
             </div>
               <button
-              className="prev-meetings-button"
+              className="block mr-4 mb-4 ml-auto hover:bg-[#B4C0C7]"
               onClick={() => navigate("/money")}> View Money Details</button>
           </div>
         </div>

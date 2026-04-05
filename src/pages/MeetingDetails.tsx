@@ -41,7 +41,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
 
 
   if (!meeting) {
-    return <div className="page-container"><p>Meeting not found</p></div>;
+    return <div className="page-container"><p className="text-gray-500">Meeting not found</p></div>;
   }
     
 

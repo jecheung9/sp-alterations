@@ -89,7 +89,7 @@ const Settings = () => {
             <button type="submit">Add</button>
           </form>
           
-          {clients.length === 0 && <p>No clients yet. Add some!</p>}
+          {clients.length === 0 && <p className="text-gray-500">No clients yet. Add some!</p>}
           {clients.map(client => (
             <div key={client._id} className="client-row">
               <button

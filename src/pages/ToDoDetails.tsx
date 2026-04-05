@@ -37,7 +37,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
   const todo = entries.find(e => e.id.toString() === id);
 
   if (!todo) {
-    return <div className="page-container"><p>Todo not found</p></div>;
+    return <div className="page-container"><p className="text-gray-500">Todo not found</p></div>;
   }
 
   return (

@@ -39,7 +39,7 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
     <div className="page-container">
       <h1>Upcoming Meetings ({incompleteLength})</h1>
       {incompleteLength === 0 ? (
-        <div className="empty-message">
+        <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming meetings!
         </div>
       ) : ( 
@@ -80,7 +80,7 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
       </h1>
 
       {completeLength === 0 ? (
-        <div className="empty-message">
+        <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No completed meetings yet!
         </div>
       ) : (

@@ -42,7 +42,7 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
     <div className="page-container">
       <h1>To-Do ({incompleteLength})</h1>
         {incompleteLength === 0 ? (
-        <div className="empty-message">
+        <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming to-dos!
         </div>
         ) : (
@@ -83,7 +83,7 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
       
         <h1>Completed - Not Delivered ({completeLength})</h1>
         {completeLength === 0 ? (
-          <div className="empty-message">
+          <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
             No completed items yet!
           </div>
         ) : (
@@ -132,7 +132,7 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
         </h1>
 
           {deliveredLength === 0 ? (
-            <div className="empty-message">
+            <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
               No completed and dropped off items yet!
             </div>
           ) : (
