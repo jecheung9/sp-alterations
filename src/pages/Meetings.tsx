@@ -1,4 +1,3 @@
-import "../styles/meetings.css"
 import { useState } from "react";
 import type { Entry } from "../types/entry"
 import { useNavigate } from "react-router-dom";
@@ -36,33 +35,34 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
   } 
 
   return (
-    <div className="page-container">
-      <h1>Upcoming Meetings ({incompleteLength})</h1>
+    <div className="flex-1">
+      <h1 className="font-bold text-3xl">Upcoming Meetings ({incompleteLength})</h1>
       {incompleteLength === 0 ? (
         <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming meetings!
         </div>
       ) : ( 
-      <table className="meetings-table">
+      <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
         <thead>
           <tr>
-            <th className="table-id">id</th>
-            <th className="table-date">Meeting Time</th>
-            <th className="table-client">Client</th>
-            <th className="table-description">Description</th>
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Description</th>
           </tr>
         </thead>
         <tbody>
           {incompleteMeetings.map(val => {
             return (
               <tr
+                className="cursor-pointer hover:bg-[#e0e0e0]"
                 key={val.id}
                 onClick={() => navigate(`/meetings/${val.id}`)}
               >
-                <td>{val.id}</td>
-                <td>{formatDateTime(val.due)}</td>
-                <td>{val.client?.name}</td>
-                <td className="row-description">{val.description}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDateTime(val.due)}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
               </tr>
             )
           })}
@@ -70,10 +70,10 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
       </table>  
       )}
 
-      <h1 className="completed-header">
+      <h1 className="flex gap-4 items-center font-bold text-3xl">
         Completed ({completeLength}) 
         {completeLength > 0 && (
-          <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
+          <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-xl">
           {isOpen ? "Collapse" : "Expand"}
           </button>
         )}
@@ -85,26 +85,27 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
         </div>
       ) : (
         isOpen && (
-        <table className="meetings-table">
+        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
           <thead>
             <tr>
-              <th className="table-id">id</th>
-              <th className="table-date">Due Date</th>
-              <th className="table-client">Client</th>
-              <th className="table-description">Description</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Description</th>
             </tr>
           </thead>
           <tbody>
             {completeMeetings.map(val => {
               return (
                 <tr
+                  className="cursor-pointer hover:bg-[#e0e0e0]"
                   key={val.id}
                   onClick={() => navigate(`/meetings/${val.id}`)}
                 >
-                  <td>{val.id}</td>
-                  <td>{formatDateTime(val.due)}</td>
-                  <td>{val.client?.name}</td>
-                  <td className="row-description">{val.description}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDateTime(val.due)}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
                 </tr>
               )
             })}

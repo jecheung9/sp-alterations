@@ -1,4 +1,3 @@
-import "../styles/todo.css"
 import { useState } from "react";
 import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
@@ -39,41 +38,42 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
   } 
 
   return (
-    <div className="page-container">
-      <h1>To-Do ({incompleteLength})</h1>
+    <div className="flex-1">
+      <h1 className="font-bold text-3xl"> To-Do ({incompleteLength})</h1>
         {incompleteLength === 0 ? (
         <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming to-dos!
         </div>
         ) : (
-        <table className="todo-table">
+        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
           <thead>
             <tr>
-              <th className="table-id">id</th>
-              <th className="table-date">Due Date</th>
-              <th className="table-status">Status</th>
-              <th className="table-client">Client</th>
-              <th className="table-price">Price</th>
-              <th className="table-description">Description</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[15%]">Due Date</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[12.5%]">Status</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">Price</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-auto">Description</th>
             </tr>
           </thead>
           <tbody>
             {incompleteEntries.map(val => (
               <tr
+                className="cursor-pointer hover:bg-[#e0e0e0]"
                 key={val.id}
                 onClick={() => navigate(`/todo/${val.id}`)}
               >
-                <td>{val.id}</td>
-                <td>{formatDate(val.due)}</td>
-                <td className={
-                  val.status === "Not Started" ? "not-started" :
-                  val.status === "Started" ? "started" :
-                  val.status === "Complete" ? "complete" :
-                  val.status === "Dropped Off" ? "dropped-off" :
-                  ""}>{val.status}</td>
-                <td>{val.client?.name}</td>
-                <td>{val.price}</td>
-                <td className="row-description">{val.description}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDate(val.due)}</td>
+                <td className={`border-r-2 border-gray-500 p-[0.2rem] 
+                  ${val.status === "Not Started" ? "bg-[#e74c3c] text-white" : ""}
+                  ${val.status === "Started" ? "bg-[#f1c40f]" : ""}
+                  ${val.status === "Complete" ? "bg-[#2ecc71] text-white" : ""}
+                  `}
+                >{val.status}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
               </tr>
             ))}
           </tbody>
@@ -81,40 +81,41 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
         )}
 
       
-        <h1>Completed - Not Delivered ({completeLength})</h1>
+        <h1 className="font-bold text-3xl">Completed - Not Delivered ({completeLength})</h1>
         {completeLength === 0 ? (
           <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
             No completed items yet!
           </div>
         ) : (
-          <table className="todo-table">
+          <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
             <thead>
               <tr>
-                <th className="table-id">id</th>
-                <th className="table-date">Due Date</th>
-                <th className="table-status">Status</th>
-                <th className="table-client">Client</th>
-                <th className="table-price">Price</th>
-                <th className="table-description">Description</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[15%]">Due Date</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[12.5%]">Status</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">Price</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-auto">Description</th>
               </tr>
             </thead>
             <tbody>
               {completeEntries.map(val => (
                 <tr
+                  className="cursor-pointer hover:bg-[#e0e0e0]"
                   key={val.id}
                   onClick={() => navigate(`/todo/${val.id}`)}
                 >
-                  <td>{val.id}</td>
-                  <td>{formatDate(val.due)}</td>
-                  <td className={
-                    val.status === "Not Started" ? "not-started" :
-                    val.status === "Started" ? "started" :
-                    val.status === "Complete" ? "complete" :
-                    val.status === "Dropped Off" ? "dropped-off" :
-                    ""}>{val.status}</td>
-                  <td>{val.client?.name}</td>
-                  <td>{val.price}</td>
-                  <td className="row-description">{val.description}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDate(val.due)}</td>
+                  <td className={`border-r-2 border-gray-500 p-[0.2rem] 
+                    ${val.status === "Not Started" ? "bg-[#e74c3c] text-white" : ""}
+                    ${val.status === "Started" ? "bg-[#f1c40f]" : ""}
+                    ${val.status === "Complete" ? "bg-[#2ecc71] text-white" : ""}
+                    `}
+                  >{val.status}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
                 </tr>
               ))}
             </tbody>
@@ -122,10 +123,10 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
         )}
 
 
-        <h1 className="completed-header">
+        <h1 className="flex gap-4 items-center font-bold text-3xl">
           Completed - Dropped Off ({deliveredLength}) 
           {deliveredLength > 0 && (
-            <button onClick={() => setIsOpen(!isOpen)} className="expand-button">
+            <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-xl">
               {isOpen ? "Collapse" : "Expand"}
             </button>
           )}
@@ -137,33 +138,35 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
             </div>
           ) : (
             isOpen && (
-              <table className="todo-table">
+              <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
                 <thead>
                   <tr>
-                    <th className="table-id">id</th>
-                    <th className="table-date">Due Date</th>
-                    <th className="table-status">Status</th>
-                    <th className="table-client">Client</th>
-                    <th className="table-price">Price</th>
-                    <th className="table-description">Description</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[15%]">Due Date</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[12.5%]">Status</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">Price</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-auto">Description</th>
                   </tr>
                 </thead>
                 <tbody>
                   {deliveredEntries.map(val => (
                     <tr
+                      className="cursor-pointer hover:bg-[#e0e0e0]"
                       key={val.id}
                       onClick={() => navigate(`/todo/${val.id}`)}
                     >
-                      <td>{val.id}</td>
-                      <td>{formatDate(val.due)}</td>
-                      <td className={
-                        val.status === "Not Started" ? "not-started" :
-                        val.status === "Started" ? "started" :
-                        val.status === "Complete" ? "complete" :
-                        ""}>{val.status}</td>
-                      <td>{val.client?.name}</td>
-                      <td>{val.price}</td>
-                      <td className="row-description">{val.description}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDate(val.due)}</td>
+                      <td className={`border-r-2 border-gray-500 p-[0.2rem] 
+                        ${val.status === "Not Started" ? "bg-[#e74c3c] text-white" : ""}
+                        ${val.status === "Started" ? "bg-[#f1c40f]" : ""}
+                        ${val.status === "Complete" ? "bg-[#2ecc71] text-white" : ""}
+                        `}
+                      >{val.status}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
                     </tr>
                   ))}
                 </tbody>

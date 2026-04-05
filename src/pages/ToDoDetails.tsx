@@ -42,7 +42,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
 
   return (
     <div className="page-container">
-      <h1>Todo #{todo.id}</h1>
+      <h1 className="font-bold text-3xl">Todo #{todo.id}</h1>
       <p>Status: {todo.status}</p>
       <p>Client: {todo.client?.name}</p>
       <p>Due: {formatDate(todo.due)}</p>
