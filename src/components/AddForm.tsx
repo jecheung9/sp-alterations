@@ -183,37 +183,39 @@ const AddForm: React.FC<AddFormProps> = ({
 
 
   return (
-    <div className="add-entry-modal">
-      <form className='add-entry-form' onSubmit={handleSubmit}>
-        <div className='form-header'>
-          <div className='header-top'>
-          <h3>{editHeader ? editHeader : mode === 'alteration'
+    <div className="fixed inset-0 w-screen h-screen bg-black/50 flex justify-center items-center">
+      <form className="w-150 rounded-lg bg-white flex flex-col items-center p-12" onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-3 w-full">
+          <div className="flex items-center min-w-full relative">
+          <h3 className="text-3xl font-bold mx-auto">{editHeader ? editHeader : mode === 'alteration'
             ? "Add an alterations entry"
             : "Add a meeting"}</h3>
-          <button type="button" className='close-button' onClick={onClose}> Close </button>
+          <button type="button" className='absolute right-0 hover:!bg-[#ff4444]' onClick={onClose}> Close </button>
           </div>
 
           {!isEdit && (
-            <div className='mode-toggle'>
+            <div className='flex gap-2 justify-center mb-6 items-center'>
               Choose mode:
             <button
               type="button"
-              className={`mode-button ${mode === 'alteration' ? 'active' : ''}`}
+              className={`mode-button ${mode === 'alteration' ? '!bg-[#2c3e50] !text-white' : ''}`}
               onClick={() => setMode('alteration')}> Alterations
             </button> 
             
             <button
               type="button"
-              className={`mode-button ${mode === 'meeting' ? 'active' : ''}`}
+              className={`mode-button ${mode === 'meeting' ? '!bg-[#2c3e50] !text-white' : ''}`}
               onClick={() => setMode('meeting')}> Meeting
             </button> 
             </div>
           )}
         </div> 
 
-        <div className='form-contents'>
-          <label htmlFor="client">Client<span>*</span></label>
+        <div className="grid grid-cols-[max-content_1fr] gap-4 items-center w-full">
+          <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg"
+            htmlFor="client">Client<span className="text-red-500">*</span></label>
           <select
+            className='border rounded py-1 mt-[0.35rem] text-lg'
             id="client"
             name='client'
             value={client?._id || ""}
@@ -231,10 +233,11 @@ const AddForm: React.FC<AddFormProps> = ({
             ))}
           </select>
 
-          <label htmlFor='date'>
+          <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg" htmlFor='date'>
             {mode === 'alteration' ? 'Date' : 'Date & Time'}
-            <span>*</span></label>
+            <span className="text-red-500">*</span></label>
           <input
+            className='border rounded mt-[0.35rem] text-lg'
             type={mode === 'alteration' ? 'date' : 'datetime-local'}
             id='date'
             name='date'
@@ -247,8 +250,10 @@ const AddForm: React.FC<AddFormProps> = ({
 
           {mode === 'alteration' && (
           <>
-            <label htmlFor='price'>Price<span>*</span></label>
-            <input
+              <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg"
+                htmlFor='price'>Price<span className="text-red-500">*</span></label>
+              <input
+              className="appearance-textfield border rounded mt-[0.35rem] text-lg"
               type='text'
               id='price'
               placeholder='0'
@@ -264,8 +269,10 @@ const AddForm: React.FC<AddFormProps> = ({
           </>    
           )} 
 
-          <label className='description-label' htmlFor='description'>Description<span>*</span></label>
+          <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg self-start"
+            htmlFor='description'>Description<span className="text-red-500">*</span></label>
           <textarea
+            className="resize-none border rounded mt-[0.35rem] text-lg h-[10rem]"
             id='description'
             name='description'
             value={description}
@@ -277,8 +284,8 @@ const AddForm: React.FC<AddFormProps> = ({
         </div>
 
         {Object.values(errors).some(err => err) && (
-          <div className="error-box">
-            <ul className="error-list">
+          <div className="bg-[#fef2f2] border border-[#fca5a5] text-[#b91c1c] p-3 rounded-md mt-3">
+            <ul className="list-disc ml-4">
               {Object.values(errors)
                 .filter(err => err)
                 .map((err, idx) => (
@@ -287,7 +294,7 @@ const AddForm: React.FC<AddFormProps> = ({
             </ul>
           </div>
           )}
-        <button className='submit-button' type='submit'> Submit Entry</button>
+        <button className="!mt-6 !px-[1.2em] !py-[0.6em] hover:!bg-[#22c55e] active:!bg-[#16a34a]" type='submit'> Submit Entry</button>
       </form>
     </div>
   )

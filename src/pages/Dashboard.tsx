@@ -152,7 +152,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 )}
               </div>
             <button
-              className="block mr-4 mb-4 ml-auto hover:bg-[#B4C0C7]"
+              className="block mr-4 mb-4 ml-auto"
               onClick={() => navigate("/meetings")}> View Previous Meetings</button>
           </div>
           <div className="flex flex-col box-border min-h-[25rem]" style={{ backgroundColor: "#ECECEC" }}>
@@ -191,7 +191,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 )}
               </div>
             <button
-              className="block mr-4 mb-4 ml-auto hover:bg-[#B4C0C7]"
+              className="block mr-4 mb-4 ml-auto"
               onClick={() => navigate("/todo")}> View Full To-do List</button>
           </div>
 
@@ -236,7 +236,7 @@ const Dashboard: React.FC<DashboardProps> = ({
             
             </div>
               <button
-              className="block mr-4 mb-4 ml-auto hover:bg-[#B4C0C7]"
+              className="block mr-4 mb-4 ml-auto"
               onClick={() => navigate("/money")}> View Money Details</button>
           </div>
         </div>

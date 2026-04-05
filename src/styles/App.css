@@ -4,8 +4,30 @@
   .contents {
     display: contents;
   }
+
+  .appearance-textfield {
+    appearance: textfield;
+  }
 }
 
 * {
     font-family: 'Roboto', sans-serif;
+}
+
+button {
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    padding: 0.3em 0.6em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #C4CED4;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+button:hover {
+  color: #1a1a1a;
+  background-color: #A4B0B7;
 }
