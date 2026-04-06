@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import '../styles/settings.css';
 import type { Client } from "../types/client.ts";
 import { useAuth } from "../context/AuthProvider.tsx";
 import { FetchHelper } from "../utils/Fetch.tsx";
@@ -71,27 +70,28 @@ const Settings = () => {
 
   return (
     <div>
-      <h1>Settings/Manage</h1>
-        <div className="manage-clients">
-          <h2> Manage Clients</h2>
+      <h1 className="text-3xl p-2 font-bold">Settings/Manage</h1>
+        <div className="min-w-[30vw] bg-[#ECECEC] box-border flex flex-col gap-4 pb-4">
+          <h2 className="p-4 pb-0 text-xl p-2 font-bold"> Manage Clients</h2>
           <form
-            className="add-client-row"
+            className="flex w-full items-stretch gap-4 h-8"
             onSubmit={(e) => {
               e.preventDefault();
               addClient();
             }}  
             >
-            <input
+          <input
+            className="flex-1 p-2 text-base m-0 ml-4 rounded-md border"
               value={input}
               onChange={e => setInput(e.target.value)}
               placeholder="Add a client"
             />
-            <button type="submit">Add</button>
+            <button type="submit" className="!px-3 !mr-4">Add</button>
           </form>
           
-          {clients.length === 0 && <p className="text-gray-500">No clients yet. Add some!</p>}
+          {clients.length === 0 && <p className="text-gray-500 ml-4">No clients yet. Add some!</p>}
           {clients.map(client => (
-            <div key={client._id} className="client-row">
+            <div key={client._id} className="flex gap-4 items-center ml-4">
               <button
                 onClick={() => removeClient(client._id)}
               >✕</button>
