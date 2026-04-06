@@ -133,7 +133,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       <div className="grid grid-cols-2 gap-4 items-start">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
-            <h2 className="text-2xl p-2 font-bold">Upcoming Meetings</h2>
+            <h2 className="text-2xl p-4 pb-0 font-bold">Upcoming Meetings</h2>
               <div>
                 {meetingsLength === 0 ? (
                   <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
@@ -156,7 +156,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               onClick={() => navigate("/meetings")}> View Previous Meetings</button>
           </div>
           <div className="flex flex-col box-border min-h-[25rem]" style={{ backgroundColor: "#ECECEC" }}>
-            <h2 className="text-2xl p-2 font-bold">Calendar</h2>
+            <h2 className="text-2xl p-4 pb-0 font-bold">Calendar</h2>
               <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
                 The calendar should eventually go here
               </div>
@@ -166,7 +166,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
             <div className="flex items-baseline">
-              <h2 className="text-2xl p-2 font-bold">To-do</h2>
+              <h2 className="text-2xl p-4 pb-0 font-bold">To-do</h2>
               <p className="text-gray-500"><i>up to 7 days</i></p>
             </div>
               <div>
@@ -196,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
 
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
-            <h2 className="text-2xl p-2 font-bold">Money</h2>
+            <h2 className="text-2xl p-4 pb-0 font-bold">Money</h2>
             <div className="grid grid-cols-4 p-4">
               <div>All-time Total</div>
               <div>{grandTotal}</div>

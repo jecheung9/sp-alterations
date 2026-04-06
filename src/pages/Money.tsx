@@ -84,29 +84,29 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
 
 
   return (
-    <div className="page-container">
-      <h1>Money</h1>
-      <h2>Summary (profits/incomplete combined)</h2>
-      <table className="todo-table">
+    <div className="flex-1">
+      <h1 className="text-4xl p-2 pl-0 font-bold">Money</h1>
+      <h2 className="text-xl p-2 pl-0 font-bold">Summary (profits/incomplete combined)</h2>
+      <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
         <thead>
           <tr>
-            <th>Year</th>
-              {clients.map(client => <th>{client}</th>)}
-            <th>Total</th>
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Year</th>
+              {clients.map(client => <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">{client}</th>)}
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Total</th>
           </tr>
         </thead>
         <tbody>
           {yearlyData.map(y => (
             <tr>
-              <td>{y.year}</td>
-                {clients.map(client => <td>{y.clientTotals[client]}</td>)}
-              <td><b>{y.total}</b></td>
+              <td className="border-r-2 border-gray-500 p-[0.2rem]">{y.year}</td>
+                {clients.map(client => <td className="border-r-2 border-gray-500 p-[0.2rem]">{y.clientTotals[client]}</td>)}
+              <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{y.total}</b></td>
             </tr>
           ))}
           <tr>
-            <td><b>Total</b></td>
-              {clients.map(client => <td><b>{columnTotals[client]}</b></td>)}
-            <td><b>{grandTotal}</b></td>
+            <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>Total</b></td>
+              {clients.map(client => <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{columnTotals[client]}</b></td>)}
+            <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{grandTotal}</b></td>
           </tr>
         </tbody>
       </table>
@@ -114,30 +114,30 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
 
       {monthlyData.map(e => (
         <div>
-          <h2>{e.month}</h2>
-          <table className="todo-table">
+          <h2 className="text-xl p-2 pl-0 font-bold">{e.month}</h2>
+          <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
             <thead>
               <tr>
-                <th>Client</th>
-                <th>Profit</th>
-                <th>Incomplete</th>
-                <th>Total</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Client</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Profit</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Incomplete</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Total</th>
               </tr>
             </thead>
             <tbody>
               {clients.map(client => (
                 <tr>
-                  <td>{client}</td>
-                  <td>{e.clientTotals[client].completed}</td>
-                  <td>{e.clientTotals[client].incomplete}</td>
-                  <td>{e.clientTotals[client].completed + e.clientTotals[client].incomplete}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{client}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{e.clientTotals[client].completed}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{e.clientTotals[client].incomplete}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{e.clientTotals[client].completed + e.clientTotals[client].incomplete}</td>
                 </tr>
               ))}
               <tr>
-                <td><b>Total</b></td>
-                <td><b>{e.totals.completed}</b></td>
-                <td><b>{e.totals.incomplete}</b></td>
-                <td><b>{e.totals.grandMonth}</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>Total</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{e.totals.completed}</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{e.totals.incomplete}</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{e.totals.grandMonth}</b></td>
               </tr>
             </tbody>
           </table>
