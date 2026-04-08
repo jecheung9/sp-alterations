@@ -24,6 +24,11 @@ export default function Month() {
     monthDays.push(null);
   }
 
+  //today indicator
+  const today = new Date();
+  const todayDate = today.getDate();
+  const todayMonth = today.getFullYear() === year && today.getMonth() === month;
+
   return (
     <Box>
       {/* day headers */}
@@ -54,6 +59,7 @@ export default function Month() {
         >
           {Array.from({ length: 7 }).map((_, col) => {
             const dayNumber = monthDays[row * 7 + col];
+            const isToday = todayMonth && dayNumber == todayDate;
             return (
               <Box
                 key={col}
@@ -64,6 +70,9 @@ export default function Month() {
                   justifyContent: "right",
                   paddingRight: "0.5rem",
                   backgroundColor: dayNumber ? "white" : "#c0c0c0",
+                  color: isToday ? "green" : "black",
+                  fontWeight: isToday ? "bold" : "",
+                  fontSize: isToday ? "2rem": "1rem",
                 }}
               >
                 {dayNumber || ""}
