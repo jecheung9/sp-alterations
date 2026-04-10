@@ -1,10 +1,13 @@
 import Box from "@mui/material/Box";
+import { useState } from "react";
 
 export default function Month() {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const year = 2026;
-  const month = 3; // april for example for now
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
 
   const firstDay = new Date(year, month, 1); //what day the 1st is
   const lastDay = new Date(year, month + 1, 0); //what day the last is
@@ -29,7 +32,33 @@ export default function Month() {
   const todayDate = today.getDate();
   const todayMonth = today.getFullYear() === year && today.getMonth() === month;
 
+  //month/year label
+  const monthYearLabel = currentDate.toLocaleString("default", {
+    month: 'long',
+    year: 'numeric'
+  })
+
+  //buttons to change month/year left and right, and today
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(year, month - 1, 1));
+  }
+
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(year, month + 1, 1));
+  }
+
+  const handleToday = () => {
+    setCurrentDate(new Date());
+  }
+
   return (
+    <>
+      <div className="flex items-center">
+        <button onClick={handlePrevMonth}> Prev </button>
+        <h2 className="text-2xl p-4 font-bold">{monthYearLabel}</h2>
+        <button onClick={handleNextMonth}> Next </button>
+        <button className="!m-4" onClick={handleToday}> Back to Today </button>
+      </div>
     <Box>
       {/* day headers */}
       <Box sx={{ display: "flex" }}>
@@ -82,5 +111,6 @@ export default function Month() {
         </Box>
       ))}
     </Box>
+    </>
   );
 }
