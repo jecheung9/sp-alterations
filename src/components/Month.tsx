@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import { useState } from "react";
 import type { Entry } from "../types/entry";
+import { useNavigate } from "react-router-dom";
 
 interface MonthProps {
   entries: Entry[];
@@ -9,6 +10,7 @@ interface MonthProps {
 export const Month: React.FC<MonthProps> = ({
   entries
 }) => {
+  const navigate = useNavigate();
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -111,7 +113,7 @@ export const Month: React.FC<MonthProps> = ({
             const dayMeetings = entries
               .filter((e) => e.type === "meeting" && dateKey && e.due?.startsWith(dateKey))
               .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
-                const getTime = (dateStr: string) => {
+                const getTime = (dateStr: string) => { //returns time of the meeting
                   const date = new Date(dateStr);
                   return date.toLocaleTimeString([], {
                     hour: "numeric",
@@ -137,12 +139,20 @@ export const Month: React.FC<MonthProps> = ({
                 <div className="text-right">
                   {dayNumber || ""}
                   {dayTodos.map((item) => (
-                    <div key={item.id} className="text-left px-2 my-1 bg-blue-300 text-sm">
+                    <div
+                      key={item.id}
+                      className="text-left px-2 my-1 bg-blue-300 text-sm hover:bg-blue-400 cursor-pointer"
+                      onClick={() => navigate(`/todo/${item.id}`)}
+                    >
                       Todo id {item.id}
                     </div>
                   ))}
                   {dayMeetings.map((meeting) => (
-                    <div key={meeting.id} className="text-left px-2 my-1 bg-red-300 text-sm">
+                    <div
+                      key={meeting.id}
+                      className="text-left px-2 my-1 bg-red-300 text-sm hover:bg-red-400 cursor-pointer"
+                      onClick={() => navigate(`/meetings/${meeting.id}`)}
+                    >
                       {getTime(meeting.due)} Meeting {meeting.id}
                     </div>
                   ))}
