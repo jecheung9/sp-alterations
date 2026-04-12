@@ -1,10 +1,17 @@
-import Month from "../components/Month";
+import { Month } from "../components/Month";
+import type { Entry } from "../types/entry";
 
-const Calendar = () => {
+interface CalendarProps {
+  entries: Entry[];
+}
+
+const Calendar: React.FC<CalendarProps> = ({
+  entries
+}) => {
   return (
     <div className="flex-1">
       <h1 className="text-4xl p-1 font-bold">Calendar</h1>
-      <Month />
+      <Month entries={entries} />
     </div>
   )
 }

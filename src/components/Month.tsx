@@ -1,7 +1,14 @@
 import Box from "@mui/material/Box";
 import { useState } from "react";
+import type { Entry } from "../types/entry";
 
-export default function Month() {
+interface MonthProps {
+  entries: Entry[];
+}
+
+export const Month: React.FC<MonthProps> = ({
+  entries
+}) => {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -89,22 +96,57 @@ export default function Month() {
           {Array.from({ length: 7 }).map((_, col) => {
             const dayNumber = monthDays[row * 7 + col];
             const isToday = todayMonth && dayNumber == todayDate;
+            const isCurrentMonthDay =
+              dayNumber &&
+              row * 7 + col >= startWeekday &&
+              row * 7 + col < startWeekday + totalDays;
+            
+            let dateKey = null;
+            if (isCurrentMonthDay && dayNumber) {
+              const date = new Date(year, month, dayNumber);
+              dateKey = date.toISOString().split("T")[0]; //split time, result "2026-04-10"
+            }
+            const dayTodos = entries
+              .filter((e) => e.type === "alteration" && e.due === dateKey);
+            const dayMeetings = entries
+              .filter((e) => e.type === "meeting" && dateKey && e.due?.startsWith(dateKey))
+              .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+                const getTime = (dateStr: string) => {
+                  const date = new Date(dateStr);
+                  return date.toLocaleTimeString([], {
+                    hour: "numeric",
+                    minute: "2-digit",
+                  });
+                };
             return (
               <Box
                 key={col}
                 sx={{
                   border: "1px solid black",
-                  height: 120,
+                  height: 130,
                   display: "flex",
-                  justifyContent: "right",
+                  justifyContent: "space-between",
                   paddingRight: "0.5rem",
                   backgroundColor: dayNumber ? "white" : "#c0c0c0",
                   color: isToday ? "green" : "black",
                   fontWeight: isToday ? "bold" : "",
-                  fontSize: isToday ? "2rem": "1rem",
+                  fontSize: isToday ? "2rem" : "1rem",
+                  flexDirection: "column",
                 }}
               >
-                {dayNumber || ""}
+                <div className="text-right">
+                  {dayNumber || ""}
+                  {dayTodos.map((item) => (
+                    <div key={item.id} className="text-left px-2 my-1 bg-blue-300 text-sm">
+                      Todo id {item.id}
+                    </div>
+                  ))}
+                  {dayMeetings.map((meeting) => (
+                    <div key={meeting.id} className="text-left px-2 my-1 bg-red-300 text-sm">
+                      {getTime(meeting.due)} Meeting {meeting.id}
+                    </div>
+                  ))}
+                </div>
               </Box>
             );
           })}

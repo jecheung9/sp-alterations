@@ -278,7 +278,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                <Calendar />
+                <Calendar entries={entries}/>
               </Layout>
             </ProtectedRoute>
           }
