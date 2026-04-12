@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import type { Entry } from "../types/entry"
+import Box from "@mui/material/Box";
 
 interface DashboardProps {
   entries: Entry[];
@@ -125,6 +126,19 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   });
 
+  //calendar stuff
+  const today = new Date();
+  const startThisWeek = new Date(today);
+  startThisWeek.setDate(today.getDate() - today.getDay()); //wed - 3 = sunday
+
+  const threeWeeks = Array.from({ length: 21 }).map((_, i) => {
+    const date = new Date(startThisWeek);
+    date.setDate(startThisWeek.getDate() + i);
+    return date;
+  });
+
+  const formatKey = (date: Date) => date.toLocaleDateString("en-CA");
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   
   return (
@@ -155,11 +169,66 @@ const Dashboard: React.FC<DashboardProps> = ({
               className="block mr-4 mb-4 ml-auto"
               onClick={() => navigate("/meetings")}> View Previous Meetings</button>
           </div>
-          <div className="flex flex-col box-border min-h-[25rem]" style={{ backgroundColor: "#ECECEC" }}>
-            <h2 className="text-2xl p-4 pb-0 font-bold">Calendar</h2>
-              <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
-                The calendar should eventually go here
-              </div>
+          <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
+            <div className="flex items-baseline">
+              <h2 className="text-2xl p-4 pb-0 font-bold">Calendar</h2>
+              <p className="text-gray-500"><i>This & Next 2 Weeks</i></p>
+            </div>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(7, 1fr)",
+                p: 2,
+              }}
+            >
+              {weekdays.map((day) => (
+                <div key={day} className="text-xs font-bold text-center">
+                  {day}
+                </div>
+              ))}
+              {threeWeeks.map((date) => {
+                const key = formatKey(date);
+                const dayMeetings = entries.filter((e) =>e.type === "meeting" && e.due?.startsWith(key));
+                const dayTodos = entries.filter((e) => e.type === "alteration" && e.due?.startsWith(key));
+                const meetingCount = dayMeetings.length;
+                const todoCount = dayTodos.length;
+                return (
+                  <Box
+                    key={key}
+                    sx={{
+                      border: "1px solid black",
+                      backgroundColor: "white",
+                      p: 0.5,
+                      minHeight: 60
+                    }}
+                  >
+                    <div className="text-xs font-bold text-right">
+                      <span className={key === formatKey(today) ? "text-green-600" : ""}>
+                        {date.toLocaleDateString("en-US", {
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
+
+                    {meetingCount > 0 && (
+                      <div className="text-xs bg-red-300 px-1">
+                        {meetingCount} meeting{meetingCount === 1 ? "" : "s"}
+                      </div>
+                    )}
+
+                    {todoCount > 0 && (
+                      <div className="text-xs bg-blue-300 px-1">
+                        {todoCount} todo{todoCount === 1 ? "" : "s"}
+                      </div>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+
+            <button
+              className="block mr-4 mb-4 ml-auto"
+              onClick={() => navigate("/calendar")}> View Full Calendar</button>
           </div>
         </div>
 
