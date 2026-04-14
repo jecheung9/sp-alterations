@@ -19,43 +19,43 @@ const Navbar: React.FC<NavbarProps> = ({
     navigate("/");
   }
   return (
-    <div className="flex flex-col text-xl wide:text-2xl border-2 border-black bg-[#808080] text-white max-w-max p-2 min-h-screen">
+    <div className="flex flex-row sm:flex-col text-xl wide:text-2xl border-2 border-black bg-[#808080] text-white sm:max-w-max w-full p-2 sm:min-h-screen h-auto justify-between sm:justify-start">
       <div className="flex justify-between">
-        <h3 className="text-xl wide:text-2xl">Alterations Dashboard</h3>
+        <h3 className="text-xl wide:text-2xl hidden sm:inline">Alterations Dashboard</h3>
       </div>
         <Link to="/dashboard" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
-          <FontAwesomeIcon className="icon"icon={faHouse} />
-          Dashboard
+          <FontAwesomeIcon className="icon text-2xl" icon={faHouse} />
+          <span className="hidden sm:inline">Dashboard</span>
         </Link>
         <Link to="/money" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
-          <FontAwesomeIcon className="icon" icon={faMoneyBill1Wave} />
-          Money
+          <FontAwesomeIcon className="icon text-2xl" icon={faMoneyBill1Wave} />
+          <span className="hidden sm:inline">Money</span>
         </Link>
         <Link to="/calendar" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
-          <FontAwesomeIcon className="icon" icon={faCalendar} />
-          Calendar
+          <FontAwesomeIcon className="icon text-2xl" icon={faCalendar} />
+          <span className="hidden sm:inline">Calendar</span>
         </Link> 
         <Link to="/todo" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
-          <FontAwesomeIcon className="icon" icon={faList} />
-          To-do
+          <FontAwesomeIcon className="icon text-2xl" icon={faList} />
+          <span className="hidden sm:inline">To-do</span>
       </Link>
       <Link to="/meetings" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
-        <FontAwesomeIcon className="icon" icon={faHandshake} />
-        Meetings
+        <FontAwesomeIcon className="icon text-2xl" icon={faHandshake} />
+        <span className="hidden sm:inline">Meetings</span>
       </Link>
       <div className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]" onClick={onOpen} >
-        <FontAwesomeIcon icon={faPlus} />
-        Add Entry
+        <FontAwesomeIcon className="icon text-2xl" icon={faPlus} />
+        <span className="hidden sm:inline">Add Entry</span>
       </div>
       <Link to="/settings" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
-        <FontAwesomeIcon className="icon" icon={faGear} />
-        Settings
+        <FontAwesomeIcon className="icon text-2xl" icon={faGear} />
+        <span className="hidden sm:inline">Settings</span>
       </Link>
 
       {token && (
         <div className="navbar-auth">
           <button className="auth-button" onClick={handleLogout}>
-            Sign Out
+            Log Out
           </button>
         </div>
       )}

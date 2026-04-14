@@ -41,7 +41,7 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div>
       <main>
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-col sm:flex-row sm:gap-4">
           <Navbar onOpen={() => setIsAddFormOpen(true)}/>
           {children}
           {isAddFormOpen && (

@@ -143,8 +143,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   
   return (
     <div className="flex-1">
-      <h1 className="text-4xl p-2 font-bold">Dashboard</h1>
-      <div className="grid grid-cols-2 gap-4 items-start">
+      <h1 className="sm:text-4xl text-2xl p-2 font-bold">Dashboard</h1>
+      <div className="sm:grid grid-cols-2 gap-4 items-start">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
             <h2 className="text-2xl p-4 pb-0 font-bold">Upcoming Meetings</h2>
