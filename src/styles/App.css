@@ -10,6 +10,10 @@
   }
 }
 
+@theme {
+  --breakpoint-wide: 1250px;
+}
+
 * {
     font-family: 'Roboto', sans-serif;
 }

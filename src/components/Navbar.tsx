@@ -19,9 +19,9 @@ const Navbar: React.FC<NavbarProps> = ({
     navigate("/");
   }
   return (
-    <div className="flex flex-col text-2xl border-2 border-black bg-[#808080] text-white max-w-max p-2 min-h-screen">
+    <div className="flex flex-col text-xl wide:text-2xl border-2 border-black bg-[#808080] text-white max-w-max p-2 min-h-screen">
       <div className="flex justify-between">
-        <h3 className="text-2xl">Alterations Dashboard</h3>
+        <h3 className="text-xl wide:text-2xl">Alterations Dashboard</h3>
       </div>
         <Link to="/dashboard" className="flex gap-4 no-underline text-white py-2 hover:text-black hover:cursor-pointer active:text-[#000077]">
           <FontAwesomeIcon className="icon"icon={faHouse} />

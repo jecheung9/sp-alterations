@@ -130,9 +130,9 @@ export const Month: React.FC<MonthProps> = ({
                   justifyContent: "space-between",
                   paddingRight: "0.5rem",
                   backgroundColor: dayNumber ? "white" : "#c0c0c0",
-                  color: isToday ? "green" : "black",
+                  color: isToday ? "#16a34a" : "black",
                   fontWeight: isToday ? "bold" : "",
-                  fontSize: isToday ? "2rem" : "1rem",
+                  fontSize: "1.25rem",
                   flexDirection: "column",
                 }}
               >
@@ -141,7 +141,7 @@ export const Month: React.FC<MonthProps> = ({
                   {dayTodos.map((item) => (
                     <div
                       key={item.id}
-                      className="text-left px-2 my-1 bg-blue-300 text-sm hover:bg-blue-400 cursor-pointer"
+                      className="text-left px-2 my-1 bg-blue-300 text-base hover:bg-blue-400 cursor-pointer"
                       onClick={() => navigate(`/todo/${item.id}`)}
                     >
                       Todo id {item.id}
@@ -150,7 +150,7 @@ export const Month: React.FC<MonthProps> = ({
                   {dayMeetings.map((meeting) => (
                     <div
                       key={meeting.id}
-                      className="text-left px-2 my-1 bg-red-300 text-sm hover:bg-red-400 cursor-pointer"
+                      className="text-left px-2 my-1 bg-red-300 text-base hover:bg-red-400 cursor-pointer"
                       onClick={() => navigate(`/meetings/${meeting.id}`)}
                     >
                       {getTime(meeting.due)} Meeting {meeting.id}

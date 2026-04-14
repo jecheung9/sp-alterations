@@ -50,9 +50,9 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
             <tr>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[15%]">Due Date</th>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[12.5%]">Status</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[13%]">Status</th>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">Price</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[7.5%]">Price</th>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-auto">Description</th>
             </tr>
           </thead>
@@ -92,9 +92,9 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
               <tr>
                 <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
                 <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[15%]">Due Date</th>
-                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[12.5%]">Status</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[13%]">Status</th>
                 <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">Price</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[7.5%]">Price</th>
                 <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-auto">Description</th>
               </tr>
             </thead>
@@ -143,9 +143,9 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
                   <tr>
                     <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
                     <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[15%]">Due Date</th>
-                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[12.5%]">Status</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[13%]">Status</th>
                     <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">Price</th>
+                    <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[7.5%]">Price</th>
                     <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-auto">Description</th>
                   </tr>
                 </thead>

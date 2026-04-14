@@ -173,6 +173,12 @@ const Dashboard: React.FC<DashboardProps> = ({
             <div className="flex items-baseline">
               <h2 className="text-2xl p-4 pb-0 font-bold">Calendar</h2>
               <p className="text-gray-500"><i>This & Next 2 Weeks</i></p>
+              <div className="mx-3 px-1 bg-red-300 wide:hidden">
+                Meeting
+              </div>
+              <div className="px-1 bg-blue-300 wide:hidden">
+                Todos
+              </div>
             </div>
             <Box
               sx={{
@@ -198,29 +204,40 @@ const Dashboard: React.FC<DashboardProps> = ({
                     sx={{
                       border: "1px solid black",
                       backgroundColor: "white",
-                      p: 0.5,
-                      minHeight: 60
+                      p: 0.25,
+                      minHeight: 70
                     }}
                   >
-                    <div className="text-xs font-bold text-right">
+                    <div className="text-base font-bold text-right">
                       <span className={key === formatKey(today) ? "text-green-600" : ""}>
                         {date.toLocaleDateString("en-US", {
                           day: "numeric",
                         })}
                       </span>
                     </div>
-
+                  <div className="flex justify-end wide:block">
                     {meetingCount > 0 && (
-                      <div className="text-xs bg-red-300 px-1">
-                        {meetingCount} meeting{meetingCount === 1 ? "" : "s"}
-                      </div>
+                      <>
+                        <div className="text-sm bg-red-300 px-1 hidden wide:block">
+                          {meetingCount} meeting{meetingCount === 1 ? "" : "s"}
+                        </div>
+                        <div className="wide:hidden text-2xl bg-red-300 px-1">
+                          {meetingCount}
+                        </div>
+                      </>
                     )}
 
                     {todoCount > 0 && (
-                      <div className="text-xs bg-blue-300 px-1">
+                      <>
+                      <div className="text-sm bg-blue-300 px-1 hidden wide:block">
                         {todoCount} todo{todoCount === 1 ? "" : "s"}
                       </div>
-                    )}
+                      <div className="wide:hidden text-2xl bg-blue-300 px-1">
+                        {todoCount}
+                      </div>
+                      </>
+                      )}
+                  </div>   
                   </Box>
                 );
               })}
@@ -266,23 +283,21 @@ const Dashboard: React.FC<DashboardProps> = ({
 
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
             <h2 className="text-2xl p-4 pb-0 font-bold">Money</h2>
-            <div className="grid grid-cols-4 p-4">
-              <div>All-time Total</div>
-              <div>{grandTotal}</div>
-              <div>{currentYear} total</div>
-              <div>{yearTotal}</div>
-            </div>
-            <div className="flex gap-8">
+            <div className="flex gap-2">
               <div className="money-grid-column">
                 <div className="flex flex-col gap-8 pt-0 p-4">
+                  <div className="grid grid-cols-[auto_1fr] whitespace-nowrap">
+                    <div>All-time Total</div>
+                    <div className="text-right"> {grandTotal}</div>
+                  </div>
                   <div>Current Month ({currentMonth}) total: {currentMonthTotal}</div>
                   <div>Current Month Breakdown</div>
                 </div>
-                  <div className="grid grid-cols-[auto_1fr] gap-4 pt-0 p-4">
+                <div className="grid grid-cols-[auto_1fr] gap-4 pt-0 p-4 whitespace-nowrap">
                     {clients.map(c => (
                       <>
                         <div>{c}</div>
-                        <div>{clientMonthTotals[c]}</div>
+                        <div className="text-right">{clientMonthTotals[c]}</div>
                       </>
                     ))}
                   </div>
@@ -290,8 +305,12 @@ const Dashboard: React.FC<DashboardProps> = ({
 
               <div className="money-grid-column">
                 <div className="flex flex-col gap-8 pt-0 p-4">
-                  <div>Previous Month ({prevMonth}) total: {prevMonthTotal}</div>
-                  <div>Previous Month Breakdown</div>
+                  <div className="grid grid-cols-[auto_1fr] whitespace-nowrap">
+                    <div>{currentYear} Total</div>
+                    <div className="text-right"> {yearTotal}</div>
+                  </div>
+                  <div>Last Month ({prevMonth}) total: {prevMonthTotal}</div>
+                  <div>Last Month Breakdown</div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-4 pt-0">
                   {clients.map(c => (
