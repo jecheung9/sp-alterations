@@ -19,7 +19,7 @@ const Navbar: React.FC<NavbarProps> = ({
     navigate("/");
   }
   return (
-    <div className="flex flex-row sm:flex-col text-xl wide:text-2xl border-2 border-black bg-[#808080] text-white sm:max-w-max w-full p-2 sm:min-h-screen h-auto justify-between sm:justify-start">
+    <div className="sticky top-0 self-start flex flex-row sm:flex-col text-xl wide:text-2xl border-2 border-black bg-[#808080] text-white sm:max-w-max w-full p-2 sm:min-h-screen h-auto justify-between sm:justify-start">
       <div className="flex justify-between">
         <h3 className="text-xl wide:text-2xl hidden sm:inline">Alterations Dashboard</h3>
       </div>
