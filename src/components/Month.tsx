@@ -130,14 +130,12 @@ export const Month: React.FC<MonthProps> = ({
                   justifyContent: "space-between",
                   paddingRight: "0.5rem",
                   backgroundColor: dayNumber ? "white" : "#c0c0c0",
-                  color: isToday ? "#16a34a" : "black",
-                  fontWeight: isToday ? "bold" : "",
                   fontSize: "1.25rem",
                   flexDirection: "column",
                 }}
               >
                 <div className="text-right">
-                  {dayNumber || ""}
+                  <span className={isToday ? "text-green-600 font-bold" : ""}>{dayNumber || ""}</span>
                   {dayTodos.map((item) => (
                     <div
                       key={item.id}
