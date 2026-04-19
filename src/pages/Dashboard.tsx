@@ -175,15 +175,20 @@ const Dashboard: React.FC<DashboardProps> = ({
                     No upcoming meetings!
                   </div>
                 ) : (
-                  <div className="grid grid-cols-[max-content_max-content_auto] gap-4 p-4">
+                  <div className="grid grid-cols-[max-content_max-content_auto] py-2">
                     {incompleteMeetings.map(val => (
-                      <>
-                        <div className={isLateMeeting(val) ? "text-red-600 font-semibold" : ""}>
+                      <div
+                        key={val.id}
+                        className="todo-row contents group cursor-pointer"
+                        onClick={() => navigate(`/meetings/${val.id}`)} 
+                      >
+                        <div className={`py-2 pl-4 group-hover:bg-gray-300 
+                          ${isLateMeeting(val) ? "text-red-600 font-semibold" : ""}`}>
                           {formatDateTime(val.due)}
                         </div>
-                        <div>{val.client?.name}</div>
-                        <div>{val.description}</div>
-                      </>
+                        <div className="py-2 pl-4 group-hover:bg-gray-300">{val.client?.name}</div>
+                        <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
+                      </div>
                     ))}
                   </div>
                 )}
