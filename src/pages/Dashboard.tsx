@@ -140,6 +140,27 @@ const Dashboard: React.FC<DashboardProps> = ({
   const formatKey = (date: Date) => date.toLocaleDateString("en-CA");
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  //late indicators
+  const isLateTodo = (entry: Entry) => {
+    const today = new Date(); //ignore time for todos
+    today.setHours(0, 0, 0, 0);
+
+    const [year, month, day] = entry.due.split("-").map(Number);
+    const dueDate = new Date(year, month - 1, day);
+
+    return (
+      (dueDate < today) && (entry.status === "Not Started" || entry.status === "Started")
+    );
+  }
+
+  const isLateMeeting = (entry: Entry) => {
+    const today = new Date();
+    const dueDate = new Date(entry.due);
+    return (
+      (dueDate < today) && entry.status === "Not Started"
+    )
+  }
+
   
   return (
     <div className="flex-1">
@@ -157,7 +178,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                   <div className="grid grid-cols-[max-content_max-content_auto] gap-4 p-4">
                     {incompleteMeetings.map(val => (
                       <>
-                        <div>{formatDateTime(val.due)}</div>
+                        <div className={isLateMeeting(val) ? "text-red-600 font-semibold" : ""}>
+                          {formatDateTime(val.due)}
+                        </div>
                         <div>{val.client?.name}</div>
                         <div>{val.description}</div>
                       </>
@@ -268,7 +291,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                           className="todo-row contents group cursor-pointer"
                           onClick={() => navigate(`/todo/${val.id}`)}
                         >
-                          <div className="py-2 pl-4 group-hover:bg-gray-300">{formatDate(val.due)}</div>
+                        <div className={`py-2 pl-4 group-hover:bg-gray-300 
+                          ${isLateTodo(val) ? "text-red-600 font-semibold" : ""}`}>
+                          {formatDate(val.due)}
+                        </div>
                           <div className="py-2 pl-4 group-hover:bg-gray-300">{val.client?.name}</div>
                           <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
                         </div>

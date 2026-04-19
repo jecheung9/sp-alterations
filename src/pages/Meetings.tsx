@@ -34,6 +34,14 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
     })
   } 
 
+  const isLate = (entry: Entry) => {
+    const today = new Date();
+    const dueDate = new Date(entry.due);
+    return (
+      (dueDate < today) && entry.status === "Not Started"
+    )
+  }
+
   return (
     <div className="flex-1">
       <h1 className="font-bold text-3xl">Upcoming Meetings ({incompleteLength})</h1>
@@ -60,7 +68,10 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
                 onClick={() => navigate(`/meetings/${val.id}`)}
               >
                 <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDateTime(val.due)}</td>
+                <td className={`border-r-2 border-gray-500 p-[0.2rem] 
+                ${isLate(val) ? "text-red-600 font-bold" : ""}`}>
+                  {formatDateTime(val.due)}
+                </td>
                 <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
                 <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
               </tr>

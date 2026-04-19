@@ -37,6 +37,18 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
     })
   } 
 
+  const isLate = (entry: Entry) => {
+    const today = new Date(); //ignore time for todos
+    today.setHours(0, 0, 0, 0);
+
+    const [year, month, day] = entry.due.split("-").map(Number);
+    const dueDate = new Date(year, month - 1, day);
+
+    return (
+      (dueDate < today) && (entry.status === "Not Started" || entry.status === "Started")
+    );
+  }
+
   return (
     <div className="flex-1">
       <h1 className="font-bold text-3xl"> To-Do ({incompleteLength})</h1>
@@ -64,7 +76,10 @@ const ToDo: React.FC<TodoProps> = ({ entries }) => {
                 onClick={() => navigate(`/todo/${val.id}`)}
               >
                 <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDate(val.due)}</td>
+                <td className={`border-r-2 border-gray-500 p-[0.2rem]
+                 ${isLate(val) ? "text-red-600 font-bold" : ""}`}>
+                  {formatDate(val.due)}
+                </td>
                 <td className={`border-r-2 border-gray-500 p-[0.2rem] 
                   ${val.status === "Not Started" ? "bg-[#e74c3c] text-white" : ""}
                   ${val.status === "Started" ? "bg-[#f1c40f]" : ""}
