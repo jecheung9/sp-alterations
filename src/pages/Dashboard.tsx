@@ -201,10 +201,10 @@ const Dashboard: React.FC<DashboardProps> = ({
             <div className="flex items-baseline">
               <h2 className="text-2xl p-4 pb-0 font-bold">Calendar</h2>
               <p className="text-gray-500"><i>This & Next 2 Weeks</i></p>
-              <div className="mx-3 px-1 bg-red-300 wide:hidden">
-                Meeting
+              <div className="mx-3 px-1 bg-red-300">
+                Meetings
               </div>
-              <div className="px-1 bg-blue-300 wide:hidden">
+              <div className="px-1 bg-blue-300">
                 Todos
               </div>
             </div>
@@ -226,6 +226,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                 const dayTodos = entries.filter((e) => e.type === "alteration" && e.due?.startsWith(key));
                 const meetingCount = dayMeetings.length;
                 const todoCount = dayTodos.length;
+                const completedTodos = dayTodos.filter(i => i.status === "Complete" || i.status === "Dropped Off").length;
+                const completedMeetings = dayMeetings.filter(i => i.status === "Complete").length;
                 return (
                   <Box
                     key={key}
@@ -233,7 +235,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       border: "1px solid black",
                       backgroundColor: "white",
                       p: 0.25,
-                      minHeight: 70
+                      minHeight: 86
                     }}
                   >
                     <div className="text-base font-bold text-right">
@@ -243,14 +245,14 @@ const Dashboard: React.FC<DashboardProps> = ({
                         })}
                       </span>
                     </div>
-                  <div className="flex justify-end wide:block">
+                  <div className="flex justify-end wide:block flex-col">
                     {meetingCount > 0 && (
                       <>
                         <div className="text-sm bg-red-300 px-1 hidden wide:block">
-                          {meetingCount} meeting{meetingCount === 1 ? "" : "s"}
+                          M: {completedMeetings} / {meetingCount}
                         </div>
-                        <div className="wide:hidden text-2xl bg-red-300 px-1">
-                          {meetingCount}
+                        <div className="wide:hidden text-xl bg-red-300 px-1">
+                          {completedMeetings} / {meetingCount}
                         </div>
                       </>
                     )}
@@ -258,10 +260,10 @@ const Dashboard: React.FC<DashboardProps> = ({
                     {todoCount > 0 && (
                       <>
                       <div className="text-sm bg-blue-300 px-1 hidden wide:block">
-                        {todoCount} todo{todoCount === 1 ? "" : "s"}
+                        T: {completedTodos} / {todoCount}
                       </div>
-                      <div className="wide:hidden text-2xl bg-blue-300 px-1">
-                        {todoCount}
+                      <div className="wide:hidden text-xl bg-blue-300 px-1">
+                        {completedTodos} / {todoCount}
                       </div>
                       </>
                       )}

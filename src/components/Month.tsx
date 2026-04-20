@@ -136,24 +136,30 @@ export const Month: React.FC<MonthProps> = ({
               >
                 <div className="text-right">
                   <span className={isToday ? "text-green-600 font-bold" : ""}>{dayNumber || ""}</span>
-                  {dayTodos.map((item) => (
+                  {dayTodos.map((item) => {
+                    const isComplete = item.status === "Complete" || item.status === "Dropped Off";
+                    return (
                     <div
                       key={item.id}
-                      className="text-left px-2 my-1 bg-blue-300 text-base hover:bg-blue-400 cursor-pointer"
+                        className={`text-left px-2 my-1 bg-blue-300 text-base hover:bg-blue-400 cursor-pointer
+                        ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
                       onClick={() => navigate(`/todo/${item.id}`)}
                     >
                       Todo id {item.id}
-                    </div>
-                  ))}
-                  {dayMeetings.map((meeting) => (
+                      </div>
+                    )})}
+                  {dayMeetings.map((meeting) => {
+                    const isComplete = meeting.status === "Complete";
+                    return (
                     <div
                       key={meeting.id}
-                      className="text-left px-2 my-1 bg-red-300 text-base hover:bg-red-400 cursor-pointer"
+                        className={`text-left px-2 my-1 bg-red-300 text-base hover:bg-red-400 cursor-pointer
+                        ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
                       onClick={() => navigate(`/meetings/${meeting.id}`)}
                     >
                       {getTime(meeting.due)} Meeting {meeting.id}
-                    </div>
-                  ))}
+                      </div>
+                    )})}
                 </div>
               </Box>
             );
