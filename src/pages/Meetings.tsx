@@ -1,13 +1,24 @@
 import { useState } from "react";
 import type { Entry } from "../types/entry"
 import { useNavigate } from "react-router-dom";
+import AddForm from "../components/AddForm";
+import type { Client } from "../types/client";
 
 interface MeetingsProps {
   entries: Entry[];
+  addMeeting: (entry: {
+    due: string;
+    client: Client;
+    description: string;
+  }) => void;
 }
 
-const Meetings: React.FC<MeetingsProps> = ({entries}) => {
+const Meetings: React.FC<MeetingsProps> = ({
+  entries,
+  addMeeting
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -44,7 +55,27 @@ const Meetings: React.FC<MeetingsProps> = ({entries}) => {
 
   return (
     <div className="flex-1">
-      <h1 className="font-bold text-3xl">Upcoming Meetings ({incompleteLength})</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="font-bold text-3xl"> Upcoming Meetings ({incompleteLength})</h1>
+        <button className="!text-2xl !font-bold"
+          onClick={() => setIsAddOpen(true)}>
+          + Add Meeting
+        </button>
+      </div>
+
+      {isAddOpen && (
+        <AddForm
+          initialMode="meeting"
+          onClose={() => setIsAddOpen(false)}
+          onAddEntry={(entry) => {
+            addMeeting(entry)
+            setIsAddOpen(false);
+          }}
+        />
+      )}
+
+
+
       {incompleteLength === 0 ? (
         <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming meetings!
