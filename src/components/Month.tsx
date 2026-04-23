@@ -120,6 +120,26 @@ export const Month: React.FC<MonthProps> = ({
                     minute: "2-digit",
                   });
                 };
+            const allItems = [ //for overflow
+              ...dayMeetings.map((item) => ({ ...item, type: "meeting" })),
+              ...dayTodos.map((item) => ({ ...item, type: "todo" })),
+            ];
+            const visibleItems = allItems.slice(0, 2); //max 2 to prevent overflow
+            const hiddenItems = allItems.slice(2);
+
+            const hiddenMeetings = hiddenItems.filter((item) => item.type === "meeting").length; //for quantity more
+            const hiddenTodos = hiddenItems.filter((item) => item.type === "todo").length;
+
+            const resultString = [];
+            if (hiddenMeetings > 0) {
+              resultString.push(`+${hiddenMeetings} meeting${hiddenMeetings > 1 ? "s" : ""}`);
+            }
+            if (hiddenTodos > 0) {
+              resultString.push(`+${hiddenTodos} todo${hiddenTodos > 1 ? "s" : ""}`);
+            }
+            const overflowString = resultString.join(", ");
+            
+            
             return (
               <Box
                 key={col}
@@ -136,30 +156,31 @@ export const Month: React.FC<MonthProps> = ({
               >
                 <div className="text-right">
                   <span className={isToday ? "text-green-600 font-bold" : ""}>{dayNumber || ""}</span>
-                  {dayTodos.map((item) => {
+                  {visibleItems.map((item) => {
                     const isComplete = item.status === "Complete" || item.status === "Dropped Off";
+                    const isMeeting = item.type === "meeting";
                     return (
-                    <div
-                      key={item.id}
-                        className={`text-left px-2 my-1 bg-blue-300 text-base hover:bg-blue-400 cursor-pointer
-                        ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
-                      onClick={() => navigate(`/todo/${item.id}`)}
-                    >
-                      Todo id {item.id}
+                      <div
+                        key={item.id}
+                        className={`text-left px-1 my-1 text-base cursor-pointer
+                          ${isMeeting ? "bg-red-300 hover:bg-red-400" : "bg-blue-300 hover:bg-blue-400"}
+                          ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
+                        onClick={() => {
+                          navigate(isMeeting ? `/meetings/${item.id}` : `/todo/${item.id}`)
+                        }}
+                      >
+                        {isMeeting ?
+                          `${getTime(item.due)} Meeting ${item.id}` :
+                          `Todo id ${item.id}`
+                        }
                       </div>
-                    )})}
-                  {dayMeetings.map((meeting) => {
-                    const isComplete = meeting.status === "Complete";
-                    return (
-                    <div
-                      key={meeting.id}
-                        className={`text-left px-2 my-1 bg-red-300 text-base hover:bg-red-400 cursor-pointer
-                        ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
-                      onClick={() => navigate(`/meetings/${meeting.id}`)}
-                    >
-                      {getTime(meeting.due)} Meeting {meeting.id}
-                      </div>
-                    )})}
+                    )
+                  })} 
+                  {hiddenItems.length > 0 && (
+                    <div className="text-left text-base px-1 cursor-pointer bg-gray-300 hover:bg-gray-400">
+                      {overflowString}
+                    </div>
+                  )}
                 </div>
               </Box>
             );
