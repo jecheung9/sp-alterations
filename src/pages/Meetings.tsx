@@ -3,6 +3,7 @@ import type { Entry } from "../types/entry"
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
 import type { Client } from "../types/client";
+import Confirmation from "../components/Confirmation";
 
 interface MeetingsProps {
   entries: Entry[];
@@ -19,6 +20,7 @@ const Meetings: React.FC<MeetingsProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -70,6 +72,7 @@ const Meetings: React.FC<MeetingsProps> = ({
           onAddEntry={(entry) => {
             addMeeting(entry)
             setIsAddOpen(false);
+            setToastMessage("Meeting added successfully!")
           }}
         />
       )}
@@ -155,6 +158,14 @@ const Meetings: React.FC<MeetingsProps> = ({
         </table>
         )
       )}
+
+      {toastMessage && (
+      <Confirmation
+        message={toastMessage}
+        onClose={() => setToastMessage(null)}
+      />
+      )}
+
     </div>
   )
 }

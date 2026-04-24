@@ -288,7 +288,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                <ToDo key={entries.length} entries={entries} addTodo={addTodo} />
+                <ToDo entries={entries} addTodo={addTodo} />
               </Layout>
             </ProtectedRoute>
           }
