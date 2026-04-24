@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import { useState } from "react";
 import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
+import Popover from "@mui/material/Popover";
 
 interface MonthProps {
   entries: Entry[];
@@ -10,10 +11,14 @@ interface MonthProps {
 export const Month: React.FC<MonthProps> = ({
   entries
 }) => {
+  
   const navigate = useNavigate();
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   const [currentDate, setCurrentDate] = useState(new Date());
+
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const [popupItems, setPopupItems] = useState<Entry[]>([]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -59,6 +64,14 @@ export const Month: React.FC<MonthProps> = ({
   const handleToday = () => {
     setCurrentDate(new Date());
   }
+
+  const getTime = (dateStr: string) => { //returns time of the meeting
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
 
   return (
     <>
@@ -113,22 +126,15 @@ export const Month: React.FC<MonthProps> = ({
             const dayMeetings = entries
               .filter((e) => e.type === "meeting" && dateKey && e.due?.startsWith(dateKey))
               .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
-                const getTime = (dateStr: string) => { //returns time of the meeting
-                  const date = new Date(dateStr);
-                  return date.toLocaleTimeString([], {
-                    hour: "numeric",
-                    minute: "2-digit",
-                  });
-                };
-            const allItems = [ //for overflow
-              ...dayMeetings.map((item) => ({ ...item, type: "meeting" })),
-              ...dayTodos.map((item) => ({ ...item, type: "todo" })),
+            const allItems: Entry[] = [ //for overflow
+              ...dayMeetings,
+              ...dayTodos,
             ];
             const visibleItems = allItems.slice(0, 2); //max 2 to prevent overflow
             const hiddenItems = allItems.slice(2);
 
             const hiddenMeetings = hiddenItems.filter((item) => item.type === "meeting").length; //for quantity more
-            const hiddenTodos = hiddenItems.filter((item) => item.type === "todo").length;
+            const hiddenTodos = hiddenItems.filter((item) => item.type === "alteration").length;
 
             const resultString = [];
             if (hiddenMeetings > 0) {
@@ -177,7 +183,13 @@ export const Month: React.FC<MonthProps> = ({
                     )
                   })} 
                   {hiddenItems.length > 0 && (
-                    <div className="text-left text-base px-1 cursor-pointer bg-gray-300 hover:bg-gray-400">
+                    <div
+                      className="text-left text-base px-1 cursor-pointer bg-gray-300 hover:bg-gray-400"
+                      onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                        setAnchor(e.currentTarget);
+                        setPopupItems(hiddenItems);
+                      }}
+                    >
                       {overflowString}
                     </div>
                   )}
@@ -187,7 +199,44 @@ export const Month: React.FC<MonthProps> = ({
           })}
         </Box>
       ))}
-    </Box>
+      </Box>
+      
+      <Popover
+        open={Boolean(anchor)}
+        anchorEl={anchor}
+        onClose={() => setAnchor(null)}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        slotProps={{ paper: { style: { pointerEvents: "auto" } } }} 
+      >
+        <div
+          style={{
+            width: anchor?.parentElement?.clientWidth,
+          }}>
+          {popupItems.map((item) => {
+            const isComplete = item.status === "Complete" || item.status === "Dropped Off";
+            const isMeeting = item.type === "meeting";
+            return (
+              <div
+                key={item.id}
+                className={`text-left px-1 my-1 text-base cursor-pointer
+                  ${isMeeting ? "bg-red-300 hover:bg-red-400" : "bg-blue-300 hover:bg-blue-400"}
+                  ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
+                onClick={() => {
+                  navigate(isMeeting ? `/meetings/${item.id}` : `/todo/${item.id}`)
+                }}
+              >
+                {isMeeting ?
+                  `${getTime(item.due)} Meeting ${item.id}` :
+                  `Todo id ${item.id}`
+                }
+              </div>
+            )
+          })} 
+        </div>
+      </Popover>
     </>
   );
 }
