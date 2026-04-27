@@ -17,12 +17,17 @@ import { Landing } from "./pages/Landing";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import { useAuth } from "./context/AuthProvider";
 import { FetchHelper } from "./utils/Fetch";
+import Confirmation from "./components/Confirmation";
 
 
 function App() {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [nextAlterationId, setNextAlterationId] = useState(1);
   const [nextMeetingId, setNextMeetingId] = useState(1);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "default" | "delete";
+  } | null>(null);
   const { token, onLogout } = useAuth();
   const navigate = useNavigate();
 
@@ -64,6 +69,16 @@ function App() {
 
     loadEntries();
   }, [token]);
+
+    useEffect(() => {
+      if (!toast) return;
+
+      const timer = setTimeout(() => {
+        setToast(null);
+      }, 8000);
+
+      return () => clearTimeout(timer);
+    }, [toast]);
 
   const addMeeting = async (meetingData: {
     due: string;
@@ -246,6 +261,14 @@ function App() {
   const todoEntries = entries.filter(i => i.type === 'alteration');
   const meetingEntries = entries.filter(i => i.type === 'meeting');
 
+
+  const showToast = (
+    message: string,
+    type: "default" | "delete" = "default"
+  ) => {
+    setToast({ message, type });
+  }
+
   return (
     <>
       <Routes>
@@ -257,7 +280,7 @@ function App() {
           path="dashboard"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
                 <Dashboard entries={entries} />
               </Layout>
             </ProtectedRoute>
@@ -267,7 +290,7 @@ function App() {
           path="money"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
                 <Money entries={todoEntries}/>
               </Layout>
             </ProtectedRoute>
@@ -277,7 +300,7 @@ function App() {
           path="calendar"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
                 <Calendar entries={entries}/>
               </Layout>
             </ProtectedRoute>
@@ -287,8 +310,8 @@ function App() {
           path="todo"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                <ToDo entries={entries} addTodo={addTodo} />
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
+                <ToDo entries={entries} addTodo={addTodo} showToast={showToast} />
               </Layout>
             </ProtectedRoute>
           }
@@ -297,7 +320,7 @@ function App() {
           path="settings"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
                 <Settings />
               </Layout>
             </ProtectedRoute>
@@ -307,8 +330,8 @@ function App() {
           path="meetings"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
-                <Meetings entries={entries} addMeeting={addMeeting} />
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
+                <Meetings entries={entries} addMeeting={addMeeting} showToast={showToast}/>
               </Layout>
             </ProtectedRoute>
           }
@@ -317,11 +340,12 @@ function App() {
           path="/todo/:id"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
                 <ToDoDetails
                   entries={todoEntries}
                   updateTodo={updateTodo}
                   deleteTodo={deleteTodo}
+                  showToast={showToast}
                 />
               </Layout>
             </ProtectedRoute>
@@ -331,11 +355,12 @@ function App() {
           path="/meetings/:id"
           element={
             <ProtectedRoute>
-              <Layout addTodo={addTodo} addMeeting={addMeeting}>
+              <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast}>
                 <MeetingDetail
                   entries={meetingEntries}
                   updateMeeting={updateMeeting}
                   deleteMeeting={deleteMeeting}
+                  showToast={showToast}
                 />
               </Layout>
             </ProtectedRoute>
@@ -344,6 +369,15 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      {toast && (
+        <Confirmation
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+      onUndo={toast.type === "delete" ? () => { console.log("undo clicked"); } : undefined}
+      />
+      )}
     </>  
   )
 }

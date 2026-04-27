@@ -4,7 +4,6 @@ import Navbar from "./Navbar";
 import AddForm from "./AddForm";
 import type { Client } from "../types/client";
 import { useLocation } from "react-router-dom";
-import Confirmation from "./Confirmation";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -19,16 +18,17 @@ interface LayoutProps {
     client: Client;
     description: string;
   }) => Promise<any>;
+  showToast: (message: string, type?: "default" | "delete") => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
   addTodo,
-  addMeeting
+  addMeeting,
+  showToast,
 }) => {
 
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const location = useLocation();
 
   let pageMode: "alteration" | "meeting";
@@ -55,21 +55,14 @@ const Layout: React.FC<LayoutProps> = ({
                     client: entry.client,
                     description: entry.description,
                   });
-                  setToastMessage("Meeting added successfully!")
+                  showToast("Meeting added successfully!", "default");
                 } else {
                   addTodo(entry)
-                  setToastMessage("Alteration todo added successfully!")
+                  showToast("Alteration todo added successfully!", "default");
                 }
               }
               } />
           )}
-
-          {toastMessage && (
-            <Confirmation
-              message={toastMessage}
-              onClose={() => setToastMessage(null)}
-            />
-            )}
         </div>
       </main>
     </div>

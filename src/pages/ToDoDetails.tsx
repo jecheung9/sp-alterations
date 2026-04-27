@@ -4,24 +4,26 @@ import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddForm from "../components/AddForm";
-import Confirmation from "../components/Confirmation";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 interface TodoDetailProps {
   entries: Entry[];
   deleteTodo: (id: number, type: Entry["type"]) => void;
   updateTodo: (updatedTodo: Entry, statusOnly: boolean) => void;
+  showToast: (message: string, type?: "default" | "delete") => void;
 }
 
 const TodoDetail: React.FC<TodoDetailProps> = ({
   entries,
   deleteTodo,
   updateTodo,
+  showToast,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const formatDate = (date: string) => {
     const [year, month, day] = date.split('-').map(Number);
@@ -38,6 +40,13 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
 
   if (!todo) {
     return <div className="page-container"><p className="text-gray-500">Todo not found</p></div>;
+  }
+
+  const handleDelete = async () => {
+    await deleteTodo(todo.id, todo.type);
+    setIsConfirmOpen(false);
+    showToast("Todo deleted successfully!", "delete");
+    navigate(`/todo`);
   }
 
   return (
@@ -58,10 +67,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
       />
 
       <button onClick={() => setIsEditOpen(true)}>Edit</button>
-      <button onClick={() => {
-        deleteTodo(todo.id, todo.type);
-        navigate(`/todo`);
-      }}>Delete</button>
+      <button onClick={() => setIsConfirmOpen(true)}>Delete</button>
 
       <button onClick={() => navigate(`/todo`)}>
         Return back to To-do list
@@ -81,7 +87,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
               description: newData.description || todo.description,
               status: todo.status,
             }, false);
-            setToastMessage("Alteration todo updated successfully!");
+            showToast("Alteration todo updated successfully!", "default");
             setIsEditOpen(false);
           }}
           editHeader={`Edit todo alteration #${todo.id}`}
@@ -95,10 +101,11 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
         />
       )}
 
-      {toastMessage && (
-        <Confirmation
-          message={toastMessage}
-          onClose={() => setToastMessage(null)}
+      {isConfirmOpen && (
+        <ConfirmDelete
+          onCancel={() => setIsConfirmOpen(false)}
+          onConfirm={handleDelete}
+          message="Are you sure you want to delete this todo item?"
         />
       )}
 

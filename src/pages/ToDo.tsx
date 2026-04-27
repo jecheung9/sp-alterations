@@ -3,7 +3,6 @@ import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
 import type { Client } from "../types/client";
-import Confirmation from "../components/Confirmation";
 
 interface TodoProps {
   entries: Entry[];
@@ -12,17 +11,17 @@ interface TodoProps {
     client: Client;
     price?: number;
     description: string;
-}) => void;
+  }) => void;
+  showToast: (message: string, type?: "default" | "delete") => void;
 }
 
 const ToDo: React.FC<TodoProps> = ({
   entries,
-  addTodo
-
+  addTodo,
+  showToast,
  }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -80,7 +79,7 @@ const ToDo: React.FC<TodoProps> = ({
           onAddEntry={(entry) => {
             addTodo(entry)
             setIsAddOpen(false);
-            setToastMessage("Alteration todo added successfully!")
+            showToast("Alteration todo added successfully!", "default");
           }}
         />
       )}
@@ -220,13 +219,6 @@ const ToDo: React.FC<TodoProps> = ({
                 </tbody>
               </table>
             )
-      )}
-      
-      {toastMessage && (
-      <Confirmation
-        message={toastMessage}
-        onClose={() => setToastMessage(null)}
-      />
       )}
 
     </div>

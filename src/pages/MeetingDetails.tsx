@@ -4,24 +4,26 @@ import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AddForm from "../components/AddForm";
-import Confirmation from "../components/Confirmation";
+import ConfirmDelete from "../components/ConfirmDelete";
 
 interface MeetingDetailProps {
   entries: Entry[];
   updateMeeting: (updatedMeeting: Entry, statusOnly: boolean) => void;
   deleteMeeting: (id: number, type: Entry["type"]) => void;
+  showToast: (message: string, type?: "default" | "delete") => void;
 }
 
 const MeetingDetail: React.FC<MeetingDetailProps> = ({
   entries,
   updateMeeting,
-  deleteMeeting
+  deleteMeeting,
+  showToast,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const meeting = entries.find(e => e.id.toString() === id);
     
@@ -43,6 +45,13 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
   if (!meeting) {
     return <div className="page-container"><p className="text-gray-500">Meeting not found</p></div>;
   }
+
+  const handleDelete = async () => {
+    await deleteMeeting(meeting.id, meeting.type);
+    setIsConfirmOpen(false);
+    showToast("Meeting deleted successfully!", "delete");
+    navigate("/meetings");
+  }
     
 
   return (
@@ -62,10 +71,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
       />
 
       <button onClick={() => setIsEditOpen(true)}>Edit</button>
-      <button onClick={() => {
-        deleteMeeting(meeting.id, meeting.type);
-        navigate(`/meetings`);
-      }}>Delete</button>
+      <button onClick={() => setIsConfirmOpen(true)}>Delete</button>
 
       <button onClick={() => navigate(`/meetings`)}>
         Return back to meetings list
@@ -84,7 +90,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
               description: newData.description || meeting.description,
               status: meeting.status,
             }, false);
-            setToastMessage("Meeting updated successfully!");
+            showToast("Meeting updated successfully!", "default");
             setIsEditOpen(false);
           }}
           editHeader={`Edit meeting #${meeting.id}`}
@@ -97,10 +103,11 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
         />
       )}
 
-      {toastMessage && (
-        <Confirmation
-          message={toastMessage}
-          onClose={() => setToastMessage(null)}
+      {isConfirmOpen && (
+        <ConfirmDelete
+          onCancel={() => setIsConfirmOpen(false)}
+          onConfirm={handleDelete}
+          message="Are you sure you want to delete this meeting?"
         />
       )}
     </div>
