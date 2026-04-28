@@ -81,6 +81,7 @@ const ToDo: React.FC<TodoProps> = ({
             setIsAddOpen(false);
             showToast("Alteration todo added successfully!", "default");
           }}
+          allowModeToggle={false}
         />
       )}
 

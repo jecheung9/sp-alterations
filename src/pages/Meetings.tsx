@@ -74,6 +74,7 @@ const Meetings: React.FC<MeetingsProps> = ({
             setIsAddOpen(false);
             showToast("Meeting added successfully!", "default");
           }}
+          allowModeToggle={false}
         />
       )}
 

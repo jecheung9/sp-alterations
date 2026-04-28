@@ -29,6 +29,7 @@ interface AddFormProps {
     description: string;
   }) => void;
   isEdit?: boolean
+  allowModeToggle?: boolean;
 }
 
 const AddForm: React.FC<AddFormProps> = ({
@@ -38,7 +39,8 @@ const AddForm: React.FC<AddFormProps> = ({
   initialMode,
   initialData,
   onUpdateEntry,
-  isEdit
+  isEdit,
+  allowModeToggle = true,
 }) => {
 
   const [date, setDate] = useState('');
@@ -192,7 +194,7 @@ const AddForm: React.FC<AddFormProps> = ({
           <button type="button" className='absolute right-0 hover:!bg-[#ff4444]' onClick={onClose}> Close </button>
           </div>
 
-          {!isEdit && (
+          {!isEdit && allowModeToggle && (
             <div className='flex gap-2 justify-center mb-6 items-center'>
               Choose mode:
             <button
