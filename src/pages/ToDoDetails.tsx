@@ -8,7 +8,7 @@ import ConfirmDelete from "../components/ConfirmDelete";
 
 interface TodoDetailProps {
   entries: Entry[];
-  deleteTodo: (id: number, type: Entry["type"]) => void;
+  deleteTodo: (entry: Entry) => void;
   updateTodo: (updatedTodo: Entry, statusOnly: boolean) => void;
   showToast: (message: string, type?: "default" | "delete") => void;
 }
@@ -43,9 +43,8 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
   }
 
   const handleDelete = async () => {
-    await deleteTodo(todo.id, todo.type);
+    deleteTodo(todo);
     setIsConfirmOpen(false);
-    showToast("Todo deleted successfully!", "delete");
     navigate(`/todo`);
   }
 

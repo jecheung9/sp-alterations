@@ -9,7 +9,7 @@ import ConfirmDelete from "../components/ConfirmDelete";
 interface MeetingDetailProps {
   entries: Entry[];
   updateMeeting: (updatedMeeting: Entry, statusOnly: boolean) => void;
-  deleteMeeting: (id: number, type: Entry["type"]) => void;
+  deleteMeeting: (entry: Entry) => void;
   showToast: (message: string, type?: "default" | "delete") => void;
 }
 
@@ -47,9 +47,8 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
   }
 
   const handleDelete = async () => {
-    await deleteMeeting(meeting.id, meeting.type);
+    deleteMeeting(meeting);
     setIsConfirmOpen(false);
-    showToast("Meeting deleted successfully!", "delete");
     navigate("/meetings");
   }
     

@@ -28,6 +28,8 @@ function App() {
     message: string;
     type: "default" | "delete";
   } | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<Entry | null>(null);
+  const [deleteTimeoutId, setDeleteTimeoutId] = useState<number | null>(null);
   const { token, onLogout } = useAuth();
   const navigate = useNavigate();
 
@@ -70,15 +72,14 @@ function App() {
     loadEntries();
   }, [token]);
 
-    useEffect(() => {
-      if (!toast) return;
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => {
+      setToast(null);
+    }, 8000);
 
-      const timer = setTimeout(() => {
-        setToast(null);
-      }, 8000);
-
-      return () => clearTimeout(timer);
-    }, [toast]);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const addMeeting = async (meetingData: {
     due: string;
@@ -251,7 +252,7 @@ function App() {
         throw new Error("Failed to delete todo entry");
       }
       setEntries(prev => 
-        prev.filter(entry => !(entry.id === id && entry.type == type))
+        prev.filter(entry => !(entry.id === id && entry.type === type))
       )
     } catch (err) {
       console.error(err);
@@ -266,8 +267,56 @@ function App() {
     message: string,
     type: "default" | "delete" = "default"
   ) => {
-    setToast({ message, type });
+    setToast({message, type });
+  };
+
+  const deleteMeetingUndo = (entry: Entry) => {
+    setPendingDelete(entry);
+    setEntries(prev =>
+      prev.filter(e => !(e.id === entry.id && e.type === entry.type))
+    );
+    showToast("Meeting deleted successfully!", "delete");
+
+    const timeoutId = window.setTimeout(async () => {
+      await deleteMeeting(entry.id, entry.type);
+      setPendingDelete(null);
+      setToast(null);
+      setDeleteTimeoutId(null);
+    }, 8000);
+    
+    setDeleteTimeoutId(timeoutId);
+  };
+
+  const undoDelete = () => { //restore the entry
+    if (!pendingDelete) return;
+    if (deleteTimeoutId) {
+      clearTimeout(deleteTimeoutId);
+    }
+
+    setEntries(prev => [...prev, pendingDelete]);
+    setPendingDelete(null);
+    setToast(null);
+    setDeleteTimeoutId(null);
   }
+
+  const deleteTodoUndo = (entry: Entry) => {
+    setPendingDelete(entry);
+    setEntries(prev =>
+      prev.filter(e => !(e.id === entry.id && e.type === entry.type))
+    );
+    showToast("Todo deleted successfully!", "delete");
+
+    const timeoutId = window.setTimeout(async () => {
+      await deleteTodo(entry.id, entry.type);
+      setPendingDelete(null);
+      setToast(null);
+      setDeleteTimeoutId(null);
+    }, 8000);
+    
+    setDeleteTimeoutId(timeoutId);
+  };
+
+
 
   return (
     <>
@@ -344,7 +393,7 @@ function App() {
                 <ToDoDetails
                   entries={todoEntries}
                   updateTodo={updateTodo}
-                  deleteTodo={deleteTodo}
+                  deleteTodo={deleteTodoUndo}
                   showToast={showToast}
                 />
               </Layout>
@@ -359,7 +408,7 @@ function App() {
                 <MeetingDetail
                   entries={meetingEntries}
                   updateMeeting={updateMeeting}
-                  deleteMeeting={deleteMeeting}
+                  deleteMeeting={deleteMeetingUndo}
                   showToast={showToast}
                 />
               </Layout>
@@ -375,7 +424,7 @@ function App() {
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
-      onUndo={toast.type === "delete" ? () => { console.log("undo clicked"); } : undefined}
+          onUndo={toast.type === "delete" ? undoDelete : undefined}
       />
       )}
     </>  
