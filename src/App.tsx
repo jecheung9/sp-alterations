@@ -85,9 +85,10 @@ function App() {
     due: string;
     client: Client;
     description: string;
+    id?: number;
   }) => {
     try {
-      const id = nextMeetingId;
+      const id = meetingData.id ?? nextMeetingId;
       const body = { ...meetingData, id };
       const res = await fetch("http://localhost:3000/api/meetings", {
         method: "POST",
@@ -104,7 +105,9 @@ function App() {
 
       const newMeeting = await res.json();
       setEntries(prev => [...prev, { ...newMeeting, type: "meeting" }]);
-      setNextMeetingId(prev => prev + 1);
+      if (!meetingData.id) {
+        setNextMeetingId(prev => prev + 1);
+      }
     } catch (err){
       console.error(err);
     }
@@ -115,9 +118,10 @@ function App() {
     client: Client;
     price?: number;
     description: string;
+    id?: number;
   }) => {
     try {
-      const id = nextAlterationId;
+      const id = TodoData.id ?? nextAlterationId;
       const body = { ...TodoData, id };
       const res = await fetch("http://localhost:3000/api/todo", {
         method: "POST",
@@ -134,7 +138,9 @@ function App() {
 
       const newTodo = await res.json();
       setEntries(prev => [...prev, { ...newTodo, type: "alteration" }]);
-      setNextAlterationId(prev => prev + 1);
+      if (!TodoData.id) {
+        setNextAlterationId(prev => prev + 1);
+      }
     } catch (err){
       console.error(err);
     }
@@ -270,15 +276,15 @@ function App() {
     setToast({message, type });
   };
 
-  const deleteMeetingUndo = (entry: Entry) => {
-    setPendingDelete(entry);
+  const deleteMeetingUndo = async (entry: Entry) => {
+    await deleteMeeting(entry.id, entry.type);
     setEntries(prev =>
       prev.filter(e => !(e.id === entry.id && e.type === entry.type))
     );
+    setPendingDelete(entry);
     showToast("Meeting deleted successfully!", "delete");
 
     const timeoutId = window.setTimeout(async () => {
-      await deleteMeeting(entry.id, entry.type);
       setPendingDelete(null);
       setToast(null);
       setDeleteTimeoutId(null);
@@ -287,27 +293,39 @@ function App() {
     setDeleteTimeoutId(timeoutId);
   };
 
-  const undoDelete = () => { //restore the entry
+  const undoDelete = async () => {
     if (!pendingDelete) return;
-    if (deleteTimeoutId) {
-      clearTimeout(deleteTimeoutId);
+
+    const entry = pendingDelete;
+
+    try {
+      if (entry.type === "alteration") {
+        await addTodo(entry);
+      } else {
+        await addMeeting(entry);
+      }
+    } catch (err) {
+      console.error(err);
     }
 
-    setEntries(prev => [...prev, pendingDelete]);
     setPendingDelete(null);
     setToast(null);
-    setDeleteTimeoutId(null);
-  }
 
-  const deleteTodoUndo = (entry: Entry) => {
-    setPendingDelete(entry);
+    if (deleteTimeoutId) {
+      clearTimeout(deleteTimeoutId);
+      setDeleteTimeoutId(null);
+    }
+  };
+
+  const deleteTodoUndo = async (entry: Entry) => {
+    await deleteTodo(entry.id, entry.type);
     setEntries(prev =>
       prev.filter(e => !(e.id === entry.id && e.type === entry.type))
     );
+    setPendingDelete(entry);
     showToast("Todo deleted successfully!", "delete");
 
     const timeoutId = window.setTimeout(async () => {
-      await deleteTodo(entry.id, entry.type);
       setPendingDelete(null);
       setToast(null);
       setDeleteTimeoutId(null);
