@@ -175,20 +175,24 @@ const Dashboard: React.FC<DashboardProps> = ({
                     No upcoming meetings!
                   </div>
                 ) : (
-                  <div className="grid grid-cols-[max-content_max-content_auto] py-2">
+                  <div className="grid grid-cols-[max-content_auto] py-2">
                     {incompleteMeetings.map(val => (
                       <div
                         key={val.id}
-                        className="todo-row contents group cursor-pointer"
+                        className="contents group cursor-pointer"
                         onClick={() => navigate(`/meetings/${val.id}`)} 
                       >
-                        <div className={`py-2 pl-4 group-hover:bg-gray-300 
-                          ${isLateMeeting(val) ? "text-red-600 font-semibold" : ""}`}>
-                          {formatDateTime(val.due)}
+                        <div className="py-2 pl-4 group-hover:bg-gray-300 col-span-1 flex flex-col">
+                          <div className={isLateMeeting(val) ? "text-red-600 font-semibold" : ""}>
+                            {formatDateTime(val.due)}
+                          </div>
+                          <div>{val.client?.name}</div>
                         </div>
-                        <div className="py-2 pl-4 group-hover:bg-gray-300">{val.client?.name}</div>
+
                         <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
                       </div>
+
+                      
                     ))}
                   </div>
                 )}
@@ -251,7 +255,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                         <div className="text-sm bg-red-300 px-1 hidden wide:block">
                           M: {completedMeetings} / {meetingCount}
                         </div>
-                        <div className="wide:hidden text-xl bg-red-300 px-1">
+                        <div className="wide:hidden text-xl bg-red-300 px-1 text-right">
                           {completedMeetings} / {meetingCount}
                         </div>
                       </>
@@ -262,7 +266,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <div className="text-sm bg-blue-300 px-1 hidden wide:block">
                         T: {completedTodos} / {todoCount}
                       </div>
-                      <div className="wide:hidden text-xl bg-blue-300 px-1">
+                      <div className="wide:hidden text-xl bg-blue-300 px-1 text-right">
                         {completedTodos} / {todoCount}
                       </div>
                       </>
@@ -291,18 +295,19 @@ const Dashboard: React.FC<DashboardProps> = ({
                     No upcoming to-dos for the next 7 days!
                   </div>
                   ) : (
-                    <div className="grid grid-cols-[max-content_max-content_auto] py-2">
+                    <div className="grid grid-cols-[max-content_auto] py-2">
                       {incompleteEntries.map(val => (
                         <div
                           key={val.id}
-                          className="todo-row contents group cursor-pointer"
+                          className="contents group cursor-pointer"
                           onClick={() => navigate(`/todo/${val.id}`)}
                         >
-                        <div className={`py-2 pl-4 group-hover:bg-gray-300 
-                          ${isLateTodo(val) ? "text-red-600 font-semibold" : ""}`}>
-                          {formatDate(val.due)}
-                        </div>
-                          <div className="py-2 pl-4 group-hover:bg-gray-300">{val.client?.name}</div>
+                          <div className="py-2 pl-4 group-hover:bg-gray-300 col-span-1 flex flex-col">
+                            <div className={isLateTodo(val) ? "text-red-600 font-semibold" : ""}>
+                              {formatDate(val.due)}
+                            </div>
+                            <div>{val.client?.name}</div>
+                          </div>
                           <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
                         </div>
                       ))}
