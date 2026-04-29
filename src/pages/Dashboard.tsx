@@ -165,7 +165,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="flex-1">
       <h1 className="sm:text-4xl text-2xl p-2 font-bold">Dashboard</h1>
-      <div className="sm:grid grid-cols-2 gap-4 items-start">
+      <div className="sm:grid sm:grid-cols-2 gap-4 items-start flex flex-col ">
         <div className="flex flex-col gap-4">
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
             <h2 className="text-2xl p-4 pb-0 font-bold">Upcoming Meetings</h2>
@@ -255,7 +255,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                         <div className="text-sm bg-red-300 px-1 hidden wide:block">
                           M: {completedMeetings} / {meetingCount}
                         </div>
-                        <div className="wide:hidden text-xl bg-red-300 px-1 text-right">
+                        <div className="wide:hidden sm:text-xl text-base bg-red-300 px-1 text-right">
                           {completedMeetings} / {meetingCount}
                         </div>
                       </>
@@ -266,7 +266,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                       <div className="text-sm bg-blue-300 px-1 hidden wide:block">
                         T: {completedTodos} / {todoCount}
                       </div>
-                      <div className="wide:hidden text-xl bg-blue-300 px-1 text-right">
+                      <div className="wide:hidden sm:text-xl text-base bg-blue-300 px-1 text-right">
                         {completedTodos} / {todoCount}
                       </div>
                       </>
@@ -321,8 +321,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
           <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
             <h2 className="text-2xl p-4 pb-0 font-bold">Money</h2>
-            <div className="flex gap-2">
-              <div className="money-grid-column">
+            <div className="grid grid-cols-2 gap-16 sm:gap-4">
+              <div>
                 <div className="flex flex-col gap-8 pt-0 p-4">
                   <div className="grid grid-cols-[auto_1fr] whitespace-nowrap">
                     <div>All-time Total</div>
