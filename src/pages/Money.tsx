@@ -84,10 +84,11 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
 
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 m-2">
       <h1 className="text-4xl p-2 pl-0 font-bold">Money</h1>
-      <h2 className="text-xl p-2 pl-0 font-bold">Summary (profits/incomplete combined)</h2>
-      <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
+      <h2 className="text-xl p-2 pl-0 font-bold">Summary (profits + incomplete)</h2>
+      <div className="sm:block hidden">
+        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
         <thead>
           <tr>
             <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Year</th>
@@ -109,39 +110,83 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
             <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{grandTotal}</b></td>
           </tr>
         </tbody>
-      </table>
+        </table>
+      </div>
+
+      <div className="sm:hidden">
+        <table className="border-2 border-gray-500 w-full text-sm border-collapse table-auto mb-8">
+          <thead>
+            <tr>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] whitespace-nowrap w-1">Client</th>
+                {yearlyData.map(y => <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] text-right">{y.year}</th>)}
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] text-right">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {clients.map(client =>
+              <tr>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] font-bold whitespace-nowrap w-1">{client}</td>
+                {yearlyData.map(y => 
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] text-right">
+                    {y.clientTotals[client]}
+                  </td>
+
+                )}
+                <td className="border-r-2 border-gray-500 p-[0.2rem] font-bold text-right">
+                {columnTotals[client]}
+                </td>  
+              </tr>
+            )}
+
+            <tr>
+              <td className="border-r-2 border-gray-500 p-[0.2rem] font-bold">Total</td>
+              {yearlyData.map(y => 
+                <td className="border-r-2 border-gray-500 p-[0.2rem] font-bold text-right">
+                  {y.total}
+                </td>
+              )}
+
+              <td className="border-r-2 border-gray-500 p-[0.2rem] font-bold text-right">
+                {grandTotal}
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
 
 
       {monthlyData.map(e => (
         <div>
           <h2 className="text-xl p-2 pl-0 font-bold">{e.month}</h2>
-          <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
+          <table className="border-2 border-gray-500 w-full sm:text-xl text-sm mb-8 border-collapse table-auto sm:table-fixed">
             <thead>
               <tr>
-                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Client</th>
-                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Profit</th>
-                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Incomplete</th>
-                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem]">Total</th>
+                <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] whitespace-nowrap w-1 sm:whitespace-normal sm:w-auto">Client</th>
+                <th className="border-b border-black sm:text-left text-right border-r-2 border-gray-500 p-[0.2rem]">Profit</th>
+                <th className="border-b border-black sm:text-left text-right border-r-2 border-gray-500 p-[0.2rem]">Incomplete</th>
+                <th className="border-b border-black sm:text-left text-right border-r-2 border-gray-500 p-[0.2rem]">Total</th>
               </tr>
             </thead>
             <tbody>
               {clients.map(client => (
                 <tr>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{client}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{e.clientTotals[client].completed}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{e.clientTotals[client].incomplete}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{e.clientTotals[client].completed + e.clientTotals[client].incomplete}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] whitespace-nowrap w-1 sm:whitespace-normal sm:w-auto">{client}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] sm:text-left text-right">{e.clientTotals[client].completed}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] sm:text-left text-right">{e.clientTotals[client].incomplete}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] sm:text-left text-right">{e.clientTotals[client].completed + e.clientTotals[client].incomplete}</td>
                 </tr>
               ))}
               <tr>
                 <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>Total</b></td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{e.totals.completed}</b></td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{e.totals.incomplete}</b></td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]"><b>{e.totals.grandMonth}</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] sm:text-left text-right"><b>{e.totals.completed}</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] sm:text-left text-right"><b>{e.totals.incomplete}</b></td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] sm:text-left text-right"><b>{e.totals.grandMonth}</b></td>
               </tr>
             </tbody>
           </table>
-        </div>
+        </div>  
       ))}
     </div>
   )
