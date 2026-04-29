@@ -165,9 +165,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <div className="flex-1">
       <h1 className="sm:text-4xl text-2xl p-2 font-bold">Dashboard</h1>
-      <div className="sm:grid sm:grid-cols-2 gap-4 items-start flex flex-col ">
+      <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 items-start">
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
+          <div className="flex flex-col box-border order-2 sm:order-1" style={{ backgroundColor: "#ECECEC" }}>
             <h2 className="text-2xl p-4 pb-0 font-bold">Upcoming Meetings</h2>
               <div>
                 {meetingsLength === 0 ? (
@@ -201,7 +201,9 @@ const Dashboard: React.FC<DashboardProps> = ({
               className="block mr-4 mb-4 ml-auto"
               onClick={() => navigate("/meetings")}> View Previous Meetings</button>
           </div>
-          <div className="flex flex-col box-border" style={{ backgroundColor: "#ECECEC" }}>
+
+
+          <div className="flex flex-col box-border sm:order-2 order-1" style={{ backgroundColor: "#ECECEC" }}>
             <div className="flex items-baseline">
               <h2 className="text-2xl p-4 pb-0 font-bold">Calendar</h2>
               <p className="text-gray-500"><i>This & Next 2 Weeks</i></p>
