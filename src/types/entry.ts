@@ -27,3 +27,6 @@ export interface MeetingDropoff extends BaseEntry {
 
 export type MeetingEntry = MeetingPickup | MeetingDropoff;
 export type Entry = AlterationEntry | MeetingEntry;
+
+export type NewAlterationEntry = Omit<AlterationEntry, "id">;
+export type NewMeetingEntry = Omit<MeetingEntry, "id">;

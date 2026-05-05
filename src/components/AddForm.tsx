@@ -3,16 +3,13 @@ import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
 import { FetchHelper } from '../utils/Fetch';
 import { useNavigate } from 'react-router';
+import type { NewAlterationEntry, NewMeetingEntry } from '../types/entry';
+
+type NewEntry = NewAlterationEntry | NewMeetingEntry;
 
 interface AddFormProps {
   onClose: () => void;
-  onAddEntry: (entry: {
-    type: 'alteration' | 'meeting';
-    due: string;
-    client: Client;
-    price?: number;
-    description: string;
-  }) => void;
+  onAddEntry: (entry: NewEntry) => void;
   editHeader?: string;
   initialMode?: 'alteration' | 'meeting';
   initialData?: {
@@ -21,13 +18,7 @@ interface AddFormProps {
     price?: number;
     description: string;
   }
-  onUpdateEntry?: (entry: {
-    type: 'alteration' | 'meeting';
-    due: string;
-    client: Client;
-    price?: number;
-    description: string;
-  }) => void;
+  onUpdateEntry?: (entry: NewEntry) => void;
   isEdit?: boolean
   allowModeToggle?: boolean;
 }
@@ -170,13 +161,37 @@ const AddForm: React.FC<AddFormProps> = ({
       return;
     }
 
-    const entryData = {
-      type: mode,
-      client: client!,
-      due: date,
-      price: mode === 'alteration' ? Number(price) : undefined,
-      description: mode === 'alteration' ? description : "",
-      meetingType: mode === 'meeting' ? meetingType : undefined,
+    let entryData: NewEntry;
+
+    if (mode === "alteration") {
+      entryData = {
+        type: "alteration",
+        due: date,
+        client: client!,
+        status: "Not Started",
+        price: Number(price),
+        description: description.trim(),
+      };
+    } else {
+      if (meetingType === "pickup") {
+        entryData = {
+          type: "meeting",
+          meetingType: "pickup",
+          due: date,
+          client: client!,
+          status: "Not Started",
+          description: description.trim() || undefined,
+        };
+      } else {
+        entryData = {
+          type: "meeting",
+          meetingType: "dropoff",
+          due: date,
+          client: client!,
+          status: "Not Started",
+          alterationIds: [],
+        };
+      }
     }
     
     if (isEdit && onUpdateEntry) {

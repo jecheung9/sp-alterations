@@ -2,22 +2,13 @@ import React from "react";
 import { useState } from "react";
 import Navbar from "./Navbar";
 import AddForm from "./AddForm";
-import type { Client } from "../types/client";
 import { useLocation } from "react-router-dom";
+import type { NewAlterationEntry, MeetingEntry } from "../types/entry";
 
 interface LayoutProps {
   children: React.ReactNode;
-  addTodo: (entry: {
-    due: string;
-    client: Client;
-    price?: number;
-    description: string;
-  }) => void;
-  addMeeting: (entry: {
-    due: string;
-    client: Client;
-    description: string;
-  }) => Promise<any>;
+  addTodo: (entry: NewAlterationEntry) => void;
+  addMeeting: (entry: MeetingEntry) => Promise<any>;
   showToast: (message: string, type?: "default" | "delete") => void;
 }
 
@@ -49,19 +40,21 @@ const Layout: React.FC<LayoutProps> = ({
               initialMode={pageMode}
               onClose={() => setIsAddFormOpen(false)}
               onAddEntry={async (entry) => {
-                if (entry.type === "meeting" && entry.client) {
-                  await addMeeting({
-                    due: entry.due,
-                    client: entry.client,
-                    description: entry.description,
-                  });
-                  showToast("Meeting added successfully!", "default");
-                } else {
-                  addTodo(entry)
-                  showToast("Alteration todo added successfully!", "default");
+                if (entry.type === "meeting") {
+                  await addMeeting(entry as MeetingEntry);
+                  showToast(
+                    entry.meetingType === "pickup"
+                      ? "Pickup meeting added successfully!"
+                      : "Drop-off meeting added successfully!",
+                    "default"
+                  );
+
+                  return;
                 }
-              }
-              } />
+                addTodo(entry);
+                showToast("Alteration added successfully!", "default");
+              }}
+            />
           )}
         </div>
       </main>
