@@ -53,6 +53,8 @@ const AddForm: React.FC<AddFormProps> = ({
   
   type FormMode = 'alteration' | 'meeting';
   const [mode, setMode] = useState<FormMode>(initialMode || 'alteration');
+
+  const [meetingType, setMeetingType] = useState<"pickup" | "dropoff" | "">("");
   
   const { token, onLogout } = useAuth();
   const navigate = useNavigate();
@@ -143,8 +145,16 @@ const AddForm: React.FC<AddFormProps> = ({
       newErrors.price = "Price is required."
     }
 
-    if (!description.trim()) {
+    if (mode === 'alteration' && !description.trim()) {
       newErrors.description = "Description is required."
+    }
+
+    if (mode === 'meeting' && !meetingType) {
+      newErrors.meetingType = "Meeting type is required."
+    }
+
+    if (mode === 'meeting' && meetingType === 'dropoff') {
+      // placeholder for later, where we must pick one item from array.
     }
 
     return newErrors;
@@ -165,7 +175,8 @@ const AddForm: React.FC<AddFormProps> = ({
       client: client!,
       due: date,
       price: mode === 'alteration' ? Number(price) : undefined,
-      description
+      description: mode === 'alteration' ? description : "",
+      meetingType: mode === 'meeting' ? meetingType : undefined,
     }
     
     if (isEdit && onUpdateEntry) {
@@ -180,6 +191,7 @@ const AddForm: React.FC<AddFormProps> = ({
     setDate('');
     setPrice('');
     setDescription('');
+    setMeetingType('');
   }
 
 
@@ -212,7 +224,7 @@ const AddForm: React.FC<AddFormProps> = ({
           )}
         </div> 
 
-        <div className="grid grid-cols-[max-content_1fr] gap-4 items-center w-full">
+        <div className="grid grid-cols-[max-content_2fr] gap-4 items-center w-full">
           <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg"
             htmlFor="client">Client<span className="text-red-500">*</span></label>
           <select
@@ -270,18 +282,81 @@ const AddForm: React.FC<AddFormProps> = ({
           </>    
           )} 
 
-          <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg self-start"
-            htmlFor='description'>Description<span className="text-red-500">*</span></label>
-          <textarea
-            className="resize-none border rounded mt-[0.35rem] text-lg h-[10rem]"
-            id='description'
-            name='description'
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
-              errors.description && setErrors(prev => ({ ...prev, description: "" }));
-            }}
-          />
+
+
+          {mode === "alteration" ? (
+            <>
+              <label
+                className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg self-start"
+                htmlFor='description'>
+                Description<span className="text-red-500">*</span>
+              </label>
+              <textarea
+                className="resize-none border rounded mt-[0.35rem] text-lg h-[10rem]"
+                id='description'
+                name='description'
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  errors.description && setErrors(prev => ({ ...prev, description: "" }));
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <label
+                className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg self-start"
+                htmlFor='meetingType'>
+                Meeting Type<span className="text-red-500">*</span> 
+              </label>
+                
+              <div className="flex gap-8 items-center mt-[0.35rem]">
+                <label className="flex items-center gap-2 cursor-pointer text-lg">
+                  <input
+                    type="radio"
+                    checked={meetingType === "pickup"}
+                    onChange={() => setMeetingType("pickup")}
+                  />
+                  Pickup
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer text-lg">
+                  <input
+                    type="radio"
+                    checked={meetingType === "dropoff"}
+                    onChange={() => setMeetingType("dropoff")}
+                  />
+                  Drop Off
+                </label>
+                </div>
+                
+
+                {meetingType === "pickup" && (
+                  <>
+                    <label className="justify-self-end mt-[0.35rem] text-lg self-start text-right leading-tight">
+                      <span>Description</span>
+                      <span className="block text-sm text-gray-500">(optional)</span>
+                    </label>
+                    <textarea
+                      className="resize-none border rounded mt-[0.35rem] text-lg h-[5rem]"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                  </>
+                )}
+
+                {meetingType === "dropoff" && (
+                  <>
+                    <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg self-start">
+                      Alterations<span className="text-red-500">*</span>
+                    </label>
+                    <div>
+                      (select alterations here later)
+                    </div>
+                  </>
+                )}
+            </>    
+          )}
         </div>
 
         {Object.values(errors).some(err => err) && (

@@ -1,11 +1,29 @@
 import type { Client } from "./client";
 
-export interface Entry {
+interface BaseEntry {
   id: number;
-  type: 'alteration' | 'meeting';
   due: string;
   client: Client;
-  price?: number;
-  description: string;
   status: "Not Started" | "Started" | "Complete" | "Dropped Off";
 }
+
+export interface AlterationEntry extends BaseEntry{
+  type: "alteration";
+  description: string;
+  price: number;
+}
+
+export interface MeetingPickup extends BaseEntry {
+  type: "meeting";
+  meetingType: "pickup";
+  description?: string;
+}
+
+export interface MeetingDropoff extends BaseEntry {
+  type: "meeting";
+  meetingType: "dropoff";
+  alterationIds: number[];
+}
+
+export type MeetingEntry = MeetingPickup | MeetingDropoff;
+export type Entry = AlterationEntry | MeetingEntry;
