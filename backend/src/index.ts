@@ -96,24 +96,41 @@ app.delete("/api/clients/:id", authenticateToken, async (req: Request, res: Resp
 //meetings
 app.post("/api/meetings", authenticateToken, async (req: Request, res: Response) => {
     try {
-        const { id, due, client, description } = req.body;
+        const { id, due, client, description, meetingType } = req.body;
         const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
         if (!meetingsCollection) {
             res.status(500).json({ error: "MEETINGS_COLLECTION_NAME not configured" });
             return;
         }
-        const newMeeting = {
-            id,
-            type: "meeting",
-            due,
-            client: {
-                _id: client._id,
-                name: client.name
-            },
-            status: "Not Started",
-            description: description
+        let newMeeting;
+        if (meetingType === "pickup") {
+            newMeeting = {
+                id,
+                type: "meeting",
+                meetingType,
+                due,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                status: "Not Started",
+                description: description
+            }
+        } else {
+            const { alterationIds } = req.body;
+            newMeeting = {
+                id,
+                type: "meeting",
+                meetingType: "dropoff",
+                due,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                status: "Not Started",
+                alterationIds
+            };
         }
-
         const result = await db.collection(meetingsCollection).insertOne(newMeeting);
         const inserted = await db.collection(meetingsCollection).findOne({ _id: result.insertedId });
         res.status(201).json(inserted);

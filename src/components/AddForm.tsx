@@ -3,7 +3,7 @@ import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
 import { FetchHelper } from '../utils/Fetch';
 import { useNavigate } from 'react-router';
-import type { NewAlterationEntry, NewMeetingEntry } from '../types/entry';
+import type { AlterationEntry, NewAlterationEntry, NewMeetingEntry } from '../types/entry';
 
 type NewEntry = NewAlterationEntry | NewMeetingEntry;
 
@@ -21,6 +21,7 @@ interface AddFormProps {
   onUpdateEntry?: (entry: NewEntry) => void;
   isEdit?: boolean
   allowModeToggle?: boolean;
+  entries: AlterationEntry[];
 }
 
 const AddForm: React.FC<AddFormProps> = ({
@@ -32,6 +33,7 @@ const AddForm: React.FC<AddFormProps> = ({
   onUpdateEntry,
   isEdit,
   allowModeToggle = true,
+  entries,
 }) => {
 
   const [date, setDate] = useState('');
@@ -46,6 +48,8 @@ const AddForm: React.FC<AddFormProps> = ({
   const [mode, setMode] = useState<FormMode>(initialMode || 'alteration');
 
   const [meetingType, setMeetingType] = useState<"pickup" | "dropoff" | "">("");
+
+  const [selectedAlterationIds, setSelectedAlterationIds] = useState<number[]>([]);
   
   const { token, onLogout } = useAuth();
   const navigate = useNavigate();
@@ -189,7 +193,7 @@ const AddForm: React.FC<AddFormProps> = ({
           due: date,
           client: client!,
           status: "Not Started",
-          alterationIds: [],
+          alterationIds: selectedAlterationIds,
         };
       }
     }
@@ -208,6 +212,12 @@ const AddForm: React.FC<AddFormProps> = ({
     setDescription('');
     setMeetingType('');
   }
+
+  const availableAlterations = entries.filter(entry =>
+    entry.type === "alteration" &&
+    client &&
+    entry.client._id === client._id &&
+    entry.status === "Complete");
 
 
   return (
@@ -365,8 +375,27 @@ const AddForm: React.FC<AddFormProps> = ({
                     <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg self-start">
                       Alterations<span className="text-red-500">*</span>
                     </label>
-                    <div>
-                      (select alterations here later)
+                    <div className='flex flex-col gap-2'>
+                      {availableAlterations.map(alteration => (
+                        <label
+                          key={alteration.id}
+                          className='flex items-start gap-2'
+                        >
+                          <input
+                            className='mt-1'
+                            type='checkbox'
+                            checked={selectedAlterationIds.includes(alteration.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedAlterationIds(prev => [...prev, alteration.id]);
+                              } else {
+                                setSelectedAlterationIds(prev => prev.filter(id => id !== alteration.id));
+                              }
+                            }}
+                          />
+                          #{alteration.id}: {alteration.description}
+                        </label>
+                      ))}
                     </div>
                   </>
                 )}

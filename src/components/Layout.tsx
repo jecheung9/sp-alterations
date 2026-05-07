@@ -3,13 +3,14 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import AddForm from "./AddForm";
 import { useLocation } from "react-router-dom";
-import type { NewAlterationEntry, MeetingEntry } from "../types/entry";
+import type { NewAlterationEntry, MeetingEntry, AlterationEntry } from "../types/entry";
 
 interface LayoutProps {
   children: React.ReactNode;
   addTodo: (entry: NewAlterationEntry) => void;
   addMeeting: (entry: MeetingEntry) => Promise<any>;
   showToast: (message: string, type?: "default" | "delete") => void;
+  entries: AlterationEntry[];
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -17,6 +18,7 @@ const Layout: React.FC<LayoutProps> = ({
   addTodo,
   addMeeting,
   showToast,
+  entries,
 }) => {
 
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
@@ -38,6 +40,7 @@ const Layout: React.FC<LayoutProps> = ({
           {isAddFormOpen && (
             <AddForm
               initialMode={pageMode}
+              entries={entries}
               onClose={() => setIsAddFormOpen(false)}
               onAddEntry={async (entry) => {
                 if (entry.type === "meeting") {
