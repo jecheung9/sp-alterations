@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import type { Entry } from "../types/entry"
+import type { Entry, MeetingEntry } from "../types/entry"
 import Box from "@mui/material/Box";
 
 interface DashboardProps {
@@ -161,6 +161,13 @@ const Dashboard: React.FC<DashboardProps> = ({
     )
   }
 
+  const getMeetingNotes = (entry: MeetingEntry) => {
+    if (entry.meetingType === "pickup") {
+      return entry.description ? `Pickup: ${entry.description}` : "Pickup"
+    }
+    return `Dropoff: ${entry.alterationIds.join(", ")}`
+  };
+
   
   return (
     <div className="flex-1">
@@ -189,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                           <div>{val.client?.name}</div>
                         </div>
 
-                        <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
+                        <div className="py-2 pl-4 group-hover:bg-gray-300">{getMeetingNotes(val)}</div>
                       </div>
 
                       

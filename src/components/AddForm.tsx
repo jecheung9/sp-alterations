@@ -217,7 +217,7 @@ const AddForm: React.FC<AddFormProps> = ({
     entry.type === "alteration" &&
     client &&
     entry.client._id === client._id &&
-    entry.status === "Complete");
+    (entry.status === "Not Started" || entry.status === "Started" || entry.status === "Complete"));
 
 
   return (

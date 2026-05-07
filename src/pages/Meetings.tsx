@@ -3,6 +3,7 @@ import type { Entry } from "../types/entry"
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
 import type { Client } from "../types/client";
+import type { MeetingEntry } from "../types/entry";
 
 interface MeetingsProps {
   entries: Entry[];
@@ -55,6 +56,13 @@ const Meetings: React.FC<MeetingsProps> = ({
     )
   }
 
+  const getMeetingNotes = (entry: MeetingEntry) => {
+    if (entry.meetingType === "pickup") {
+      return entry.description ? `Pickup: ${entry.description}` : "Pickup"
+    }
+    return `Dropoff: ${entry.alterationIds.join(", ")}`
+  };
+
   return (
     <div className="flex-1">
       <div className="flex justify-between items-center">
@@ -91,7 +99,7 @@ const Meetings: React.FC<MeetingsProps> = ({
             <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
             <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
             <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Description</th>
+            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Notes</th>
           </tr>
         </thead>
         <tbody>
@@ -108,7 +116,7 @@ const Meetings: React.FC<MeetingsProps> = ({
                   {formatDateTime(val.due)}
                 </td>
                 <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{getMeetingNotes(val)}</td>
               </tr>
             )
           })}
@@ -137,7 +145,7 @@ const Meetings: React.FC<MeetingsProps> = ({
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Description</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Notes</th>
             </tr>
           </thead>
           <tbody>
@@ -151,7 +159,7 @@ const Meetings: React.FC<MeetingsProps> = ({
                   <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
                   <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDateTime(val.due)}</td>
                   <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{getMeetingNotes(val)}</td>
                 </tr>
               )
             })}
