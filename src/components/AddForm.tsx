@@ -3,7 +3,7 @@ import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
 import { FetchHelper } from '../utils/Fetch';
 import { useNavigate } from 'react-router';
-import type { AlterationEntry, NewAlterationEntry, NewMeetingEntry } from '../types/entry';
+import type { NewAlterationEntry, NewMeetingEntry, Entry } from '../types/entry';
 
 type NewEntry = NewAlterationEntry | NewMeetingEntry;
 
@@ -16,12 +16,14 @@ interface AddFormProps {
     client: Client;
     due: string;
     price?: number;
-    description: string;
+    description?: string;
+    meetingType?: 'pickup' | 'dropoff';
+    alterationIds?: number[];
   }
   onUpdateEntry?: (entry: NewEntry) => void;
   isEdit?: boolean
   allowModeToggle?: boolean;
-  entries: AlterationEntry[];
+  entries: Entry[];
 }
 
 const AddForm: React.FC<AddFormProps> = ({
@@ -96,7 +98,9 @@ const AddForm: React.FC<AddFormProps> = ({
           : initialData.due.slice(0, 10)
       );
       setPrice(initialData.price ? String(initialData.price) : "");
-      setDescription(initialData.description);
+      setDescription(initialData.description || "");
+      setMeetingType(initialData.meetingType || "");
+      setSelectedAlterationIds(initialData.alterationIds ?? []);
     }
   }, [initialData, mode, clientsData])
 

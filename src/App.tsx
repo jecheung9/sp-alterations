@@ -156,6 +156,8 @@ function App() {
         body = {
           due: rest.due,
           description: rest.description,
+          meetingType: rest.meetingType,
+          alterationIds: rest.alterationIds,
           client: {
             _id: rest.client._id,
             name: rest.client.name
@@ -424,7 +426,7 @@ function App() {
             <ProtectedRoute>
               <Layout addTodo={addTodo} addMeeting={addMeeting} showToast={showToast} entries={todoEntries}>
                 <MeetingDetail
-                  entries={meetingEntries}
+                  entries={entries}
                   updateMeeting={updateMeeting}
                   deleteMeeting={deleteMeetingUndo}
                   showToast={showToast}

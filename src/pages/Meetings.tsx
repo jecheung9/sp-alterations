@@ -6,7 +6,7 @@ import type { Client } from "../types/client";
 import type { MeetingEntry } from "../types/entry";
 
 interface MeetingsProps {
-  entries: Entry[];
+  entries: MeetingEntry[];
   addMeeting: (entry: {
     due: string;
     client: Client;
@@ -56,12 +56,14 @@ const Meetings: React.FC<MeetingsProps> = ({
     )
   }
 
-  const getMeetingNotes = (entry: MeetingEntry) => {
-    if (entry.meetingType === "pickup") {
-      return entry.description ? `Pickup: ${entry.description}` : "Pickup"
-    }
-    return `Dropoff: ${entry.alterationIds.join(", ")}`
-  };
+  const getMeetingNotes = (entry: Entry) => {
+    if (entry.type === "meeting") {
+      if (entry.meetingType === "pickup") {
+        return entry.description ? `Pickup: ${entry.description}` : "Pickup"
+      }
+      return `Dropoff: ${entry.alterationIds.join(", ")}` 
+      }
+    };
 
   return (
     <div className="flex-1">
@@ -83,6 +85,7 @@ const Meetings: React.FC<MeetingsProps> = ({
             showToast("Meeting added successfully!", "default");
           }}
           allowModeToggle={false}
+          entries={entries}
         />
       )}
 

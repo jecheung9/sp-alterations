@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import type { Entry } from "../types/entry";
+import type { Entry, MeetingEntry } from "../types/entry";
 import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -25,7 +25,9 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const meeting = entries.find(e => e.id.toString() === id);
+  const meeting = entries
+    .filter((e): e is MeetingEntry => e.type === "meeting")
+    .find(e => e.id.toString() === id);
     
   const formatDateTime = (dateTime: string) => {
     const dateTimeObject = new Date(dateTime);
@@ -51,6 +53,15 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
     setIsConfirmOpen(false);
     navigate("/meetings");
   }
+
+  const getMeetingNotes = (entry: Entry) => {
+    if (entry.type === "meeting") {
+      if (entry.meetingType === "pickup") {
+        return entry.description ? `Pickup: ${entry.description}` : "Pickup"
+      }
+      return `Dropoff: ${entry.alterationIds.join(", ")}` 
+      }
+    };
     
 
   return (
@@ -59,7 +70,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
       <p>Status: {meeting.status}</p>
       <p>Client: {meeting.client?.name}</p>
       <p>Date + time: {formatDateTime(meeting.due)}</p>
-      <p>Description: {meeting.description}</p>
+      <p>Notes: {getMeetingNotes(meeting)}</p>
 
       <StatusButtons
         onChange={(status) =>
@@ -77,18 +88,46 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
       </button>
 
       {isEditOpen && (
+        <>
         <AddForm
           isEdit
           onClose={() => setIsEditOpen(false)}
           onAddEntry={() => { }}
-          onUpdateEntry={(newData) => {
-            updateMeeting({
+            onUpdateEntry={(newData) => {
+              const newMeetingType = (newData as any).meetingType ?? meeting.meetingType;
+            const updated: Entry = {
               ...meeting,
-              client: newData.client || meeting.client,
-              due: newData.due || meeting.due,
-              description: newData.description || meeting.description,
+              client: newData.client ?? meeting.client,
+              due: newData.due ?? meeting.due,
               status: meeting.status,
-            }, false);
+              meetingType: newMeetingType
+            };
+              
+            if (newMeetingType === "pickup") {
+              const desc = (newData as any).description?.trim();
+              updated.description = desc ? desc : null;
+
+              updated.alterationIds = undefined;
+            }
+
+            if (newMeetingType === "dropoff") {
+              updated.alterationIds =
+                (newData as any).alterationIds ?? meeting.alterationIds;
+
+              updated.description = undefined;
+            }
+
+            if (meeting.type === "meeting" && meeting.meetingType === "pickup") {
+              const desc = newData.description?.trim();
+              updated.description = desc ? desc : null;
+            }
+
+            if (meeting.type === "meeting" && meeting.meetingType === "dropoff") {
+              updated.alterationIds =
+                (newData as any).alterationIds ?? meeting.alterationIds;
+            }
+
+            updateMeeting(updated, false);
             showToast("Meeting updated successfully!", "default");
             setIsEditOpen(false);
           }}
@@ -97,9 +136,16 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
           initialData={{
             client: meeting.client,
             due: meeting.due,
-            description: meeting.description
+            description: meeting.type === "meeting" ? meeting.description : "",
+            meetingType: meeting.type === "meeting" ? meeting.meetingType : "",
+            alterationIds:
+              meeting.type === "meeting" && meeting.meetingType === "dropoff"
+                ? meeting.alterationIds
+                : [],
           }}
-        />
+          entries={entries}
+          />
+      </>   
       )}
 
       {isConfirmOpen && (
