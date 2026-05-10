@@ -153,7 +153,9 @@ const AddForm: React.FC<AddFormProps> = ({
     }
 
     if (mode === 'meeting' && meetingType === 'dropoff') {
-      // placeholder for later, where we must pick one item from array.
+      if (!selectedAlterationIds.length) {
+        newErrors.alterationIds = "Select at least one alteration for drop-off.";
+      }
     }
 
     return newErrors;
@@ -380,26 +382,42 @@ const AddForm: React.FC<AddFormProps> = ({
                       Alterations<span className="text-red-500">*</span>
                     </label>
                     <div className='flex flex-col gap-2'>
-                      {availableAlterations.map(alteration => (
-                        <label
-                          key={alteration.id}
-                          className='flex items-start gap-2'
-                        >
-                          <input
-                            className='mt-1'
-                            type='checkbox'
-                            checked={selectedAlterationIds.includes(alteration.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedAlterationIds(prev => [...prev, alteration.id]);
-                              } else {
-                                setSelectedAlterationIds(prev => prev.filter(id => id !== alteration.id));
-                              }
-                            }}
-                          />
-                          #{alteration.id}: {alteration.description}
-                        </label>
-                      ))}
+                      {!client ? (
+                        <p className="text-gray-500 mt-[0.35rem]">
+                          Pick a client first
+                        </p>
+                      ) : availableAlterations.length === 0 ? (
+                        <p className="text-gray-500 mt-[0.35rem]">
+                          No available alterations
+                        </p>
+                      ) : (
+                        availableAlterations.map(alteration => (
+                          <label
+                            key={alteration.id}
+                            className='flex items-start gap-2 mt-[0.35rem]'
+                          >
+                            <input
+                              className='mt-1'
+                              type='checkbox'
+                              checked={selectedAlterationIds.includes(alteration.id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedAlterationIds(prev =>
+                                    [...prev, alteration.id].sort((a, b) => a - b)
+                                  );
+                                } else {
+                                  setSelectedAlterationIds(prev =>
+                                    prev
+                                      .filter(id => id !== alteration.id)
+                                      .sort((a, b) => a - b)
+                                  );
+                                }
+                              }}
+                            />
+                            #{alteration.id}: {alteration.description}
+                          </label>
+                        ))
+                      )}
                     </div>
                   </>
                 )}

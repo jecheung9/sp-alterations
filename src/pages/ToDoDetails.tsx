@@ -97,6 +97,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
             description: todo.description,
             price: todo.price,
           }}
+          entries={entries}
         />
       )}
 
