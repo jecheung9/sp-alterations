@@ -59,11 +59,24 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
       if (entry.meetingType === "pickup") {
         return entry.description ? `Pickup: ${entry.description}` : "Pickup"
       }
-      return `Dropoff: ${entry.alterationIds.join(", ")}` 
-      }
-    };
-    
-
+      return (
+        <>
+          Dropoff:{" "}
+          {entry.alterationIds.map((id, index) => (
+            <span key={id}>
+              <span
+                onClick={() => navigate(`/todo/${id}`)}
+                className="text-blue-600 underline cursor-pointer"
+              >
+                {id}
+              </span>
+              {index < entry.alterationIds.length - 1 ? ", " : ""}
+            </span>
+          ))}
+        </>
+      )}
+  };
+  
   return (
     <div className="page-container">
       <h1 className="font-bold text-2xl">Meeting #{meeting.id}</h1>

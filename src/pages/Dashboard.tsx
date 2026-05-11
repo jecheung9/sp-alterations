@@ -317,7 +317,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                             </div>
                             <div>{val.client?.name}</div>
                           </div>
-                          <div className="py-2 pl-4 group-hover:bg-gray-300">{val.description}</div>
+                          <div className="py-2 pl-4 group-hover:bg-gray-300">#{val.id}: {val.description}</div>
                         </div>
                       ))}
                     </div>
