@@ -290,8 +290,17 @@ function App() {
       if (!res.ok) {
         throw new Error("Failed to delete todo entry");
       }
-      setEntries(prev => 
-        prev.filter(entry => !(entry.id === id && entry.type === type))
+      setEntries(prev => prev
+        .filter(entry => !(entry.id === id && entry.type === type))
+        .map(entry => {
+          if (entry.type === "meeting" && entry.meetingType === "dropoff") {
+            return {
+              ...entry,
+              alterationIds: entry.alterationIds.filter(aid => aid !== id)
+            };
+          }
+          return entry;
+        })
       )
     } catch (err) {
       console.error(err);

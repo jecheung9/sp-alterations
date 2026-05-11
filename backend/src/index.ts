@@ -253,10 +253,11 @@ app.get("/api/todo", authenticateToken, async (req: Request, res: Response) => {
 
 app.delete("/api/todo/:id", authenticateToken, async (req: Request, res: Response) => {
     try {
-        const id = req.params.id;
+        const id = Number(req.params.id);
         const todoCollection = process.env.TODO_COLLECTION_NAME;
-        if (!todoCollection) {
-            res.status(500).json({ error: "TODO_COLLECTION_NAME not configured" });
+        const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
+        if (!todoCollection || !meetingsCollection) {
+            res.status(500).json({ error: "Collections not configured" });
             return;
         }
         const result = await db.collection(todoCollection).deleteOne({
@@ -266,6 +267,19 @@ app.delete("/api/todo/:id", authenticateToken, async (req: Request, res: Respons
             res.status(404).json({ error: "Meeting not found" });
             return;
         }
+
+        await db.collection(meetingsCollection).updateMany(
+            {
+                meetingType: "dropoff",
+                alterationIds: id
+            },
+            {
+                $pull: {
+                    alterationIds: id
+                } as any
+            }
+        );
+
         res.status(204).send();
     } catch (err) {
         console.error(err);
