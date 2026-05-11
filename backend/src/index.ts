@@ -280,6 +280,11 @@ app.delete("/api/todo/:id", authenticateToken, async (req: Request, res: Respons
             }
         );
 
+        await db.collection(meetingsCollection).deleteMany({
+            meetingType: "dropoff",
+            alterationIds: { $exists: true, $size: 0 }
+        });
+
         res.status(204).send();
     } catch (err) {
         console.error(err);

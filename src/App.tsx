@@ -6,7 +6,7 @@ import Calendar from "./pages/Calendar";
 import ToDo from "./pages/ToDo";
 import Settings from "./pages/Settings";
 import Layout from "./components/Layout";
-import type { Entry } from "./types/entry";
+import type { Entry, AlterationEntry, MeetingEntry } from "./types/entry";
 import type { Client } from "./types/client";
 import Meetings from "./pages/Meetings";
 import './styles/App.css';
@@ -84,7 +84,9 @@ function App() {
   const addMeeting = async (meetingData: {
     due: string;
     client: Client;
-    description: string;
+    description?: string;
+    meetingType?: string;
+    alterationIds?: number[];
     id?: number;
   }) => {
     try {
@@ -148,16 +150,21 @@ function App() {
 
   const updateMeeting = async (updatedMeeting: Entry, statusOnly = false) => {
     try {
-      const { id, type, ...rest } = updatedMeeting;
+      if (updatedMeeting.type !== "meeting") {
+        throw new Error("Invalid entry type for updateMeeting");
+      }
+      
+      const meeting = updatedMeeting as MeetingEntry;
+      const { id, type, ...rest } = meeting;
       let body;
       if (statusOnly) {
         body = { status: rest.status };
       } else {
         body = {
           due: rest.due,
-          description: rest.description,
+          description: meeting.meetingType === "pickup" ? (meeting as any).description : undefined,
           meetingType: rest.meetingType,
-          alterationIds: rest.alterationIds,
+          alterationIds: meeting.meetingType === "dropoff" ? (meeting as any).alterationIds : undefined,
           client: {
             _id: rest.client._id,
             name: rest.client.name
@@ -223,20 +230,25 @@ function App() {
 
   const updateTodo = async (updatedTodo: Entry, statusOnly = false) => {
     try {
+      if (updatedTodo.type !== "alteration") {
+        throw new Error("Invalid entry type for updateTodo");
+      }
+      
       const { id, type, ...rest } = updatedTodo;
+      const alteration = rest as Omit<typeof updatedTodo, 'id' | 'type'>;
       let body;
       if (statusOnly) {
-        body = { status: rest.status };
+        body = { status: alteration.status };
       } else {
         body = {
-          due: rest.due,
-          description: rest.description,
-          price: rest.price,
+          due: alteration.due,
+          description: alteration.description,
+          price: alteration.price,
           client: {
-            _id: rest.client._id,
-            name: rest.client.name
+            _id: alteration.client._id,
+            name: alteration.client.name
           },
-          status: rest.status
+          status: alteration.status
         };
       }
       const res = await fetch(`http://localhost:3000/api/todo/${id}`, {
@@ -301,14 +313,18 @@ function App() {
           }
           return entry;
         })
-      )
+        .filter(entry => {
+          if (entry.type === "meeting" && entry.meetingType === "dropoff") {
+            return entry.alterationIds.length > 0;
+          }
+          return true;
+        }))
     } catch (err) {
       console.error(err);
     }
   }
 
-  const todoEntries = entries.filter(i => i.type === 'alteration');
-  const meetingEntries = entries.filter(i => i.type === 'meeting');
+  const todoEntries = entries.filter((i): i is AlterationEntry => i.type === 'alteration');
 
 
   const showToast = (
@@ -343,7 +359,7 @@ function App() {
     try {
       if (entry.type === "alteration") {
         await addTodo(entry);
-      } else {
+      } else if (entry.type === "meeting") {
         await addMeeting(entry);
       }
     } catch (err) {

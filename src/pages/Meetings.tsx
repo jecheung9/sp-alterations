@@ -1,17 +1,11 @@
 import { useState } from "react";
-import type { Entry } from "../types/entry"
+import type { Entry, NewMeetingEntry } from "../types/entry"
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
-import type { Client } from "../types/client";
-import type { MeetingEntry } from "../types/entry";
 
 interface MeetingsProps {
-  entries: MeetingEntry[];
-  addMeeting: (entry: {
-    due: string;
-    client: Client;
-    description: string;
-  }) => void;
+  entries: Entry[];
+  addMeeting: (entry: NewMeetingEntry) => void;
   showToast: (message: string, type?: "default" | "delete") => void;
 }
 
@@ -80,9 +74,11 @@ const Meetings: React.FC<MeetingsProps> = ({
           initialMode="meeting"
           onClose={() => setIsAddOpen(false)}
           onAddEntry={(entry) => {
-            addMeeting(entry)
-            setIsAddOpen(false);
-            showToast("Meeting added successfully!", "default");
+            if (entry.type === "meeting") {
+              addMeeting(entry);
+              setIsAddOpen(false);
+              showToast("Meeting added successfully!", "default");
+            }
           }}
           allowModeToggle={false}
           entries={entries}

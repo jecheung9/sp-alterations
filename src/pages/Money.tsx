@@ -33,10 +33,13 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
     let incompleteTotal = 0;
 
     monthEntries.forEach(entry => { //each month math
+      if (entry.type !== "alteration") {
+        return;
+      }
       const client = entry.client?.name;
       if (entry.status === "Dropped Off" || entry.status === "Complete") {
         clientTotals[client].completed += entry.price || 0;
-        completedTotal += entry.price || 0;
+        completedTotal += entry.price || 0
       } else {
         clientTotals[client].incomplete += entry.price || 0;
         incompleteTotal += entry.price || 0;
@@ -62,6 +65,9 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
     });
 
     yearEntries.forEach(entry => {
+      if (entry.type !== "alteration") {
+        return;
+      }
       const client = entry.client?.name;
       const price = entry.price || 0;
       clientTotals[client] += price;
@@ -76,6 +82,9 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
   clients.forEach(client => columnTotals[client] = 0);
   let grandTotal = 0;
   entries.forEach(entry => {
+    if (entry.type !== "alteration") {
+      return;
+    }
     const client = entry.client?.name;
     const price = entry.price || 0;
     columnTotals[client] += price;

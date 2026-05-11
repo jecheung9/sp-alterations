@@ -118,26 +118,26 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
               
             if (newMeetingType === "pickup") {
               const desc = (newData as any).description?.trim();
-              updated.description = desc ? desc : null;
+              (updated as any).description = desc ? desc : null;
 
-              updated.alterationIds = undefined;
+              (updated as any).alterationIds = undefined;
             }
 
             if (newMeetingType === "dropoff") {
-              updated.alterationIds =
-                (newData as any).alterationIds ?? meeting.alterationIds;
+              (updated as any).alterationIds =
+                (newData as any).alterationIds ?? (meeting as any).alterationIds;
 
-              updated.description = undefined;
+              (updated as any).description = undefined;
             }
 
             if (meeting.type === "meeting" && meeting.meetingType === "pickup") {
-              const desc = newData.description?.trim();
-              updated.description = desc ? desc : null;
+              const desc = (newData as any).description?.trim();
+              (updated as any).description = desc ? desc : null;
             }
 
             if (meeting.type === "meeting" && meeting.meetingType === "dropoff") {
-              updated.alterationIds =
-                (newData as any).alterationIds ?? meeting.alterationIds;
+              (updated as any).alterationIds =
+                (newData as any).alterationIds ?? (meeting as any).alterationIds;
             }
 
             updateMeeting(updated, false);
@@ -149,8 +149,8 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
           initialData={{
             client: meeting.client,
             due: meeting.due,
-            description: meeting.type === "meeting" ? meeting.description : "",
-            meetingType: meeting.type === "meeting" ? meeting.meetingType : "",
+            description: meeting.meetingType === "pickup" ? meeting.description : "",
+            meetingType: meeting.meetingType,
             alterationIds:
               meeting.type === "meeting" && meeting.meetingType === "dropoff"
                 ? meeting.alterationIds

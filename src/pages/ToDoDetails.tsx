@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import type { Entry } from "../types/entry";
+import type { Entry, AlterationEntry } from "../types/entry";
 import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -42,6 +42,8 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
     return <div className="page-container"><p className="text-gray-500">Todo not found</p></div>;
   }
 
+  const alteration = todo as AlterationEntry;
+
   const handleDelete = async () => {
     deleteTodo(todo);
     setIsConfirmOpen(false);
@@ -54,8 +56,8 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
       <p>Status: {todo.status}</p>
       <p>Client: {todo.client?.name}</p>
       <p>Due: {formatDate(todo.due)}</p>
-      <p>Price: {todo.price}</p>
-      <p>Description: {todo.description}</p>
+      <p>Price: {alteration.price}</p>
+      <p>Description: {alteration.description}</p>
 
       <StatusButtons
         onChange={(status) =>
@@ -78,13 +80,14 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
           onClose={() => setIsEditOpen(false)}
           onAddEntry={() => { }}
           onUpdateEntry={(newData) => {
+            const data = newData as any;
             updateTodo({
-              ...todo,
-              client: newData.client || todo.client,
-              due: newData.due || todo.due,
-              price: newData.price || todo.price,
-              description: newData.description || todo.description,
-              status: todo.status,
+              ...alteration,
+              client: data.client || alteration.client,
+              due: data.due || alteration.due,
+              price: data.price || alteration.price,
+              description: data.description || alteration.description,
+              status: alteration.status,
             }, false);
             showToast("Alteration todo updated successfully!", "default");
             setIsEditOpen(false);
@@ -92,10 +95,10 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
           editHeader={`Edit todo alteration #${todo.id}`}
           initialMode="alteration"
           initialData={{
-            client: todo.client,
-            due: todo.due,
-            description: todo.description,
-            price: todo.price,
+            client: alteration.client,
+            due: alteration.due,
+            description: alteration.description,
+            price: alteration.price,
           }}
           entries={entries}
         />

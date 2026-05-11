@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import type { Entry, MeetingEntry } from "../types/entry"
+import type { Entry } from "../types/entry"
 import Box from "@mui/material/Box";
 
 interface DashboardProps {
@@ -57,7 +57,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   
   let grandTotal = 0;
   entries.forEach(entry => {
-    grandTotal += entry.price || 0;
+    if (entry.type === "alteration") {
+      grandTotal += entry.price;
+    }
   })
 
   const now = new Date();
@@ -65,9 +67,11 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   let yearTotal = 0;
   entries.forEach(entry => {
-    const entryYear = new Date(entry.due).getFullYear();
-    if (entryYear === currentYear) {
-      yearTotal += entry.price || 0;
+    if (entry.type === "alteration") {
+      const entryYear = new Date(entry.due).getFullYear();
+      if (entryYear === currentYear) {
+        yearTotal += entry.price;
+      }
     }
   });
 
@@ -80,12 +84,14 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   let currentMonthTotal = 0;
   entries.forEach(entry => {
-  const entryMonth = new Date(entry.due).toLocaleString("en-US", {
-    month: "long",
-    year: "numeric"
-    });
-    if (entryMonth === currentMonth) {
-      currentMonthTotal += entry.price || 0;
+    if (entry.type === "alteration") {
+      const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+        month: "long",
+        year: "numeric"
+      });
+      if (entryMonth === currentMonth) {
+        currentMonthTotal += entry.price;
+      }
     }
   });
 
@@ -98,8 +104,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       year: "numeric"
     });
     const clientName = entry.client?.name;
-    if (entryMonth === currentMonth && clientName) {
-      clientMonthTotals[clientName] += entry.price || 0;
+    if (entry.type === "alteration" && entryMonth === currentMonth && clientName) {
+      clientMonthTotals[clientName] += entry.price;
     }
   });
 
@@ -120,8 +126,10 @@ const Dashboard: React.FC<DashboardProps> = ({
     });
     const clientName = entry.client?.name;
     if (entryMonth === prevMonth) {
-      prevMonthClientTotals[clientName] += entry.price || 0;
-      prevMonthTotal += entry.price || 0;
+      if (entry.type === "alteration") {
+        prevMonthClientTotals[clientName] += entry.price;
+        prevMonthTotal += entry.price;
+      }
     }
 
   });
@@ -161,11 +169,13 @@ const Dashboard: React.FC<DashboardProps> = ({
     )
   }
 
-  const getMeetingNotes = (entry: MeetingEntry) => {
-    if (entry.meetingType === "pickup") {
-      return entry.description ? `Pickup: ${entry.description}` : "Pickup"
+  const getMeetingNotes = (entry: Entry) => {
+    if (entry.type === "meeting") {
+      if (entry.meetingType === "pickup") {
+        return entry.description ? `Pickup: ${entry.description}` : "Pickup"
+      }
+      return `Dropoff: ${entry.alterationIds.join(", ")}`
     }
-    return `Dropoff: ${entry.alterationIds.join(", ")}`
   };
 
   
@@ -317,7 +327,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                             </div>
                             <div>{val.client?.name}</div>
                           </div>
-                          <div className="py-2 pl-4 group-hover:bg-gray-300">#{val.id}: {val.description}</div>
+                          <div className="py-2 pl-4 group-hover:bg-gray-300">
+                            {val.type === "alteration" ? `#${val.id}: ${val.description}` : null}
+                          </div>
                         </div>
                       ))}
                     </div>

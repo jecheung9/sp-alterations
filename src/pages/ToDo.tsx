@@ -77,7 +77,7 @@ const ToDo: React.FC<TodoProps> = ({
         <AddForm
           onClose={() => setIsAddOpen(false)}
           onAddEntry={(entry) => {
-            addTodo(entry)
+            addTodo(entry as any)
             setIsAddOpen(false);
             showToast("Alteration todo added successfully!", "default");
           }}
@@ -103,7 +103,9 @@ const ToDo: React.FC<TodoProps> = ({
             </tr>
           </thead>
           <tbody>
-            {incompleteEntries.map(val => (
+            {incompleteEntries.map(val => {
+              const alteration = val as any;
+              return (
               <tr
                 className="cursor-pointer hover:bg-[#e0e0e0]"
                 key={val.id}
@@ -121,10 +123,11 @@ const ToDo: React.FC<TodoProps> = ({
                   `}
                 >{val.status}</td>
                 <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{alteration.price}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{alteration.description}</td>
               </tr>
-            ))}
+            );
+            })}
           </tbody>
         </table>
         )}
@@ -148,7 +151,9 @@ const ToDo: React.FC<TodoProps> = ({
               </tr>
             </thead>
             <tbody>
-              {completeEntries.map(val => (
+              {completeEntries.map(val => {
+                const alteration = val as any;
+                return (
                 <tr
                   className="cursor-pointer hover:bg-[#e0e0e0]"
                   key={val.id}
@@ -163,10 +168,11 @@ const ToDo: React.FC<TodoProps> = ({
                     `}
                   >{val.status}</td>
                   <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{alteration.price}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{alteration.description}</td>
                 </tr>
-              ))}
+              );
+              })}
             </tbody>
           </table>
         )}
@@ -199,7 +205,9 @@ const ToDo: React.FC<TodoProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {deliveredEntries.map(val => (
+                  {deliveredEntries.map(val => {
+                    const alteration = val as any;
+                    return (
                     <tr
                       className="cursor-pointer hover:bg-[#e0e0e0]"
                       key={val.id}
@@ -214,10 +222,11 @@ const ToDo: React.FC<TodoProps> = ({
                         `}
                       >{val.status}</td>
                       <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
-                      <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{alteration.price}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{alteration.description}</td>
                     </tr>
-                  ))}
+                  );
+                  })}
                 </tbody>
               </table>
             )

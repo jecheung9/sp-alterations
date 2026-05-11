@@ -3,7 +3,7 @@ import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
 import { FetchHelper } from '../utils/Fetch';
 import { useNavigate } from 'react-router';
-import type { NewAlterationEntry, NewMeetingEntry, Entry } from '../types/entry';
+import type { NewAlterationEntry, NewMeetingEntry, Entry, AlterationEntry } from '../types/entry';
 
 type NewEntry = NewAlterationEntry | NewMeetingEntry;
 
@@ -181,7 +181,7 @@ const AddForm: React.FC<AddFormProps> = ({
         status: "Not Started",
         price: Number(price),
         description: description.trim(),
-      };
+      } as NewEntry;
     } else {
       if (meetingType === "pickup") {
         entryData = {
@@ -191,7 +191,7 @@ const AddForm: React.FC<AddFormProps> = ({
           client: client!,
           status: "Not Started",
           description: description.trim() || undefined,
-        };
+        } as NewEntry;
       } else {
         entryData = {
           type: "meeting",
@@ -200,7 +200,7 @@ const AddForm: React.FC<AddFormProps> = ({
           client: client!,
           status: "Not Started",
           alterationIds: selectedAlterationIds,
-        };
+        } as NewEntry;
       }
     }
     
@@ -219,9 +219,9 @@ const AddForm: React.FC<AddFormProps> = ({
     setMeetingType('');
   }
 
-  const availableAlterations = entries.filter(entry =>
+  const availableAlterations = entries.filter((entry): entry is AlterationEntry =>
     entry.type === "alteration" &&
-    client &&
+    client !== null &&
     entry.client._id === client._id &&
     (entry.status === "Not Started" || entry.status === "Started" || entry.status === "Complete"));
 
