@@ -178,12 +178,43 @@ function App() {
         throw new Error("Failed to update meeting");
       } 
       const updated = await res.json();
-      setEntries(prev =>
-        prev.map(e =>
-          e.id === updated.id && e.type === "meeting"
-            ? { ...updated, type: "meeting" }
-            : e
+
+      if (updated.type === "meeting" && updated.meetingType === "dropoff" && updated.status === "Complete") {
+        await Promise.all(
+          updated.alterationIds.map((alterationId: number) => {
+            fetch(`http://localhost:3000/api/todo/${alterationId}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                status: "Dropped Off"
+              })
+            })
+          })
         )
+      }
+
+
+      setEntries(prev =>
+        prev.map(e => {
+          if (e.id === updated.id && e.type === "meeting") {
+            return { ...updated, type: "meeting" };
+          }
+
+          if (updated.type === "meeting" &&
+            updated.meetingType === "dropoff" &&
+            updated.status === "Complete" &&
+            e.type === "alteration" &&
+            updated.alterationIds.includes(e.id)) {
+            
+            return {
+              ...e, status: "Dropped Off"
+            }
+          }
+          return e;
+        })
       );
     } catch (err) {
       console.error(err);
