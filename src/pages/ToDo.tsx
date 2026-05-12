@@ -3,6 +3,7 @@ import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
 import type { Client } from "../types/client";
+import MobileCards from "../components/MobileCards";
 
 interface TodoProps {
   entries: Entry[];
@@ -64,10 +65,10 @@ const ToDo: React.FC<TodoProps> = ({
   }
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 mx-1 sm:mx-0">
       <div className="flex justify-between items-center">
-        <h1 className="font-bold text-3xl"> To-Do ({incompleteLength})</h1>
-        <button className="!text-2xl !font-bold"
+        <h1 className="font-bold text-xl sm:text-3xl"> To-Do ({incompleteLength})</h1>
+        <button className="sm:!text-2xl !text-xl !font-bold"
           onClick={() => setIsAddOpen(true)}>
           + Add Todo
         </button>
@@ -85,7 +86,8 @@ const ToDo: React.FC<TodoProps> = ({
           entries={entries}
         />
       )}
-
+      
+      <div className="hidden sm:block">
         {incompleteLength === 0 ? (
         <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming to-dos!
@@ -131,9 +133,14 @@ const ToDo: React.FC<TodoProps> = ({
           </tbody>
         </table>
         )}
+      </div>  
+
+      <div className="block sm:hidden">
+        <MobileCards entries={incompleteEntries}/>
+      </div>
 
       
-        <h1 className="font-bold text-3xl">Completed - Not Delivered ({completeLength})</h1>
+        <h1 className="font-bold text-xl sm:text-3xl">Completed - Not Delivered ({completeLength})</h1>
         {completeLength === 0 ? (
           <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
             No completed items yet!
@@ -178,7 +185,7 @@ const ToDo: React.FC<TodoProps> = ({
         )}
 
 
-        <h1 className="flex gap-4 items-center font-bold text-3xl">
+        <h1 className="flex gap-4 items-center font-bold text-xl sm:text-3xl">
           Completed - Dropped Off ({deliveredLength}) 
           {deliveredLength > 0 && (
             <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-xl">

@@ -231,8 +231,8 @@ const AddForm: React.FC<AddFormProps> = ({
       <form className="w-150 rounded-lg bg-white flex flex-col items-center p-12" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-3 w-full">
           <div className="flex items-center min-w-full relative">
-          <h3 className="text-3xl font-bold mx-auto">{editHeader ? editHeader : mode === 'alteration'
-            ? "Add an alterations entry"
+          <h3 className="text-2xl sm:text-3xl font-bold mx-auto">{editHeader ? editHeader : mode === 'alteration'
+            ? "Add an alteration"
             : "Add a meeting"}</h3>
           <button type="button" className='absolute right-0 hover:!bg-[#ff4444]' onClick={onClose}> Close </button>
           </div>
