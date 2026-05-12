@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
 import Popover from "@mui/material/Popover";
@@ -11,6 +11,7 @@ interface MonthProps {
 export const Month: React.FC<MonthProps> = ({
   entries
 }) => {
+  console.log("this file is live")
   
   const navigate = useNavigate();
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -19,6 +20,21 @@ export const Month: React.FC<MonthProps> = ({
 
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [popupItems, setPopupItems] = useState<Entry[]>([]);
+
+  const [isWide, setIsWide] = useState(
+    window.matchMedia("(min-width: 1250px)").matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1250px)");
+
+    const update = () => setIsWide(mq.matches);
+
+    update();
+    mq.addEventListener("change", update);
+
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -130,8 +146,10 @@ export const Month: React.FC<MonthProps> = ({
               ...dayMeetings,
               ...dayTodos,
             ];
-            const visibleItems = allItems.slice(0, 2); //max 2 to prevent overflow
-            const hiddenItems = allItems.slice(2);
+
+            const limit = isWide ? 2 : (dayMeetings.length > 0 ? 1 : 2);
+            const visibleItems = allItems.slice(0, limit); //max to prevent overflow
+            const hiddenItems = allItems.slice(limit);
 
             const hiddenMeetings = hiddenItems.filter((item) => item.type === "meeting").length; //for quantity more
             const hiddenTodos = hiddenItems.filter((item) => item.type === "alteration").length;
@@ -154,7 +172,7 @@ export const Month: React.FC<MonthProps> = ({
                   height: 130,
                   display: "flex",
                   justifyContent: "space-between",
-                  paddingRight: "0.5rem",
+                  paddingRight: "0.25rem",
                   backgroundColor: dayNumber ? "white" : "#c0c0c0",
                   fontSize: "1.25rem",
                   flexDirection: "column",
