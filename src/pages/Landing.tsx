@@ -38,10 +38,12 @@ export const Landing: React.FC = () => {
   return (
     <div>
       <h1 className="text-3xl p-2 font-bold">Login</h1>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col p-2 w-full max-w-md mx-auto">
         <label htmlFor="username">Username</label>
         <input
-          className="border mx-2 rounded"
+          className="border rounded mb-6 px-2"
           id="username"
           type="text"
           autoComplete='off'
@@ -51,7 +53,7 @@ export const Landing: React.FC = () => {
 
         <label htmlFor="password">Password</label>
         <input
-          className="border mx-2 rounded"
+          className="border rounded mb-6 px-2"
           id="password"
           type="password"
           value={password}
