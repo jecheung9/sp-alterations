@@ -349,8 +349,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <div>All-time Total</div>
                     <div className="text-right"> {grandTotal}</div>
                   </div>
-                  <div>Current Month ({currentMonth}) total: {currentMonthTotal}</div>
-                  <div>Current Month Breakdown</div>
+                  <div>{currentMonth} total: {currentMonthTotal}</div>
+                  <div>{currentMonth} Breakdown</div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-4 pt-0 p-4 whitespace-nowrap">
                     {clients.map(c => (
@@ -368,8 +368,8 @@ const Dashboard: React.FC<DashboardProps> = ({
                     <div>{currentYear} Total</div>
                     <div className="text-right"> {yearTotal}</div>
                   </div>
-                  <div>Last Month ({prevMonth}) total: {prevMonthTotal}</div>
-                  <div>Last Month Breakdown</div>
+                  <div>{prevMonth} total: {prevMonthTotal}</div>
+                  <div>{prevMonth} Breakdown</div>
                 </div>
                 <div className="grid grid-cols-[auto_1fr] gap-4 pt-0">
                   {clients.map(c => (

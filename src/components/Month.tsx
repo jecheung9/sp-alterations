@@ -11,8 +11,6 @@ interface MonthProps {
 export const Month: React.FC<MonthProps> = ({
   entries
 }) => {
-  console.log("this file is live")
-  
   const navigate = useNavigate();
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -20,6 +18,8 @@ export const Month: React.FC<MonthProps> = ({
 
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [popupItems, setPopupItems] = useState<Entry[]>([]);
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const [isWide, setIsWide] = useState(
     window.matchMedia("(min-width: 1250px)").matches
@@ -89,13 +89,30 @@ export const Month: React.FC<MonthProps> = ({
     });
   };
 
+  //panel stuff
+  const newSelectedDate = selectedDate ? new Date(selectedDate + "T00:00:00") : null;
+
+  const selectedDayDetails = selectedDate ?
+    entries.filter((e) => {
+      const isMeeting = e.type === "meeting" && e.due.startsWith(selectedDate);
+      const isTodo = e.type === "alteration" && e.due === selectedDate;
+      return isMeeting || isTodo;
+    })
+    .sort((a, b) => {
+      if (a.type === b.type) {
+        return 0;
+      }
+      return a.type === "meeting" ? -1 : 1;
+    })
+    : [];
+
   return (
     <>
       <div className="flex items-center">
-        <button onClick={handlePrevMonth}> Prev </button>
+        <button className="!mr-2" onClick={handleToday}> Today </button>
+        <button className="!mr-2" onClick={handlePrevMonth}> {"<"} </button>
+        <button onClick={handleNextMonth}> {">"} </button>
         <h2 className="text-2xl p-4 font-bold">{monthYearLabel}</h2>
-        <button onClick={handleNextMonth}> Next </button>
-        <button className="!m-4" onClick={handleToday}> Back to Today </button>
       </div>
     <Box>
       {/* day headers */}
@@ -142,6 +159,14 @@ export const Month: React.FC<MonthProps> = ({
             const dayMeetings = entries
               .filter((e) => e.type === "meeting" && dateKey && e.due?.startsWith(dateKey))
               .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+            
+            const completedMeetings = dayMeetings.filter(i => i.status === "Complete").length;
+            const meetingCount = dayMeetings.length;
+
+            const completedTodos = dayTodos.filter(i => i.status === "Complete" || i.status === "Dropped Off").length;
+            const todoCount = dayTodos.length;
+
+        
             const allItems: Entry[] = [ //for overflow
               ...dayMeetings,
               ...dayTodos,
@@ -167,39 +192,66 @@ export const Month: React.FC<MonthProps> = ({
             return (
               <Box
                 key={col}
+                onClick={() => {
+                  if (dateKey) {
+                    setSelectedDate(dateKey);
+                  }
+                }}
                 sx={{
                   border: "1px solid black",
-                  height: 130,
+                  height: {
+                    xs: 70,
+                    sm: 130,
+                  },
                   display: "flex",
                   justifyContent: "space-between",
                   paddingRight: "0.25rem",
                   backgroundColor: dayNumber ? "white" : "#c0c0c0",
-                  fontSize: "1.25rem",
+                  fontSize: {
+                    xs: "1rem",
+                    sm: "1.25rem"
+                  },
                   flexDirection: "column",
                 }}
               >
                 <div className="text-right">
                   <span className={isToday ? "text-green-600 font-bold" : ""}>{dayNumber || ""}</span>
-                  {visibleItems.map((item) => {
-                    const isComplete = item.status === "Complete" || item.status === "Dropped Off";
-                    const isMeeting = item.type === "meeting";
-                    return (
-                      <div
-                        key={item.id}
-                        className={`text-left px-1 my-1 text-base cursor-pointer
-                          ${isMeeting ? "bg-red-300 hover:bg-red-400" : "bg-blue-300 hover:bg-blue-400"}
-                          ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
-                        onClick={() => {
-                          navigate(isMeeting ? `/meetings/${item.id}` : `/todo/${item.id}`)
-                        }}
-                      >
-                        {isMeeting ?
-                          `${getTime(item.due)} Meeting ${item.id}` :
-                          `Todo id ${item.id}`
-                        }
+
+                  <div className="block sm:hidden">
+                    {(dayMeetings.length > 0) && (
+                      <div className="text-sm bg-red-300 px-1 text-right">
+                        {completedMeetings} / {meetingCount}
                       </div>
-                    )
-                  })} 
+                    )}
+                    {(dayTodos.length > 0) && (
+                      <div className="text-sm bg-blue-300 px-1 text-right">
+                        {completedTodos} / {todoCount}
+                      </div>
+                    )}
+
+                  </div>
+                  <div className="sm:block hidden">
+                    {visibleItems.map((item) => {
+                      const isComplete = item.status === "Complete" || item.status === "Dropped Off";
+                      const isMeeting = item.type === "meeting";
+                      return (
+                        <div
+                          key={item.id}
+                          className={`text-left px-1 my-1 text-base cursor-pointer
+                            ${isMeeting ? "bg-red-300 hover:bg-red-400" : "bg-blue-300 hover:bg-blue-400"}
+                            ${isComplete ? "line-through decoration-3 opacity-60" : ""}`}
+                          onClick={() => {
+                            navigate(isMeeting ? `/meetings/${item.id}` : `/todo/${item.id}`)
+                          }}
+                        >
+                          {isMeeting ?
+                            `${getTime(item.due)} Meeting ${item.id}` :
+                            `Todo id ${item.id}`
+                          }
+                        </div>
+                      )
+                    })} 
+                  </div>  
                   {hiddenItems.length > 0 && (
                     <div
                       className="text-left text-base px-1 cursor-pointer bg-gray-300 hover:bg-gray-400"
@@ -208,7 +260,7 @@ export const Month: React.FC<MonthProps> = ({
                         setPopupItems(hiddenItems);
                       }}
                     >
-                      {overflowString}
+                      <div className="sm:block hidden">{overflowString}</div>
                     </div>
                   )}
                 </div>
@@ -255,6 +307,52 @@ export const Month: React.FC<MonthProps> = ({
           })} 
         </div>
       </Popover>
+
+      
+        <div className="block sm:hidden w-full mt-4 border-t p-3 bg-gray-100">
+          {!selectedDate ? (
+            <p className="text-gray-500">Select a day to view details</p>
+          ) : (
+            <>
+              <div className="font-bold text-lg">
+                {newSelectedDate?.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </div>
+
+              {selectedDayDetails.length === 0 ? (
+                <p className="text-gray-500">No events today!</p>
+              ) : (
+                <>
+                  {selectedDayDetails.map((item) => {
+                    const isComplete = item.status === "Complete" || item.status === "Dropped Off";
+
+                    const isMeeting = item.type === "meeting";
+
+                    return (
+                      <div
+                        key={item.id}
+                        className={`px-2 py-1 my-1 text-base cursor-pointer
+                          ${isMeeting ? "bg-red-300 hover:bg-red-400" : "bg-blue-300 hover:bg-blue-400"}
+                          ${isComplete ? "line-through opacity-60" : ""}
+                        `}
+                        onClick={() => { navigate( isMeeting ? `/meetings/${item.id}` : `/todo/${item.id}`);
+                        }}
+                      >
+                        {isMeeting
+                          ? `${getTime(item.due)} Meeting ${item.id}`
+                          : `Todo id ${item.id}`}
+                      </div>
+                    );
+                  })}
+                </>
+              )}
+            </>
+          )}
+        </div>
     </>
   );
 }
