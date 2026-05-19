@@ -3,7 +3,7 @@ import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
 import type { Client } from "../types/client";
-import MobileCards from "../components/MobileCards";
+import MobileCardsTodo from "../components/MobileCardsTodo";
 
 interface TodoProps {
   entries: Entry[];
@@ -87,13 +87,13 @@ const ToDo: React.FC<TodoProps> = ({
         />
       )}
       
-      <div className="hidden sm:block">
+      <div>
         {incompleteLength === 0 ? (
         <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
           No upcoming to-dos!
         </div>
         ) : (
-        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
+        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed hidden sm:table">
           <thead>
             <tr>
               <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
@@ -136,7 +136,7 @@ const ToDo: React.FC<TodoProps> = ({
       </div>  
 
       <div className="block sm:hidden">
-        <MobileCards entries={incompleteEntries}/>
+        <MobileCardsTodo entries={incompleteEntries}/>
       </div>
 
         <h1 className="font-bold text-xl sm:text-3xl">Completed - Not Delivered ({completeLength})</h1>
@@ -184,7 +184,7 @@ const ToDo: React.FC<TodoProps> = ({
       )}
 
       <div className="block sm:hidden">
-        <MobileCards entries={completeEntries}/>
+        <MobileCardsTodo entries={completeEntries}/>
       </div>
 
 
@@ -242,7 +242,7 @@ const ToDo: React.FC<TodoProps> = ({
               </table>  
 
               <div className="block sm:hidden">
-                <MobileCards entries={deliveredEntries}/>
+                <MobileCardsTodo entries={deliveredEntries}/>
               </div>
             </>
             )

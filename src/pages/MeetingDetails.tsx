@@ -78,7 +78,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
   };
   
   return (
-    <div className="page-container">
+    <div className="page-container p-2">
       <h1 className="font-bold text-2xl">Meeting #{meeting.id}</h1>
       <p>Status: {meeting.status}</p>
       <p>Client: {meeting.client?.name}</p>

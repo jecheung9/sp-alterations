@@ -14,7 +14,7 @@ const ConfirmDelete: React.FC<ConfirmDeleteProps> = ({
       <div className="rounded-lg bg-white p-8 flex flex-col gap-4">
         <div className="flex gap-4">
           <p className="text-3xl">{message}</p>
-          <button className='hover:!bg-[#ff4444]' onClick={onCancel}> X </button>
+          <button className='hidden sm:block hover:!bg-[#ff4444]' onClick={onCancel}> X </button>
         </div>
         <div className="flex gap-8 justify-center">
           <button onClick={onCancel} className="!px-6">

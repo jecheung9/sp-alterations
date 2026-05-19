@@ -13,7 +13,7 @@ const Confirmation: React.FC<ConfirmationProps> = ({
 }) => {
 
   return (
-    <div className="fixed bottom-4 left-1/2 bg-[#2ecc71] text-white rounded-lg p-2 z-[9999] flex items-center gap-2">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#2ecc71] text-white rounded-lg p-2 z-[9999] flex items-center gap-2">
       {message}
       {type === "delete" && onUndo && (
         <button onClick={onUndo}>Undo</button>

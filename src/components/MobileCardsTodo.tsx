@@ -2,11 +2,11 @@ import React from "react";
 import type { Entry } from "../types/entry";
 import { useNavigate } from "react-router";
 
-interface MobileCardsProps {
+interface MobileCardsTodoProps {
   entries: Entry[];
 }
 
-const MobileCards: React.FC<MobileCardsProps> = ({
+const MobileCardsTodo: React.FC<MobileCardsTodoProps> = ({
   entries,
 }) => {
   const navigate = useNavigate();
@@ -73,4 +73,4 @@ const MobileCards: React.FC<MobileCardsProps> = ({
 
 }
 
-export default MobileCards;
+export default MobileCardsTodo;

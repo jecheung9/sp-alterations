@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Entry, NewMeetingEntry } from "../types/entry"
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
+import MobileCardsMeetings from "../components/MobileCardsMeetings";
 
 interface MeetingsProps {
   entries: Entry[];
@@ -60,10 +61,10 @@ const Meetings: React.FC<MeetingsProps> = ({
     };
 
   return (
-    <div className="flex-1">
+     <div className="flex-1 mx-1 sm:mx-0">
       <div className="flex justify-between items-center">
-        <h1 className="font-bold text-3xl"> Upcoming Meetings ({incompleteLength})</h1>
-        <button className="!text-2xl !font-bold"
+        <h1 className="font-bold text-xl sm:text-3xl"> Upcoming Meetings ({incompleteLength})</h1>
+        <button className="sm:!text-2xl !text-lg !font-bold"
           onClick={() => setIsAddOpen(true)}>
           + Add Meeting
         </button>
@@ -92,41 +93,50 @@ const Meetings: React.FC<MeetingsProps> = ({
           No upcoming meetings!
         </div>
       ) : ( 
-      <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
-        <thead>
-          <tr>
-            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
-            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
-            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-            <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {incompleteMeetings.map(val => {
-            return (
-              <tr
-                className="cursor-pointer hover:bg-[#e0e0e0]"
-                key={val.id}
-                onClick={() => navigate(`/meetings/${val.id}`)}
-              >
-                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
-                <td className={`border-r-2 border-gray-500 p-[0.2rem] 
-                ${isLate(val) ? "text-red-600 font-bold" : ""}`}>
-                  {formatDateTime(val.due)}
-                </td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{getMeetingNotes(val)}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>  
+      <>
+        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed hidden sm:table">
+          <thead>
+            <tr>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {incompleteMeetings.map(val => {
+              return (
+                <tr
+                  className="cursor-pointer hover:bg-[#e0e0e0]"
+                  key={val.id}
+                  onClick={() => navigate(`/meetings/${val.id}`)}
+                >
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                  <td className={`border-r-2 border-gray-500 p-[0.2rem] 
+                  ${isLate(val) ? "text-red-600 font-bold" : ""}`}>
+                    {formatDateTime(val.due)}
+                  </td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{getMeetingNotes(val)}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>  
+          
+        <div className="block sm:hidden">
+          <MobileCardsMeetings entries={incompleteMeetings}/>
+        </div>
+      </>
+
+          
+
       )}
 
-      <h1 className="flex gap-4 items-center font-bold text-3xl">
+      <h1 className="flex gap-4 items-center font-bold text-xl sm:text-3xl">
         Completed ({completeLength}) 
         {completeLength > 0 && (
-          <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-xl">
+          <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-sm sm:!text-xl">
           {isOpen ? "Collapse" : "Expand"}
           </button>
         )}
@@ -138,32 +148,38 @@ const Meetings: React.FC<MeetingsProps> = ({
         </div>
       ) : (
         isOpen && (
-        <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
-          <thead>
-            <tr>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
-              <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {completeMeetings.map(val => {
-              return (
-                <tr
-                  className="cursor-pointer hover:bg-[#e0e0e0]"
-                  key={val.id}
-                  onClick={() => navigate(`/meetings/${val.id}`)}
-                >
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDateTime(val.due)}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{getMeetingNotes(val)}</td>
+          <>
+            <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed hidden sm:table">
+              <thead>
+                <tr>
+                  <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
+                  <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Meeting Time</th>
+                  <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[25%]">Client</th>
+                  <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[45%]">Notes</th>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {completeMeetings.map(val => {
+                  return (
+                    <tr
+                      className="cursor-pointer hover:bg-[#e0e0e0]"
+                      key={val.id}
+                      onClick={() => navigate(`/meetings/${val.id}`)}
+                    >
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.id}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{formatDateTime(val.due)}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{getMeetingNotes(val)}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+              </table>
+              
+              <div className="block sm:hidden">
+                <MobileCardsMeetings entries={completeMeetings}/>
+              </div>
+          </>
         )
       )}
 
