@@ -259,7 +259,7 @@ const AddForm: React.FC<AddFormProps> = ({
           <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg"
             htmlFor="client">Client<span className="text-red-500">*</span></label>
           <select
-            className='border rounded py-1 mt-[0.35rem] text-lg'
+            className='border rounded py-1 mt-[0.35rem] text-lg px-1'
             id="client"
             name='client'
             value={client?._id || ""}
@@ -297,7 +297,7 @@ const AddForm: React.FC<AddFormProps> = ({
               <label className="justify-self-end whitespace-nowrap mt-[0.35rem] text-lg"
                 htmlFor='price'>Price<span className="text-red-500">*</span></label>
               <input
-              className="appearance-textfield border rounded mt-[0.35rem] text-lg"
+              className="appearance-textfield border rounded mt-[0.35rem] text-lg px-1"
               type='text'
               id='price'
               placeholder='0'
@@ -323,7 +323,7 @@ const AddForm: React.FC<AddFormProps> = ({
                 Description<span className="text-red-500">*</span>
               </label>
               <textarea
-                className="resize-none border rounded mt-[0.35rem] text-lg h-[10rem]"
+                className="resize-none border rounded mt-[0.35rem] text-lg h-[10rem] px-1"
                 id='description'
                 name='description'
                 value={description}
@@ -369,7 +369,7 @@ const AddForm: React.FC<AddFormProps> = ({
                       <span className="block text-sm text-gray-500">(optional)</span>
                     </label>
                     <textarea
-                      className="resize-none border rounded mt-[0.35rem] text-lg h-[5rem]"
+                      className="resize-none border rounded mt-[0.35rem] text-lg h-[5rem] px-1"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                     />

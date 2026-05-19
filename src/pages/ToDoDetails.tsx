@@ -51,7 +51,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container p-2">
       <h1 className="font-bold text-3xl">Todo #{todo.id}</h1>
       <p>Status: {todo.status}</p>
       <p>Client: {todo.client?.name}</p>

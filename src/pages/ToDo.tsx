@@ -139,14 +139,13 @@ const ToDo: React.FC<TodoProps> = ({
         <MobileCards entries={incompleteEntries}/>
       </div>
 
-      
         <h1 className="font-bold text-xl sm:text-3xl">Completed - Not Delivered ({completeLength})</h1>
         {completeLength === 0 ? (
           <div className="text-2xl text-gray-500 text-center flex items-center justify-center flex-1 py-4">
             No completed items yet!
           </div>
         ) : (
-          <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
+          <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed hidden sm:table">
             <thead>
               <tr>
                 <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
@@ -182,13 +181,17 @@ const ToDo: React.FC<TodoProps> = ({
               })}
             </tbody>
           </table>
-        )}
+      )}
+
+      <div className="block sm:hidden">
+        <MobileCards entries={completeEntries}/>
+      </div>
 
 
-        <h1 className="flex gap-4 items-center font-bold text-xl sm:text-3xl">
+        <h1 className="flex flex-wrap items-center gap-2 font-bold text-xl sm:text-3xl">
           Completed - Dropped Off ({deliveredLength}) 
           {deliveredLength > 0 && (
-            <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-xl">
+            <button onClick={() => setIsOpen(!isOpen)} className="!p-2 !text-sm sm:!text-xl">
               {isOpen ? "Collapse" : "Expand"}
             </button>
           )}
@@ -199,8 +202,9 @@ const ToDo: React.FC<TodoProps> = ({
               No completed and dropped off items yet!
             </div>
           ) : (
-            isOpen && (
-              <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed">
+          isOpen && (
+            <>
+              <table className="border-2 border-gray-500 w-full text-xl mb-8 border-collapse table-fixed hidden sm:table">
                 <thead>
                   <tr>
                     <th className="border-b border-black text-left border-r-2 border-gray-500 p-[0.2rem] w-[5%]">id</th>
@@ -235,10 +239,14 @@ const ToDo: React.FC<TodoProps> = ({
                   );
                   })}
                 </tbody>
-              </table>
+              </table>  
+
+              <div className="block sm:hidden">
+                <MobileCards entries={deliveredEntries}/>
+              </div>
+            </>
             )
       )}
-
     </div>
   )
 }
