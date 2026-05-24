@@ -8,7 +8,8 @@
     "esModuleInterop": true,
     "moduleResolution": "NodeNext",
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node", "jest"],
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
