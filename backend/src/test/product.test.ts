@@ -171,6 +171,79 @@ describe("POST /api/meetings - dropoff", () => {
     });
 });
 
+describe("GET /api/meetings", () => {
+    test("should return all meetings", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const meetingRes = await request(app)
+            .post("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 7233,
+                due: "2026-12-30T17:30",
+                meetingType: "pickup",
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+            })
+            .expect(201);
+        createdMeetingIds.push(meetingRes.body._id);
+        const createdMeeting = meetingRes.body;
+        const res = await request(app)
+            .get("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200);
+        expect(res.body.some((m: any) => m._id === createdMeeting._id)).toBe(true);
+    })
+})
+
+//TODO: test for PUT meetings
+
+describe("DELETE /api/meetings/:id", () => {
+    test("should delete a meeting", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const meetingRes = await request(app)
+            .post("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 7234,
+                due: "2026-12-30T18:30",
+                meetingType: "pickup",
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+            })
+            .expect(201);
+        createdMeetingIds.push(meetingRes.body._id);
+        const createdMeeting = meetingRes.body;
+
+        await request(app)
+            .delete(`/api/meetings/${createdMeeting.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .expect(204);
+        
+        const check = await request(app)
+            .get("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200);
+
+        expect(check.body.find((m: any) => m.id === createdMeeting.id)).toBeUndefined(); //just to make sure id doesnt match and is gone
+    })
+})
+
 afterAll(async () => {
     const db = mongoClient.db();
     const clientsCollection = process.env.CLIENTS_COLLECTION_NAME;
