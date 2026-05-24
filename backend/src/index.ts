@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
-import { connectMongo } from "./connectMongo";
+import { createMongoClient } from "./connectMongo";
 import cors from "cors";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
@@ -18,7 +18,7 @@ app.use(cors({
 const PORT = process.env.PORT;
 const STATIC_DIR = process.env.STATIC_DIR || "public";
 
-const mongoClient = connectMongo();
+const mongoClient = createMongoClient();
 const db = mongoClient.db();
 app.use(express.json());
 app.use(express.static(STATIC_DIR));
@@ -376,6 +376,10 @@ if (process.env.NODE_ENV !== "test") {
     app.listen(PORT, () => {
         console.log(`Server running at http://localhost:${PORT}`);
     });
+}
+
+export async function closeMongoClient() {
+    await mongoClient.close();
 }
 
 export default app;

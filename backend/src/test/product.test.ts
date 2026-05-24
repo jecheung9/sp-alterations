@@ -1,6 +1,6 @@
 const request = require("supertest");
-import app from "../index";
-import { connectMongo } from "../connectMongo";
+import app, { closeMongoClient } from "../index";
+import { createMongoClient } from "../connectMongo";
 import bcrypt from "bcrypt";
 
 let token: string;
@@ -10,7 +10,8 @@ require("dotenv").config();
 
 //authentication before routes testing
 beforeAll(async () => {
-    mongoClient = await connectMongo();
+    mongoClient = createMongoClient();
+    await mongoClient.connect();
     const db = mongoClient.db();
     const usersCollection = process.env.USERS_COLLECTION_NAME;
     await db.collection(usersCollection!).deleteMany({
@@ -40,6 +41,32 @@ describe("GET /api/clients", () => {
                 expect(Array.isArray(res.body)).toBe(true);
             });
     })
+});
+
+
+describe("POST /api/clients", () => {
+    test("should create a new client", async () => {
+        return request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "Supertest client" })
+            .expect(201)
+            .then((res: any) => {
+                expect(res.body).toHaveProperty("name", "Supertest client");
+            });
+    })
+})
+
+afterAll(async () => {
+    const db = mongoClient.db();
+    const clientsCollection = process.env.CLIENTS_COLLECTION_NAME;
+
+    await db.collection(clientsCollection!).deleteMany({
+        name: "Supertest client"
+    });
+
+    await mongoClient.close();
+    await closeMongoClient();
 });
 
 

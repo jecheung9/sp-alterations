@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 
-export function connectMongo() {
+export function createMongoClient() {
     const { MONGO_USER, MONGO_PWD, MONGO_CLUSTER, DB_NAME } = process.env;
 
     const connectionStringRedacted = `mongodb+srv://${MONGO_USER}:<password>@${MONGO_CLUSTER}/${DB_NAME}`;
