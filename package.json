@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev:all": "concurrently \"npm run dev --previx backend\" \"npm run dev\""
+    "dev:all": "concurrently \"npm run dev --prefix backend\" \"npm run dev\""
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
