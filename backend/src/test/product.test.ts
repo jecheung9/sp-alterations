@@ -9,6 +9,7 @@ let mongoClient: any;
 
 let createdMeetingIds: string[] = [];
 let createdMeetingClientIds: string[] = [];
+let createdTodoIds: string[] = [];
 
 require("dotenv").config();
 
@@ -203,7 +204,85 @@ describe("GET /api/meetings", () => {
     })
 })
 
-//TODO: test for PUT meetings
+describe("PUT /api/meetings/:id", () => {
+    test("should update a meeting", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const meetingRes = await request(app)
+            .post("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 7234,
+                due: "2026-12-30T18:30",
+                meetingType: "pickup",
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+            })
+            .expect(201);
+        createdMeetingIds.push(meetingRes.body._id);
+        const createdMeeting = meetingRes.body;
+
+        const res = await request(app)
+            .put(`/api/meetings/${createdMeeting.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                status: "Completed",
+                description: "updated meeting description"
+            })
+            .expect(200);
+        
+        expect(res.body).toHaveProperty("status", "Completed");
+        expect(res.body).toHaveProperty("description", "updated meeting description")
+    })
+})
+
+describe("PUT /api/meetings/:id - pickup to dropoff", () => {
+    test("should update a meeting's type", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const meetingRes = await request(app)
+            .post("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 7235,
+                due: "2026-12-30T18:30",
+                meetingType: "pickup",
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+            })
+            .expect(201);
+        createdMeetingIds.push(meetingRes.body._id);
+        const createdMeeting = meetingRes.body;
+
+        const res = await request(app)
+            .put(`/api/meetings/${createdMeeting.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                meetingType: "dropoff",
+                alterationIds: [5555]
+            })
+            .expect(200);
+        
+        expect(res.body.meetingType).toBe("dropoff");
+        expect(res.body.alterationIds).toEqual([5555]);
+    })
+})
+
+//TODO: if PUT meeting complete, marks todo complete too. 
 
 describe("DELETE /api/meetings/:id", () => {
     test("should delete a meeting", async () => {
@@ -218,7 +297,7 @@ describe("DELETE /api/meetings/:id", () => {
             .post("/api/meetings")
             .set("Authorization", `Bearer ${token}`)
             .send({
-                id: 7234,
+                id: 7236,
                 due: "2026-12-30T18:30",
                 meetingType: "pickup",
                 client: {
@@ -244,29 +323,294 @@ describe("DELETE /api/meetings/:id", () => {
     })
 })
 
+describe("POST /api/todo", () => {
+    test("should create a todo item", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const res = await request(app)
+            .post("/api/todo")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9000,
+                due: "2027-01-15",
+                price: 100,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                description: "supertest testing description"
+            })
+            .expect(201);
+        createdTodoIds.push(res.body._id);
+        expect(res.body).toHaveProperty("type", "alteration");
+        expect(res.body).toHaveProperty("price", 100);
+    })
+})
+
+describe("GET /api/todo", () => {
+    test("should return all todo items", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const todoRes = await request(app)
+            .post("/api/todo")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9001,
+                due: "2027-01-16",
+                price: 101,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                description: "supertest testing description"
+            })
+            .expect(201);
+        const createdTodo = todoRes.body;
+        const res = await request(app)
+            .get("/api/todo")
+            .set("Authorization", `Bearer ${token}`)
+            .expect("Content-Type", /json/)
+            .expect(200);
+        createdTodoIds.push(todoRes.body._id);
+        expect(res.body.some((t: any) => t._id === createdTodo._id)).toBe(true);
+    })
+})
+
+describe("DELETE /api/todo/:id - and remove meeting", () => {
+    test("should delete a todo and remove from dropoff meetings", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const todoRes = await request(app)
+            .post("/api/todo")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9002,
+                due: "2027-01-17",
+                price: 102,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                description: "supertest testing description"
+            })
+            .expect(201);
+        const createdTodo = todoRes.body;
+        const meetingRes = await request(app)
+            .post("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9003,
+                due: "2026-12-31T21:00",
+                meetingType: "dropoff",
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                alterationIds: [9002]
+            })
+            .expect(201);
+        createdTodoIds.push(todoRes.body._id);
+        createdMeetingIds.push(meetingRes.body._id);
+        const meeting = meetingRes.body;
+        //delete todo
+        await request(app)
+            .delete(`/api/todo/${createdTodo.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .expect(204);
+        //and then if a dropoff meeting uses this todo, delete that as well.
+        const meetingRes2 = await request(app)
+            .get("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200);
+        expect(meetingRes2.body.some((m: any) => m.id === meeting.id)).toBe(false);
+    })
+})
+
+describe("DELETE /api/todo/:id - and only remove one id", () => {
+    test("should delete a todo and remove its id from a dropoff meeting", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const todoRes = await request(app)
+            .post("/api/todo")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9004,
+                due: "2027-01-18",
+                price: 103,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                description: "supertest testing description"
+            })
+            .expect(201);
+        const createdTodo = todoRes.body;
+        const meetingRes = await request(app)
+            .post("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9005,
+                due: "2026-12-31T21:00",
+                meetingType: "dropoff",
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                alterationIds: [9004, 9992]
+            })
+            .expect(201);
+        createdTodoIds.push(todoRes.body._id);
+        createdMeetingIds.push(meetingRes.body._id);
+        const meeting = meetingRes.body;
+        //delete todo
+        await request(app)
+            .delete(`/api/todo/${createdTodo.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .expect(204);
+        //and then check the meeting.
+        const meetingRes2 = await request(app)
+            .get("/api/meetings")
+            .set("Authorization", `Bearer ${token}`)
+            .expect(200);
+        expect(meetingRes2.body.find((m: any) => m.id === meeting.id)).toBeDefined;
+        expect(meetingRes2.body.find((m: any) => m.id === meeting.id).alterationIds).toEqual([9992]);
+        expect(meetingRes2.body.find((m: any) => m.id === meeting.id).alterationIds).not.toContain(9004);
+    })
+})
+
+describe("PUT /api/todo/:id", () => {
+    test("should update a todo item", async () => {
+        const clientRes = await request(app)
+            .post("/api/clients")
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "client for meetings" })
+            .expect(201);
+        const client = clientRes.body;
+        createdMeetingClientIds.push(client._id);
+        const todoRes = await request(app)
+            .post("/api/todo")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                id: 9006,
+                due: "2027-01-20",
+                price: 110,
+                client: {
+                    _id: client._id,
+                    name: client.name
+                },
+                description: "supertest testing description"
+            })
+            .expect(201);
+        const createdTodo = todoRes.body;
+        const updatedRes = await request(app)
+            .put(`/api/todo/${createdTodo.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                status: "Completed",
+                price: 440,
+                description: "updated todo description"
+            })
+            .expect(200);
+        createdTodoIds.push(todoRes.body._id);
+        expect(updatedRes.body).toHaveProperty("price", 440);
+    })
+})
+
+describe("POST /api/login - successful login", () => {
+    test("should successfully login and return token", async () => {
+        const res = await request(app)
+            .post("/api/login")
+            .send({
+                username: "testing",
+                password: "testing"
+            })
+            .expect(200);
+        expect(res.body).toHaveProperty("token");
+    });
+});
+
+describe("POST /api/login - invalid login credentials", () => {
+    test("should reject with invalid credentials", async () => {
+        const res = await request(app)
+            .post("/api/login")
+            .send({
+                username: "woweeeeee",
+                password: "123abc"
+            })
+            .expect(400);
+        expect(res.body).toHaveProperty("error", "invalid login");
+    });
+});
+
+describe("POST /api/register", () => {
+    test("should register a new user", async () => {
+        const res = await request(app)
+            .post("/api/register")
+            .send({
+                username: "testing123",
+                password: "testing123"
+            })
+            .expect(201);
+    });
+});
+
 afterAll(async () => {
     const db = mongoClient.db();
     const clientsCollection = process.env.CLIENTS_COLLECTION_NAME;
     const meetingsCollection = process.env.MEETINGS_COLLECTION_NAME;
+    const todoCollection = process.env.TODO_COLLECTION_NAME;
+    const usersCollection = process.env.USERS_COLLECTION_NAME;
 
     //cleanup create client
     await db.collection(clientsCollection!).deleteMany({
         name: "Supertest client"
     });
 
-    //cleanup create meeting
+    //cleanup created meetings
     if (createdMeetingIds.length > 0) {
         await db.collection(meetingsCollection!).deleteMany({
             _id: { $in: createdMeetingIds.map(id => new ObjectId(id)) }
         });
     }
 
-    //cleanup create client within the created meeting
+    //cleanup created todos
+    if (createdTodoIds.length > 0) {
+        await db.collection(todoCollection!).deleteMany({
+            _id: { $in: createdTodoIds.map(id => new ObjectId(id)) }
+        });
+    }
+
+    //cleanup create client within the created entries
     if (createdMeetingClientIds.length > 0) {
         await db.collection(clientsCollection!).deleteMany({
             _id: { $in: createdMeetingClientIds.map(id => new ObjectId(id)) }
         });
     }
+
+    //cleanup logins
+    await db.collection(usersCollection!).deleteMany({
+        username: { $in: ["testing", "testing123"] }
+    });
 
     await mongoClient.close();
     await closeMongoClient();
