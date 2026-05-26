@@ -1,0 +1,20 @@
+name: CI Testing
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: cd backend && npm ci
+      - run: npm run lint
+      - run: npm run test:backend
+      - run: npm run build
