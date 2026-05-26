@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import type { Entry, MeetingEntry, NewMeetingEntry } from "../types/entry";
+import type { Entry, MeetingEntry, MeetingDropoff, MeetingPickup} from "../types/entry";
 import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -107,32 +107,34 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
           onClose={() => setIsEditOpen(false)}
           onAddEntry={() => { }}
             onUpdateEntry={(newData) => {
-              const updatedData = newData as Partial<NewMeetingEntry>;
+              const updatedData = newData as Partial<MeetingPickup> & Partial<MeetingDropoff>;
               const newMeetingType = updatedData.meetingType ?? meeting.meetingType;
-              let updated: MeetingEntry = {
-                ...meeting,
+
+              let updated: MeetingEntry;
+              const baseMeeting = {
+                id: meeting.id,
+                type: "meeting" as const,
                 client: updatedData.client ?? meeting.client,
                 due: updatedData.due ?? meeting.due,
                 status: meeting.status,
                 meetingType: newMeetingType,
-                ...(newMeetingType === "pickup"
-                  ? { description: updatedData.description?.trim() || meeting.description }
-                  : { alterationIds: updatedData.alterationIds ?? (meeting.meetingType === "dropoff" ? meeting.alterationIds : []) }),
-              } as MeetingEntry;
+              };
 
               if (newMeetingType === "pickup") {
                 updated = {
-                  ...updated,
+                  ...baseMeeting,
                   meetingType: "pickup",
-                  description: updatedData.description?.trim() || meeting.description,
+                  description:
+                    updatedData.description?.trim() ??
+                    (meeting.meetingType === "pickup" ? meeting.description : undefined),
                 };
-              }
-
-              if (newMeetingType === "dropoff") {
+              } else {
                 updated = {
-                  ...updated,
+                  ...baseMeeting,
                   meetingType: "dropoff",
-                  alterationIds: updatedData.alterationIds ?? (meeting.meetingType === "dropoff" ? meeting.alterationIds : []),
+                  alterationIds:
+                    updatedData.alterationIds ??
+                    (meeting.meetingType === "dropoff" ? meeting.alterationIds : []),
                 };
               }
 
