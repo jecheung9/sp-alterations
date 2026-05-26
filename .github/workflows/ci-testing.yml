@@ -17,4 +17,16 @@ jobs:
       - run: cd backend && npm ci
       - run: npm run lint
       - run: npm run test:backend
+        env:
+          PORT: ${{ secrets.PORT }}
+          MONGO_USER: ${{ secrets.MONGO_USER }}
+          MONGO_PWD: ${{ secrets.MONGO_PWD }}
+          MONGO_CLUSTER: ${{ secrets.MONGO_CLUSTER }}
+          DB_NAME: ${{ secrets.DB_NAME }} 
+          STATIC_DIR: ${{ secrets.STATIC_DIR }} 
+          CLIENTS_COLLECTION_NAME: ${{ secrets.CLIENTS_COLLECTION_NAME }} 
+          MEETINGS_COLLECTION_NAME: ${{ secrets.MEETINGS_COLLECTION_NAME }} 
+          TODO_COLLECTION_NAME: ${{ secrets.TODO_COLLECTION_NAME }} 
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} 
+          USERS_COLLECTION_NAME: ${{ secrets.USERS_COLLECTION_NAME }} 
       - run: npm run build
