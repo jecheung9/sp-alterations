@@ -8,7 +8,7 @@ import type { NewAlterationEntry, MeetingEntry, AlterationEntry } from "../types
 interface LayoutProps {
   children: React.ReactNode;
   addTodo: (entry: NewAlterationEntry) => void;
-  addMeeting: (entry: MeetingEntry) => Promise<any>;
+  addMeeting: (entry: MeetingEntry) => Promise<void>;
   showToast: (message: string, type?: "default" | "delete") => void;
   entries: AlterationEntry[];
 }

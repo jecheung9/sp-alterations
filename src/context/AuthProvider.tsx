@@ -1,9 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createContext, useContext, useState } from "react";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext({
   token: null as string | null,
-  onLogin: (_token: string) => { },
+  onLogin: (token: string) => { void token; },
   onLogout: () => { }
 });
 

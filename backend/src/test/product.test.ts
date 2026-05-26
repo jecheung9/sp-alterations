@@ -1,17 +1,43 @@
-const request = require("supertest");
+import request, { type Response } from "supertest";
+import type { MongoClient } from "mongodb";
 import { ObjectId } from "mongodb";
 import app, { closeMongoClient } from "../index";
 import { createMongoClient } from "../connectMongo";
 import bcrypt from "bcrypt";
+import "dotenv/config";
+
+type ApiClient = {
+    _id: string;
+    name: string;
+};
+
+type ApiMeeting = {
+    _id: string;
+    id: number;
+    client: ApiClient;
+    meetingType: "pickup" | "dropoff";
+    description?: string;
+    alterationIds?: number[];
+    status: string;
+};
+
+type ApiTodo = {
+    _id: string;
+    id: number;
+    due: string;
+    price: number;
+    client: ApiClient;
+    description: string;
+    status: string;
+};
 
 let token: string;
-let mongoClient: any;
+let mongoClient: MongoClient;
 
-let createdMeetingIds: string[] = [];
-let createdMeetingClientIds: string[] = [];
-let createdTodoIds: string[] = [];
+const createdMeetingIds: string[] = [];
+const createdMeetingClientIds: string[] = [];
+const createdTodoIds: string[] = [];
 
-require("dotenv").config();
 
 //authentication before routes testing
 beforeAll(async () => {
@@ -31,8 +57,8 @@ beforeAll(async () => {
         .send({
             username: "testing",
             password: "testing"
-        })
-    token = res.body.token
+        });
+    token = res.body.token;
 })
 
 describe("GET /api/clients", () => {
@@ -42,7 +68,7 @@ describe("GET /api/clients", () => {
             .set("Authorization", `Bearer ${token}`)
             .expect('Content-Type', /json/)
             .expect(200)
-            .then((res: any) => {
+            .then((res: Response) => {
                 expect(Array.isArray(res.body)).toBe(true);
             });
     })
@@ -56,7 +82,7 @@ describe("POST /api/clients", () => {
             .set("Authorization", `Bearer ${token}`)
             .send({ name: "Supertest client" })
             .expect(201)
-            .then((res: any) => {
+            .then((res: Response) => {
                 expect(res.body).toHaveProperty("name", "Supertest client");
             });
     })
@@ -200,7 +226,8 @@ describe("GET /api/meetings", () => {
             .get("/api/meetings")
             .set("Authorization", `Bearer ${token}`)
             .expect(200);
-        expect(res.body.some((m: any) => m._id === createdMeeting._id)).toBe(true);
+        const meetings = res.body as ApiMeeting[];
+        expect(meetings.some(m => m._id === createdMeeting._id)).toBe(true);
     })
 })
 
@@ -318,8 +345,8 @@ describe("DELETE /api/meetings/:id", () => {
             .get("/api/meetings")
             .set("Authorization", `Bearer ${token}`)
             .expect(200);
-
-        expect(check.body.find((m: any) => m.id === createdMeeting.id)).toBeUndefined(); //just to make sure id doesnt match and is gone
+        const meetings = check.body as ApiMeeting[];
+        expect(meetings.find(m => m.id === createdMeeting.id)).toBeUndefined(); //just to make sure id doesnt match and is gone
     })
 })
 
@@ -382,7 +409,8 @@ describe("GET /api/todo", () => {
             .expect("Content-Type", /json/)
             .expect(200);
         createdTodoIds.push(todoRes.body._id);
-        expect(res.body.some((t: any) => t._id === createdTodo._id)).toBe(true);
+        const todos = res.body as ApiTodo[];
+        expect(todos.some(t => t._id === createdTodo._id)).toBe(true);
     })
 })
 
@@ -437,7 +465,8 @@ describe("DELETE /api/todo/:id - and remove meeting", () => {
             .get("/api/meetings")
             .set("Authorization", `Bearer ${token}`)
             .expect(200);
-        expect(meetingRes2.body.some((m: any) => m.id === meeting.id)).toBe(false);
+        const meetings = meetingRes2.body as ApiMeeting[];
+        expect(meetings.some(m => m.id === meeting.id)).toBe(false);
     })
 })
 
@@ -492,9 +521,11 @@ describe("DELETE /api/todo/:id - and only remove one id", () => {
             .get("/api/meetings")
             .set("Authorization", `Bearer ${token}`)
             .expect(200);
-        expect(meetingRes2.body.find((m: any) => m.id === meeting.id)).toBeDefined;
-        expect(meetingRes2.body.find((m: any) => m.id === meeting.id).alterationIds).toEqual([9992]);
-        expect(meetingRes2.body.find((m: any) => m.id === meeting.id).alterationIds).not.toContain(9004);
+        const meetingList = meetingRes2.body as ApiMeeting[];
+        const matchingMeeting = meetingList.find(m => m.id === meeting.id);
+        expect(matchingMeeting).toBeDefined();
+        expect(matchingMeeting?.alterationIds).toEqual([9992]);
+        expect(matchingMeeting?.alterationIds).not.toContain(9004);
     })
 })
 
@@ -564,7 +595,7 @@ describe("POST /api/login - invalid login credentials", () => {
 
 describe("POST /api/register", () => {
     test("should register a new user", async () => {
-        const res = await request(app)
+        await request(app)
             .post("/api/register")
             .send({
                 username: "testing123",

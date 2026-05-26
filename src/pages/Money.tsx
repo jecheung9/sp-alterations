@@ -24,7 +24,7 @@ const Money: React.FC<MoneyProps> = ({ entries }) => {
   const monthlyData = months.map(month => {
     const monthEntries = entries.filter(e => getMonth(e.due) === month);
 
-    const clientTotals: Record<string, any> = {};
+    const clientTotals: Record<string, { completed: number; incomplete: number }> = {};
     clients.forEach(client => { //each client has a complete/incomplete, initlaization
       clientTotals[client] = { completed: 0, incomplete: 0 };
     });

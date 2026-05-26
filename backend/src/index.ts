@@ -4,7 +4,11 @@ import { createMongoClient } from "./connectMongo";
 import cors from "cors";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+
+interface AuthenticatedRequest extends Request {
+    user?: string | JwtPayload;
+}
 
 
 dotenv.config();
@@ -34,9 +38,10 @@ function authenticateToken(req: Request, res: Response, next: NextFunction) {
         if (err) {
             return res.status(403).json({ message: 'Invalid or expired token' });
         }
-        (req as any).user = decoded;
+        const requestWithUser = req as AuthenticatedRequest;
+        requestWithUser.user = decoded;
         next();
-    })
+    });
 }
 
 //simple test
@@ -85,7 +90,7 @@ app.delete("/api/clients/:id", authenticateToken, async (req: Request, res: Resp
             res.status(500).json({ error: "CLIENTS_COLLECTION_NAME not configured" });
             return;
         }
-        const result = await db.collection(clientsCollection).deleteOne({ _id: new ObjectId(id) });
+        await db.collection(clientsCollection).deleteOne({ _id: new ObjectId(id) });
         res.status(204).send("Client deleted successfully");
     } catch (err) {
         console.error(err);
@@ -163,7 +168,7 @@ app.put("/api/meetings/:id", authenticateToken, async (req: Request, res: Respon
         return res.status(500).json({ error: "MEETINGS_COLLECTION_NAME not configured" });
 
         const newBody = Object.fromEntries(
-            Object.entries(req.body).filter(([_, v]) => v !== undefined)
+            Object.entries(req.body).filter(([, v]) => v !== undefined)
         );
 
         const result = await db.collection(meetingsCollection).findOneAndUpdate(
@@ -268,16 +273,13 @@ app.delete("/api/todo/:id", authenticateToken, async (req: Request, res: Respons
             return;
         }
 
+        const pullUpdate = { $pull: { alterationIds: id } } as const;
         await db.collection(meetingsCollection).updateMany(
             {
                 meetingType: "dropoff",
                 alterationIds: id
             },
-            {
-                $pull: {
-                    alterationIds: id
-                } as any
-            }
+            pullUpdate
         );
 
         await db.collection(meetingsCollection).deleteMany({
@@ -301,7 +303,7 @@ app.put("/api/todo/:id", authenticateToken, async (req: Request, res: Response) 
             return;
         }
         const newBody = Object.fromEntries(
-            Object.entries(req.body).filter(([_, v]) => v !== undefined)
+            Object.entries(req.body).filter(([, v]) => v !== undefined)
         );
         const result = await db.collection(todoCollection).findOneAndUpdate(
             { id: id },

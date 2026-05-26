@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import type { Entry, MeetingEntry } from "../types/entry";
+import type { Entry, MeetingEntry, NewMeetingEntry } from "../types/entry";
 import StatusButtons from "../components/StatusButtons";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -107,38 +107,34 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
           onClose={() => setIsEditOpen(false)}
           onAddEntry={() => { }}
             onUpdateEntry={(newData) => {
-              const newMeetingType = (newData as any).meetingType ?? meeting.meetingType;
-            const updated: Entry = {
-              ...meeting,
-              client: newData.client ?? meeting.client,
-              due: newData.due ?? meeting.due,
-              status: meeting.status,
-              meetingType: newMeetingType
-            };
-              
-            if (newMeetingType === "pickup") {
-              const desc = (newData as any).description?.trim();
-              (updated as any).description = desc ? desc : null;
+              const updatedData = newData as Partial<NewMeetingEntry>;
+              const newMeetingType = updatedData.meetingType ?? meeting.meetingType;
+              let updated: MeetingEntry = {
+                ...meeting,
+                client: updatedData.client ?? meeting.client,
+                due: updatedData.due ?? meeting.due,
+                status: meeting.status,
+                meetingType: newMeetingType,
+                ...(newMeetingType === "pickup"
+                  ? { description: updatedData.description?.trim() || meeting.description }
+                  : { alterationIds: updatedData.alterationIds ?? (meeting.meetingType === "dropoff" ? meeting.alterationIds : []) }),
+              } as MeetingEntry;
 
-              (updated as any).alterationIds = undefined;
-            }
+              if (newMeetingType === "pickup") {
+                updated = {
+                  ...updated,
+                  meetingType: "pickup",
+                  description: updatedData.description?.trim() || meeting.description,
+                };
+              }
 
-            if (newMeetingType === "dropoff") {
-              (updated as any).alterationIds =
-                (newData as any).alterationIds ?? (meeting as any).alterationIds;
-
-              (updated as any).description = undefined;
-            }
-
-            if (meeting.type === "meeting" && meeting.meetingType === "pickup") {
-              const desc = (newData as any).description?.trim();
-              (updated as any).description = desc ? desc : null;
-            }
-
-            if (meeting.type === "meeting" && meeting.meetingType === "dropoff") {
-              (updated as any).alterationIds =
-                (newData as any).alterationIds ?? (meeting as any).alterationIds;
-            }
+              if (newMeetingType === "dropoff") {
+                updated = {
+                  ...updated,
+                  meetingType: "dropoff",
+                  alterationIds: updatedData.alterationIds ?? (meeting.meetingType === "dropoff" ? meeting.alterationIds : []),
+                };
+              }
 
             updateMeeting(updated, false);
             showToast("Meeting updated successfully!", "default");

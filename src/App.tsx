@@ -45,24 +45,22 @@ function App() {
           return;
         }
 
-        const [alterations, meetings] = await Promise.all([
-          alterationsRes.json(),
-          meetingsRes.json()
-        ]);
+        const alterations = await alterationsRes.json() as AlterationEntry[];
+        const meetings = await meetingsRes.json() as MeetingEntry[];
 
         const allEntries: Entry[] = [
-          ...alterations.map((a: any) => ({ ...a, type: "alteration" })),
-          ...meetings.map((m: any) => ({ ...m, type: "meeting" })),
+          ...alterations,
+          ...meetings,
         ];
 
         setEntries(allEntries);
 
         setNextAlterationId(
-          alterations.length > 0 ? Math.max(...alterations.map((a: any) => a.id)) + 1 : 1
+          alterations.length > 0 ? Math.max(...alterations.map(a => a.id)) + 1 : 1
         );
 
         setNextMeetingId(
-          meetings.length > 0 ? Math.max(...meetings.map((m: any) => m.id)) + 1 : 1
+          meetings.length > 0 ? Math.max(...meetings.map(m => m.id)) + 1 : 1
         );
       } catch (err) {
         console.error(err);
@@ -70,7 +68,7 @@ function App() {
     }
 
     loadEntries();
-  }, [token]);
+  }, [token, onLogout, navigate]);
 
   useEffect(() => {
     if (!toast) return;
@@ -155,16 +153,18 @@ function App() {
       }
       
       const meeting = updatedMeeting as MeetingEntry;
-      const { id, type, ...rest } = meeting;
+      const { id, ...rest } = meeting;
+      const description = meeting.meetingType === "pickup" ? meeting.description : undefined;
+      const alterationIds = meeting.meetingType === "dropoff" ? meeting.alterationIds : undefined;
       let body;
       if (statusOnly) {
         body = { status: rest.status };
       } else {
         body = {
           due: rest.due,
-          description: meeting.meetingType === "pickup" ? (meeting as any).description : undefined,
+          description,
           meetingType: rest.meetingType,
-          alterationIds: meeting.meetingType === "dropoff" ? (meeting as any).alterationIds : undefined,
+          alterationIds,
           client: {
             _id: rest.client._id,
             name: rest.client.name
@@ -234,7 +234,7 @@ function App() {
         throw new Error("Invalid entry type for updateTodo");
       }
       
-      const { id, type, ...rest } = updatedTodo;
+      const { id, ...rest } = updatedTodo;
       const alteration = rest as Omit<typeof updatedTodo, 'id' | 'type'>;
       let body;
       if (statusOnly) {

@@ -36,7 +36,7 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
     })
   } 
 
-  const todo = entries.find(e => e.id.toString() === id);
+  const todo = entries.find((e): e is AlterationEntry => e.type === 'alteration' && e.id.toString() === id);
 
   if (!todo) {
     return <div className="page-container"><p className="text-gray-500">Todo not found</p></div>;
@@ -80,12 +80,12 @@ const TodoDetail: React.FC<TodoDetailProps> = ({
           onClose={() => setIsEditOpen(false)}
           onAddEntry={() => { }}
           onUpdateEntry={(newData) => {
-            const data = newData as any;
+            const data = newData as Partial<AlterationEntry>;
             updateTodo({
               ...alteration,
               client: data.client || alteration.client,
               due: data.due || alteration.due,
-              price: data.price || alteration.price,
+              price: data.price ?? alteration.price,
               description: data.description || alteration.description,
               status: alteration.status,
             }, false);

@@ -86,7 +86,7 @@ const AddForm: React.FC<AddFormProps> = ({
     if (token) {
       loadClients();
     }
-  }, [token]);
+  }, [token, onLogout, navigate]);
 
   useEffect(() => {
     if (initialData) {
@@ -102,7 +102,7 @@ const AddForm: React.FC<AddFormProps> = ({
       setMeetingType(initialData.meetingType || "");
       setSelectedAlterationIds(initialData.alterationIds ?? []);
     }
-  }, [initialData, mode, clientsData])
+  }, [initialData, mode, clientsData]);
 
 
 
@@ -266,7 +266,9 @@ const AddForm: React.FC<AddFormProps> = ({
             onChange={(e) => {
               const selectedClient = clientsData.find(c => c._id === e.target.value) || null;
               setClient(selectedClient);
-              errors.client && setErrors(prev => ({ ...prev, client: "" }));
+              if (errors.client) {
+                setErrors(prev => ({ ...prev, client: "" }));
+              }
             }}
           >
             <option value="">Select client</option>
@@ -288,7 +290,9 @@ const AddForm: React.FC<AddFormProps> = ({
             value={date}
             onChange={(e) => {
               setDate(e.target.value);
-              errors.date && setErrors(prev => ({ ...prev, date: "" }));
+              if (errors.date) {
+                setErrors(prev => ({ ...prev, date: "" }));
+              }
             }} // format 2026-01-29
           />
 
@@ -305,9 +309,11 @@ const AddForm: React.FC<AddFormProps> = ({
               autoComplete='off'
               value={price}
               onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, "")
-                setPrice(value)
-                errors.price && setErrors(prev => ({ ...prev, price: "" }));
+                const value = e.target.value.replace(/\D/g, "");
+                setPrice(value);
+                if (errors.price) {
+                  setErrors(prev => ({ ...prev, price: "" }));
+                }
               }}
             />
           </>    
@@ -329,7 +335,9 @@ const AddForm: React.FC<AddFormProps> = ({
                 value={description}
                 onChange={(e) => {
                   setDescription(e.target.value);
-                  errors.description && setErrors(prev => ({ ...prev, description: "" }));
+                  if (errors.description) {
+                    setErrors(prev => ({ ...prev, description: "" }));
+                  }
                 }}
               />
             </>

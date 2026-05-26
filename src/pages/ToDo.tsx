@@ -1,18 +1,12 @@
 import { useState } from "react";
-import type { Entry } from "../types/entry";
+import type { Entry, AlterationEntry, NewAlterationEntry } from "../types/entry";
 import { useNavigate } from "react-router-dom";
 import AddForm from "../components/AddForm";
-import type { Client } from "../types/client";
 import MobileCardsTodo from "../components/MobileCardsTodo";
 
 interface TodoProps {
   entries: Entry[];
-  addTodo: (entry: {
-    due: string;
-    client: Client;
-    price?: number;
-    description: string;
-  }) => void;
+  addTodo: (entry: NewAlterationEntry) => void;
   showToast: (message: string, type?: "default" | "delete") => void;
 }
 
@@ -27,17 +21,17 @@ const ToDo: React.FC<TodoProps> = ({
   const navigate = useNavigate();
 
   const incompleteEntries = entries
-    .filter(i => i.type === 'alteration' && (i.status === 'Not Started' || i.status === 'Started'))
+    .filter((i): i is AlterationEntry => i.type === 'alteration' && (i.status === 'Not Started' || i.status === 'Started'))
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const incompleteLength = incompleteEntries.length;
 
   const completeEntries = entries
-    .filter(i => i.type === 'alteration' && i.status === 'Complete')
+    .filter((i): i is AlterationEntry => i.type === 'alteration' && i.status === 'Complete')
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const completeLength = completeEntries.length;
 
   const deliveredEntries = entries
-    .filter(i => i.type === 'alteration' && i.status === "Dropped Off")
+    .filter((i): i is AlterationEntry => i.type === 'alteration' && i.status === "Dropped Off")
     .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
   const deliveredLength = deliveredEntries.length;
 
@@ -78,7 +72,7 @@ const ToDo: React.FC<TodoProps> = ({
         <AddForm
           onClose={() => setIsAddOpen(false)}
           onAddEntry={(entry) => {
-            addTodo(entry as any)
+            addTodo(entry as NewAlterationEntry);
             setIsAddOpen(false);
             showToast("Alteration todo added successfully!", "default");
           }}
@@ -105,9 +99,7 @@ const ToDo: React.FC<TodoProps> = ({
             </tr>
           </thead>
           <tbody>
-            {incompleteEntries.map(val => {
-              const alteration = val as any;
-              return (
+            {incompleteEntries.map(val => (
               <tr
                 className="cursor-pointer hover:bg-[#e0e0e0]"
                 key={val.id}
@@ -125,11 +117,10 @@ const ToDo: React.FC<TodoProps> = ({
                   `}
                 >{val.status}</td>
                 <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem]">{alteration.price}</td>
-                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{alteration.description}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
+                <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
               </tr>
-            );
-            })}
+            ))}
           </tbody>
         </table>
         )}
@@ -157,9 +148,7 @@ const ToDo: React.FC<TodoProps> = ({
               </tr>
             </thead>
             <tbody>
-              {completeEntries.map(val => {
-                const alteration = val as any;
-                return (
+              {completeEntries.map(val => (
                 <tr
                   className="cursor-pointer hover:bg-[#e0e0e0]"
                   key={val.id}
@@ -174,11 +163,10 @@ const ToDo: React.FC<TodoProps> = ({
                     `}
                   >{val.status}</td>
                   <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{alteration.price}</td>
-                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{alteration.description}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
+                  <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
                 </tr>
-              );
-              })}
+              ))}
             </tbody>
           </table>
       )}
@@ -216,9 +204,7 @@ const ToDo: React.FC<TodoProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {deliveredEntries.map(val => {
-                    const alteration = val as any;
-                    return (
+                  {deliveredEntries.map(val => (
                     <tr
                       className="cursor-pointer hover:bg-[#e0e0e0]"
                       key={val.id}
@@ -233,11 +219,10 @@ const ToDo: React.FC<TodoProps> = ({
                         `}
                       >{val.status}</td>
                       <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.client?.name}</td>
-                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{alteration.price}</td>
-                      <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{alteration.description}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem]">{val.price}</td>
+                      <td className="border-r-2 border-gray-500 p-[0.2rem] overflow-hidden truncate whitespace-nowrap">{val.description}</td>
                     </tr>
-                  );
-                  })}
+                  ))}
                 </tbody>
               </table>  
 

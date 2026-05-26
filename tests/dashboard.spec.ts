@@ -218,7 +218,6 @@ test("calendar shows meeting and todo counts", async ({ page }) => {
     await page.getByLabel("Password").fill("testpass");
     await page.getByRole("button", { name: /sign in/i }).click();
     await expect(page).toHaveURL(/dashboard/);
-    const cell = page.locator("text=5").filter({has: page.locator("div")}).first();
     await expect(page.getByText("M: 0 / 1")).toBeVisible();
     await expect(page.getByText("T: 1 / 1")).toBeVisible();
 })

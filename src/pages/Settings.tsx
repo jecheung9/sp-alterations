@@ -30,7 +30,7 @@ const Settings = () => {
     if (token) {
       loadClients();
     }
-  }, [token]);
+  }, [token, onLogout, navigate]);
 
 
 

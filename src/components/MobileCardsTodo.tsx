@@ -1,9 +1,9 @@
 import React from "react";
-import type { Entry } from "../types/entry";
+import type { AlterationEntry } from "../types/entry";
 import { useNavigate } from "react-router";
 
 interface MobileCardsTodoProps {
-  entries: Entry[];
+  entries: AlterationEntry[];
 }
 
 const MobileCardsTodo: React.FC<MobileCardsTodoProps> = ({
@@ -22,7 +22,7 @@ const MobileCardsTodo: React.FC<MobileCardsTodoProps> = ({
     })
   } 
 
-  const isLate = (entry: Entry) => {
+  const isLate = (entry: AlterationEntry) => {
     const today = new Date(); //ignore time for todos
     today.setHours(0, 0, 0, 0);
 
@@ -36,12 +36,10 @@ const MobileCardsTodo: React.FC<MobileCardsTodoProps> = ({
 
   return (
     <div className="flex flex-col gap-3 mb-8">
-      {entries.map((entry) => {
-        const alteration = entry as any;
-        return (
-          <div
-            className="w-full border rounded-lg flex flex-col p-2 cursor-pointer mb-2"
-            onClick={() => navigate(`/todo/${entry.id}`)}>
+      {entries.map((entry) => (
+        <div
+          className="w-full border rounded-lg flex flex-col p-2 cursor-pointer mb-2"
+          onClick={() => navigate(`/todo/${entry.id}`)}>
             <div className="flex items-center justify-between">
               <div className="flex gap-2 items-center">
                 <span className="font-bold text-xl">#{entry.id}</span>
@@ -63,11 +61,10 @@ const MobileCardsTodo: React.FC<MobileCardsTodoProps> = ({
 
             </div>
             <span>{entry.client?.name}</span>
-            <span>Price: {alteration.price}</span>
-            <span>{alteration.description}</span>
+            <span>Price: {entry.price}</span>
+            <span>{entry.description}</span>
           </div> 
-        )
-      })}
+        ))}
     </div>
   )
 
