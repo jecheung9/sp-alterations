@@ -36,21 +36,26 @@ const Dashboard: React.FC<DashboardProps> = ({
     })
   } 
 
+  const parseLocalDate = (date: string) => {
+    const [year, month, day] = date.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   const incompleteMeetings = entries
     .filter(i => i.type === 'meeting' && (i.status === 'Not Started' || i.status === 'Started'))
-    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());
+    .sort((a, b) => parseLocalDate(a.due).getTime() - parseLocalDate(b.due).getTime());
   
   const meetingsLength = incompleteMeetings.length;
   
   const incompleteEntries = entries
     .filter(i => i.type === 'alteration' && (i.status === 'Not Started' || i.status === 'Started'))
     .filter(i => {
-      const due = new Date(i.due).getTime();
+      const due = parseLocalDate(i.due).getTime();
       const future = new Date();
       future.setDate(future.getDate() + 7);
       return due <= future.getTime();
     })
-    .sort((a, b) => new Date(a.due).getTime() - new Date(b.due).getTime());;
+    .sort((a, b) => parseLocalDate(a.due).getTime() - parseLocalDate(b.due).getTime());;
   
   const entriesLength = incompleteEntries.length;
 
@@ -68,7 +73,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   let yearTotal = 0;
   entries.forEach(entry => {
     if (entry.type === "alteration") {
-      const entryYear = new Date(entry.due).getFullYear();
+      const entryYear = parseLocalDate(entry.due).getFullYear();
       if (entryYear === currentYear) {
         yearTotal += entry.price;
       }
@@ -85,7 +90,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   let currentMonthTotal = 0;
   entries.forEach(entry => {
     if (entry.type === "alteration") {
-      const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+      const entryMonth = parseLocalDate(entry.due).toLocaleString("en-US", {
         month: "long",
         year: "numeric"
       });
@@ -99,7 +104,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const clients = [...new Set(entries.map(e => e.client?.name))];
   clients.forEach(client => clientMonthTotals[client] = 0);
   entries.forEach(entry => {
-    const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+    const entryMonth = parseLocalDate(entry.due).toLocaleString("en-US", {
       month: "long",
       year: "numeric"
     });
@@ -120,7 +125,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   clients.forEach(client => prevMonthClientTotals[client] = 0);
 
   entries.forEach(entry => {
-    const entryMonth = new Date(entry.due).toLocaleString("en-US", {
+    const entryMonth = parseLocalDate(entry.due).toLocaleString("en-US", {
       month: "long",
       year: "numeric"
     });
