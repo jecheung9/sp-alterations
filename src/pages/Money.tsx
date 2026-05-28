@@ -5,19 +5,25 @@ interface MoneyProps {
 }
 
 const Money: React.FC<MoneyProps> = ({ entries }) => {
+
+  const parseLocalDate = (date: string) => {
+    const [year, month, day] = date.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   const getMonth = (date: string) =>
-    new Date(date).toLocaleString("en-US", {
+    parseLocalDate(date).toLocaleString("en-US", {
       month: "long",
       year: "numeric"
     });
 
-  const getYear = (date: string) => new Date(date).getFullYear();
+  const getYear = (date: string) => parseLocalDate(date).getFullYear();
 
   const clients = [...new Set(entries.map(e => e.client?.name))]; //unique list of clients
 
   const months = [...new Set(entries.map(e => getMonth(e.due)))].sort((a, b) => { //sort month descending
-    const dateA = new Date(entries.find(e => getMonth(e.due) === a)!.due);
-    const dateB = new Date(entries.find(e => getMonth(e.due) === b)!.due);
+    const dateA = parseLocalDate(entries.find(e => getMonth(e.due) === a)!.due);
+    const dateB = parseLocalDate(entries.find(e => getMonth(e.due) === b)!.due);
     return dateB.getTime() - dateA.getTime();
   });
 
