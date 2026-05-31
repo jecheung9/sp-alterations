@@ -154,7 +154,7 @@ function App() {
       
       const meeting = updatedMeeting as MeetingEntry;
       const { id, ...rest } = meeting;
-      const description = meeting.meetingType === "pickup" ? meeting.description : undefined;
+      const description = meeting.meetingType === "pickup" ? (meeting.description ?? null) : null;
       const alterationIds = meeting.meetingType === "dropoff" ? meeting.alterationIds : undefined;
       let body;
       if (statusOnly) {

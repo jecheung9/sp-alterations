@@ -125,8 +125,7 @@ const MeetingDetail: React.FC<MeetingDetailProps> = ({
                   ...baseMeeting,
                   meetingType: "pickup",
                   description:
-                    updatedData.description?.trim() ??
-                    (meeting.meetingType === "pickup" ? meeting.description : undefined),
+                    updatedData.description?.trim() || undefined,
                 };
               } else {
                 updated = {

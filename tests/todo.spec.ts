@@ -304,7 +304,7 @@ test("click an item and view details and buttons", async ({ page }) => {
     await expect(page.getByRole("button", { name: "Return back to To-do list" })).toBeVisible();
 })
 
-test("status button started", async ({ page }) => {
+test("status button functionalities", async ({ page }) => {
     const row = page.locator("table").first().locator("tbody tr").first();
     await row.click();
     await expect(page).toHaveURL(/\/todo\/1/);
@@ -363,4 +363,35 @@ test("return back to to-do list button", async ({ page }) => {
         page.getByRole("heading", { name: /To-Do/ })
     ).toHaveText("To-Do (2)");
 })
+
+test("edit todo", async ({ page }) => {
+    await page.route("**/api/clients", async route => {
+        await route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify([
+                { _id: "client-1", name: "test2" }
+            ]),
+        });
+    });
+
+    const row = page.locator("table").first().locator("tbody tr").nth(1);
+    await row.click();
+    await expect(page).toHaveURL(/\/todo\/2/);
+    await expect(page.getByRole("heading", { name: 'Todo #2' })).toBeVisible();
+
+    await page.getByRole("button", { name: "Edit" }).click();
+    await expect(page.getByRole("heading", { name: 'Edit todo alteration #2' })).toBeVisible();
+
+    await expect(page.getByLabel("Date")).toHaveValue("2026-05-05");
+    await expect(page.getByLabel("Price")).toHaveValue("50");
+    await expect(page.getByLabel("Description")).toHaveValue("test2");
+
+    await page.selectOption('#client', 'client-1');
+    await page.getByLabel("Price").fill("70");
+    await page.getByRole("button", { name: "Submit Entry" }).click();
+
+    await expect(page.getByText(/Price:/)).toContainText("70");
+})
+
 
