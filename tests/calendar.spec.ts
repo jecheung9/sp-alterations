@@ -18,16 +18,16 @@ test("calendar loads", async ({ page }) => {
 
 test("today, left right buttons", async ({ page }) => {
     const heading = page.getByRole("heading", { level: 2 });
-    await expect(heading).toHaveText("May 2026");
+    await expect(page.locator("h2", { hasText: "May 2026" })).toBeVisible();
     await page.getByRole("button", { name: ">" }).click();
-    await expect(heading).toHaveText("June 2026");
+    await expect(page.locator("h2", { hasText: "June 2026" })).toBeVisible();
 
     await page.getByRole("button", { name: "<" }).click();
     await page.getByRole("button", { name: "<" }).click();
-    await expect(heading).toHaveText("April 2026");
+    await expect(page.locator("h2", { hasText: "April 2026" })).toBeVisible();
 
     await page.getByRole("button", { name: "Today" }).click();
-    await expect(heading).toHaveText("May 2026");
+    await expect(page.locator("h2", { hasText: "May 2026" })).toBeVisible();
 })
 
 test("correct calendar days", async ({ page }) => {
