@@ -130,7 +130,7 @@ test.beforeEach(async ({ page }) => {
     await page.getByLabel('Username').fill("testuser");
     await page.getByLabel('Password').fill("testpass");
     await page.getByRole('button', { name: /sign in/i }).click();
-    await page.getByRole('link', { name: /To-Do/i }).click();
+    await page.getByRole('link', { name: /Todo/ }).click();
     await expect(page).toHaveURL(/todo/);
 })
 
@@ -271,7 +271,7 @@ test("empty messages", async ({ page }) => {
     await page.getByLabel('Username').fill("testuser");
     await page.getByLabel('Password').fill("testpass");
     await page.getByRole('button', { name: /sign in/i }).click();
-    await page.getByRole('link', { name: /To-Do/i }).click();
+    await page.getByRole('link', { name: /Todo/i }).click();
     await expect(page).toHaveURL(/todo/);
 
     //headings

@@ -23,41 +23,41 @@ const Navbar: React.FC<NavbarProps> = ({
       <div className="flex justify-between">
         <h3 className="text-xl wide:text-2xl hidden sm:inline">Alterations Dashboard</h3>
       </div>
-      <NavLink to="/dashboard" className={({ isActive }) =>
+      <NavLink to="/dashboard" aria-label="Dashboard" className={({ isActive }) =>
         `flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2
         ${isActive ? "bg-blue-700" : "hover:text-black"}`}>
           <FontAwesomeIcon className="icon text-2xl" icon={faHouse} />
           <span className="hidden sm:inline">Dashboard</span>
         </NavLink>
-        <NavLink to="/money" className={({ isActive }) =>
+        <NavLink to="/money" aria-label="Money" className={({ isActive }) =>
           `flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2
           ${isActive ? "bg-blue-700" : "hover:text-black"}`}>
           <FontAwesomeIcon className="icon text-2xl" icon={faMoneyBill1Wave} />
           <span className="hidden sm:inline">Money</span>
         </NavLink>
-        <NavLink to="/calendar" className={({ isActive }) =>
+        <NavLink to="/calendar" aria-label="Calendar" className={({ isActive }) =>
           `flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2
           ${isActive ? "bg-blue-700" : "hover:text-black"}`}>
           <FontAwesomeIcon className="icon text-2xl" icon={faCalendar} />
           <span className="hidden sm:inline">Calendar</span>
         </NavLink> 
-        <NavLink to="/todo" className={({ isActive }) =>
+        <NavLink to="/todo" aria-label="Todo "className={({ isActive }) =>
           `flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2
           ${isActive ? "bg-blue-700" : "hover:text-black"}`}>
           <FontAwesomeIcon className="icon text-2xl" icon={faList} />
           <span className="hidden sm:inline">To-do</span>
       </NavLink>
-      <NavLink to="/meetings" className={({ isActive }) =>
+      <NavLink to="/meetings" aria-label="Meetings" className={({ isActive }) =>
         `flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2
         ${isActive ? "bg-blue-700" : "hover:text-black"}`}>
         <FontAwesomeIcon className="icon text-2xl" icon={faHandshake} />
         <span className="hidden sm:inline">Meetings</span>
       </NavLink>
-      <div className="flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2 hover:text-black hover:cursor-pointer active:text-[#000077]" onClick={onOpen} >
+      <div className="flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2 hover:text-black hover:cursor-pointer active:text-[#000077]" onClick={onOpen} aria-label="Add Entry" >
         <FontAwesomeIcon className="icon text-2xl" icon={faPlus} />
         <span className="hidden sm:inline">Add Entry</span>
       </div>
-      <NavLink to="/settings" className={({ isActive }) =>
+      <NavLink to="/settings" aria-label="Settings" className={({ isActive }) =>
         `flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2
         ${isActive ? "bg-blue-700" : "hover:text-black"}`}>
         <FontAwesomeIcon className="icon text-2xl" icon={faGear} />
@@ -65,7 +65,7 @@ const Navbar: React.FC<NavbarProps> = ({
       </NavLink>
 
       {token && (
-        <div className="flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2 hover:text-black cursor-pointer" onClick={handleLogout}>
+        <div className="flex-1 flex sm:flex-none justify-center sm:justify-start gap-4 no-underline text-white py-3 sm:py-2 hover:text-black cursor-pointer" onClick={handleLogout} aria-label="Log Out">
           <FontAwesomeIcon className="icon text-2xl" icon={faArrowRightFromBracket} />
           <span className="hidden sm:inline">Log Out</span>
         </div>
