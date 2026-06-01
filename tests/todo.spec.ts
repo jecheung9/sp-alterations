@@ -45,6 +45,27 @@ test.beforeEach(async ({ page }) => {
 
     await page.route(/\/api\/todo(\/.*)?$/, async route => {
         const request = route.request();
+        if (request.method() === "GET" || request.method() === "HEAD") {
+            const url = request.url();
+            const match = url.match(/\/api\/todo\/(\d+)/);
+            
+            if (match) {
+                const id = Number(match[1]);
+                const item = todoEntries.find(item => item.id === id);
+                await route.fulfill({
+                    status: item ? 200 : 404,
+                    contentType: "application/json",
+                    body: JSON.stringify(item ?? { error: "Not found" }),
+                });
+                return;
+            }
+            await route.fulfill({
+                status: 200,
+                contentType: "application/json",
+                body: JSON.stringify(todoEntries),
+            });
+            return;
+        }
         if (request.method() === "POST") {
             const requestBody = JSON.parse(request.postData() || "{}");
             const id = requestBody.id ?? Date.now();
@@ -76,6 +97,8 @@ test.beforeEach(async ({ page }) => {
 
             if (index !== -1) {
                 todoEntries[index] = updated;
+            } else {
+                todoEntries.push(updated);
             }
 
             await route.fulfill({
@@ -100,12 +123,6 @@ test.beforeEach(async ({ page }) => {
             });
             return;
         }
-
-        await route.fulfill({
-            status: 200,
-            contentType: "application/json",
-            body: JSON.stringify(todoEntries),
-        });
     });
 
 
@@ -311,7 +328,7 @@ test("status button functionalities", async ({ page }) => {
     await expect(page.getByRole("heading", { name: 'Todo #1' })).toBeVisible();
 
     await page.getByRole("button", { name: "Started", exact: true }).click();
-    await expect(page.getByText(/Status:\s*Started/)).toBeVisible();
+    await expect(page.getByText(/Status:/)).toContainText("Started");
     await page.getByRole("button", { name: "Complete" }).click();
     await expect(page.getByText(/Status:/)).toContainText("Complete");
     await page.getByRole("button", { name: "Dropped Off" }).click();
