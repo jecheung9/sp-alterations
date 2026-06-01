@@ -488,3 +488,14 @@ test("completing meeting marks alteration as dropped off", async ({ page }) => {
     await expect(page).toHaveURL(/\/todo\/4/);
     await expect(page.getByText(/Status:/)).toContainText("Dropped Off");
 });
+
+test("meeting not found", async ({ page }) => {
+    await page.goto('/');
+    await page.getByLabel('Username').fill("testuser");
+    await page.getByLabel('Password').fill("testpass");
+    await page.getByRole('button', { name: /sign in/i }).click();
+    await expect(page).toHaveURL(/dashboard/);
+    await page.goto('/meetings/312313213');
+    await expect(page).toHaveURL(/meetings\/312313213/);
+    await expect(page.getByText('Meeting not found')).toBeVisible();
+})

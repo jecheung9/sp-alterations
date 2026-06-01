@@ -394,4 +394,14 @@ test("edit todo", async ({ page }) => {
     await expect(page.getByText(/Price:/)).toContainText("70");
 })
 
+test("todo not found", async ({ page }) => {
+    await page.goto('/');
+    await page.getByLabel('Username').fill("testuser");
+    await page.getByLabel('Password').fill("testpass");
+    await page.getByRole('button', { name: /sign in/i }).click();
+    await expect(page).toHaveURL(/dashboard/);
+    await page.goto('/todo/312313213');
+    await expect(page).toHaveURL(/todo\/312313213/);
+    await expect(page.getByText('Todo not found')).toBeVisible();
+})
 

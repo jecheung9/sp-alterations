@@ -18,6 +18,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   });
 
   const handleLogin = (jwtToken: string) => {
+    Cookies.set("token", jwtToken);
     setToken(jwtToken);
   };
 
