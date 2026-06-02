@@ -365,7 +365,7 @@ test("undo delete todo #1", async ({ page }) => {
     await expect(page.getByRole("button", { name: "Undo" })).toBeVisible();
     await page.getByRole("button", { name: "Undo" }).click();
 
-    await expect(page.locator("table").first().locator("tbody tr")).toHaveCount(2);
+    await expect(page.locator("table").first().locator("tbody tr")).toHaveCount(2, { timeout: 5000 });
     await expect(page.locator("table").first().locator("tbody tr").first().getByRole("cell").nth(0)).toHaveText("1");
 })
 
