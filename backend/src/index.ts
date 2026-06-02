@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import { createMongoClient } from "./connectMongo";
 import cors from "cors";
-import { ObjectId } from "mongodb";
+import { ObjectId, type UpdateFilter, type Document } from "mongodb";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
@@ -279,7 +279,7 @@ app.delete("/api/todo/:id", authenticateToken, async (req: Request, res: Respons
             return;
         }
 
-        const pullUpdate = { $pull: { alterationIds: id } } as const;
+        const pullUpdate = { $pull: { alterationIds: id } } as unknown as UpdateFilter<Document>;
         await db.collection(meetingsCollection).updateMany(
             {
                 meetingType: "dropoff",
