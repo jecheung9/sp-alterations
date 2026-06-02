@@ -68,7 +68,7 @@ const AddForm: React.FC<AddFormProps> = ({
     async function loadClients() {
       try {
         const res = await FetchHelper(
-          "http://localhost:3000/api/clients",
+          "https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients",
           {},
           token,
           onLogout, 

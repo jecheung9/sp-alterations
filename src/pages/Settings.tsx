@@ -14,7 +14,7 @@ const Settings = () => {
   useEffect(() => {
     async function loadClients() {
       try {
-        const res = await FetchHelper("http://localhost:3000/api/clients", {}, token, onLogout, navigate);
+        const res = await FetchHelper("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients", {}, token, onLogout, navigate);
         if (!res) {
           return;
         }
@@ -39,7 +39,7 @@ const Settings = () => {
       return;
     }
     try {
-      const res = await FetchHelper("http://localhost:3000/api/clients",
+      const res = await FetchHelper("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients",
         {
           method: "POST",
           body: JSON.stringify({ name: input })
@@ -61,7 +61,7 @@ const Settings = () => {
 
   const removeClient = async (_id: string) => {
     try {
-      await FetchHelper(`http://localhost:3000/api/clients/${_id}`, {method: "DELETE"}, token, onLogout, navigate);
+      await FetchHelper(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients/${_id}`, {method: "DELETE"}, token, onLogout, navigate);
       setClients(prev => prev.filter(c => c._id !== _id));
     } catch (err) {
       console.error("Error deleting client:", err);

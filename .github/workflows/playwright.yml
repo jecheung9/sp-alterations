@@ -1,7 +1,7 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master, frontend-workflow-test ]
+    branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
 jobs:
@@ -23,7 +23,6 @@ jobs:
     - name: start backend
       run: cd backend && npm run dev &
       env:
-        PORT: ${{ secrets.PORT }}
         MONGO_USER: ${{ secrets.MONGO_USER }}
         MONGO_PWD: ${{ secrets.MONGO_PWD }}
         MONGO_CLUSTER: ${{ secrets.MONGO_CLUSTER }}
@@ -37,7 +36,6 @@ jobs:
     - name: Run Playwright tests
       run: npx playwright test
       env:
-        PORT: ${{ secrets.PORT }}
         MONGO_USER: ${{ secrets.MONGO_USER }}
         MONGO_PWD: ${{ secrets.MONGO_PWD }}
         MONGO_CLUSTER: ${{ secrets.MONGO_CLUSTER }}

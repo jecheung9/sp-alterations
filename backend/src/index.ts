@@ -16,10 +16,13 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://delightful-mushroom-0afd5da0f.7.azurestaticapps.net/"
+  ]
 }));
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const STATIC_DIR = process.env.STATIC_DIR || "public";
 
 const mongoClient = createMongoClient();

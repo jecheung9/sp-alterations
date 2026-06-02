@@ -15,7 +15,7 @@ export const Landing: React.FC = () => {
     e.preventDefault();
     setError(""); 
     try {
-      const res = await fetch("http://localhost:3000/api/login", {
+      const res = await fetch("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
