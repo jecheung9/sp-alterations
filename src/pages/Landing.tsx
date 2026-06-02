@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { API_BASE_URL } from "../utils/Fetch";
 
 export const Landing: React.FC = () => {
   const { onLogin } = useAuth();
@@ -15,7 +16,7 @@ export const Landing: React.FC = () => {
     e.preventDefault();
     setError(""); 
     try {
-      const res = await fetch("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/login", {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),

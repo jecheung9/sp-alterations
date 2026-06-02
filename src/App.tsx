@@ -16,7 +16,7 @@ import MeetingDetail from "./pages/MeetingDetails";
 import { Landing } from "./pages/Landing";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
 import { useAuth } from "./context/AuthProvider";
-import { FetchHelper } from "./utils/Fetch";
+import { FetchHelper, API_BASE_URL } from "./utils/Fetch";
 import Confirmation from "./components/Confirmation";
 
 
@@ -37,8 +37,8 @@ function App() {
     async function loadEntries() {
       try {
       const [alterationsRes, meetingsRes] = await Promise.all([
-        FetchHelper("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/todo", {}, token, onLogout, navigate),
-        FetchHelper("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/meetings", {}, token, onLogout, navigate)
+        FetchHelper(`${API_BASE_URL}/api/todo`, {}, token, onLogout, navigate),
+        FetchHelper(`${API_BASE_URL}/api/meetings`, {}, token, onLogout, navigate)
       ]);
 
         if (!alterationsRes || !meetingsRes) {
@@ -90,7 +90,7 @@ function App() {
     try {
       const id = meetingData.id ?? nextMeetingId;
       const body = { ...meetingData, id };
-      const res = await fetch("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/meetings", {
+      const res = await fetch(`${API_BASE_URL}/api/meetings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -123,7 +123,7 @@ function App() {
     try {
       const id = TodoData.id ?? nextAlterationId;
       const body = { ...TodoData, id };
-      const res = await fetch("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/todo", {
+      const res = await fetch(`${API_BASE_URL}/api/todo`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -172,7 +172,7 @@ function App() {
           status: rest.status
         };
       }
-      const res = await fetch(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/meetings/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/meetings/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -189,7 +189,7 @@ function App() {
       if (updated.type === "meeting" && updated.meetingType === "dropoff" && updated.status === "Complete") {
         await Promise.all(
           updated.alterationIds.map((alterationId: number) => {
-            fetch(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/todo/${alterationId}`, {
+            fetch(`${API_BASE_URL}/api/todo/${alterationId}`, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
@@ -251,7 +251,7 @@ function App() {
           status: alteration.status
         };
       }
-      const res = await fetch(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/todo/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/todo/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -278,7 +278,7 @@ function App() {
 
   const deleteMeeting = async (id: number, type: Entry["type"]) => {
     try {
-      const res = await fetch(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/meetings/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/meetings/${id}`, {
         method: "DELETE",
         headers: {"Authorization": `Bearer ${token}`}
       });
@@ -295,7 +295,7 @@ function App() {
 
   const deleteTodo = async (id: number, type: Entry["type"]) => {
     try {
-      const res = await fetch(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/todo/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/todo/${id}`, {
         method: "DELETE",
         headers: {"Authorization": `Bearer ${token}`}
       });

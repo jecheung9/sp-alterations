@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Client } from "../types/client.ts";
 import { useAuth } from "../context/AuthProvider.tsx";
-import { FetchHelper } from "../utils/Fetch.tsx";
+import { FetchHelper, API_BASE_URL } from "../utils/Fetch.tsx";
 import { useNavigate } from "react-router";
 
 
@@ -14,7 +14,7 @@ const Settings = () => {
   useEffect(() => {
     async function loadClients() {
       try {
-        const res = await FetchHelper("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients", {}, token, onLogout, navigate);
+        const res = await FetchHelper(`${API_BASE_URL}/api/clients`, {}, token, onLogout, navigate);
         if (!res) {
           return;
         }
@@ -39,7 +39,7 @@ const Settings = () => {
       return;
     }
     try {
-      const res = await FetchHelper("https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients",
+      const res = await FetchHelper(`${API_BASE_URL}/api/clients`,
         {
           method: "POST",
           body: JSON.stringify({ name: input })
@@ -61,7 +61,7 @@ const Settings = () => {
 
   const removeClient = async (_id: string) => {
     try {
-      await FetchHelper(`https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients/${_id}`, {method: "DELETE"}, token, onLogout, navigate);
+      await FetchHelper(`${API_BASE_URL}/api/clients/${_id}`, {method: "DELETE"}, token, onLogout, navigate);
       setClients(prev => prev.filter(c => c._id !== _id));
     } catch (err) {
       console.error("Error deleting client:", err);

@@ -15,11 +15,14 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://delightful-mushroom-0afd5da0f.7.azurestaticapps.net",
+  "https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://delightful-mushroom-0afd5da0f.7.azurestaticapps.net/"
-  ]
+  origin: allowedOrigins
 }));
 
 const PORT = process.env.PORT || 3000;

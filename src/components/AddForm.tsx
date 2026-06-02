@@ -1,7 +1,7 @@
 import { useState, type FormEvent, useEffect } from 'react';
 import type { Client } from '../types/client';
 import { useAuth } from '../context/AuthProvider';
-import { FetchHelper } from '../utils/Fetch';
+import { FetchHelper, API_BASE_URL } from '../utils/Fetch';
 import { useNavigate } from 'react-router';
 import type { NewAlterationEntry, NewMeetingEntry, Entry, AlterationEntry } from '../types/entry';
 
@@ -68,7 +68,7 @@ const AddForm: React.FC<AddFormProps> = ({
     async function loadClients() {
       try {
         const res = await FetchHelper(
-          "https://sp-alterations-c9dyambsg5cuhdfp.westus3-01.azurewebsites.net/api/clients",
+          `${API_BASE_URL}/api/clients`,
           {},
           token,
           onLogout, 
