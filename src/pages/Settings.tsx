@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Client } from "../types/client.ts";
 import { useAuth } from "../context/AuthProvider.tsx";
-import { FetchHelper, API_BASE_URL } from "../utils/Fetch.tsx";
+import { FetchHelper, API_BASE_URL } from "../utils/Fetch";
 import { useNavigate } from "react-router";
 
 
